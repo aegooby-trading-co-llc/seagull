@@ -1,0 +1,31 @@
+{
+    "include": ["app", "types", "worker"],
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": true,
+        "downlevelIteration": true,
+        "emitDeclarationOnly": false,
+        "emitDecoratorMetadata": true,
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "importHelpers": true,
+        "importsNotUsedAsValues": "remove",
+        "jsx": "react",
+        "jsxFactory": "React.createElement",
+        "jsxFragmentFactory": "React.Fragment",
+        "module": "esnext",
+        "noImplicitAny": true,
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "dom.asynciterable",
+            "deno.ns",
+            "deno.unstable",
+            "deno.worker",
+            "esnext"
+        ],
+        "target": "esnext",
+        "strict": true,
+        "types": ["snowpack-env", "@cloudflare/workers-types"]
+    }
+}

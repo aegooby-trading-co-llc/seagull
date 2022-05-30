@@ -24,10 +24,11 @@ export interface Env {
 }
 
 export default {
+    // deno-lint-ignore require-await
     async fetch(
-        request: Request,
-        env: Env,
-        ctx: ExecutionContext
+        _request: Request,
+        _env: Env,
+        _ctx: ExecutionContext
     ): Promise<Response> {
         const innerHtml = ReactDOMServer.renderToString(<App />);
         const html = `<!DOCTYPE html><html lang="en"><body>${innerHtml}</body></html>`;

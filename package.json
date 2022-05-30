@@ -18,7 +18,7 @@
         "dev:snowpack": "snowpack dev",
         "dev:wrangler": "wrangler dev",
         "build:snowpack": "snowpack build",
-        "build:wrangler": "wrangler publish --dry-run --outdir=build/wrangler"
+        "build:wrangler": "yarn build:snowpack && wrangler publish --dry-run --outdir=build/wrangler"
     },
     "dependencies": {
         "react": "^18.1.0",
