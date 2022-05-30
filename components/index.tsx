@@ -4,12 +4,18 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import "./index.css";
 
-ReactDOM.render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>,
-    document.getElementById("root"),
-);
+try {
+    const element: React.ReactElement =
+        <React.StrictMode>
+            <App />
+        </React.StrictMode>;
+    ReactDOM.render(
+        element,
+        document.querySelector("#root"),
+    );
+} catch (error) {
+    console.error(error);
+}
 
 // Hot Module Replacement (HMR) - Remove this snippet to remove HMR.
 // Learn more: https://snowpack.dev/concepts/hot-module-replacement

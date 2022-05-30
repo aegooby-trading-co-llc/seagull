@@ -1,3 +1,7 @@
+import React from "react";
+import * as ReactDOMServer from 'react-dom/server';
+import App from "../components/App";
+
 /**
  * Welcome to Cloudflare Workers! This is your first worker.
  *
@@ -25,6 +29,12 @@ export default {
         env: Env,
         ctx: ExecutionContext
     ): Promise<Response> {
-        return new Response("Hello World!");
+        const innerHtml = ReactDOMServer.renderToString(<App />);
+        const html = `<!DOCTYPE html><html lang="en"><body>${innerHtml}</body></html>`;
+        return new Response(html, {
+            headers: {
+                'content-type': 'text/html;charset=UTF-8',
+            },
+        });
     },
 };

@@ -2,7 +2,7 @@
 export default {
     mount: {
       public: { url: "/", static: true },
-      react: { url: "/dist" },
+      components: { url: "/dist" },
     },
     plugins: ["@snowpack/plugin-react-refresh", "@snowpack/plugin-dotenv"],
     routes: [
