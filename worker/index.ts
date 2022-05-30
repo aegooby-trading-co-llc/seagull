@@ -8,8 +8,7 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-export interface Env
-{
+export interface Env {
     // Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
     // MY_KV_NAMESPACE: KVNamespace;
     //
@@ -25,8 +24,7 @@ export default {
         request: Request,
         env: Env,
         ctx: ExecutionContext
-    ): Promise<Response>
-    {
+    ): Promise<Response> {
         return new Response("Hello World!");
     },
 };
