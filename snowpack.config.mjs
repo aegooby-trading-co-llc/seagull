@@ -2,12 +2,13 @@
 export default {
     mount: {
       "public": { url: "/", static: true },
-      "components": { url: "/dist" },
+      "app": { url: "/dist" },
       "worker": { url: "/build" },
     },
     plugins: [
         "@snowpack/plugin-react-refresh", 
-        "@snowpack/plugin-dotenv"
+        "@snowpack/plugin-dotenv",
+        "@snowpack/plugin-typescript",
     ],
     /* Enable an SPA Fallback in development: */
     routes: [{ "match": "routes", "src": ".*", "dest": "/index.html" }],
