@@ -1,3 +1,4 @@
 name = "lobster"
-main = "worker/index.tsx"
+main = "build/build/index.js"
 compatibility_date = "2022-05-30"
+usage_model = "bundled"
