@@ -1,6 +1,6 @@
-import React from "react";
+import * as React from "react";
 import * as ReactDOMServer from 'react-dom/server';
-import App from "../app/App.tsx";
+import { App } from "../app/App.tsx";
 
 /**
  * Welcome to Cloudflare Workers! This is your first worker.
