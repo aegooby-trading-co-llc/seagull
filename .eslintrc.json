@@ -13,5 +13,5 @@
       "plugin:@typescript-eslint/recommended",
       "plugin:@typescript-eslint/recommended-requiring-type-checking"
     ],
-    "ignorePatterns": ["**/build/**/*", "**/node_modules/**/*"]
+    "ignorePatterns": ["**/build/**/*", "**/node_modules/**/*", "*.mjs"]
 }
