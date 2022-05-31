@@ -1,17 +1,18 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOMClient from "react-dom/client";
 import { App } from "./App.js";
 import "./index.css";
 
 try {
+    const root = document.querySelector("#root");
+    if (!root) {
+        throw new Error("document.querySelector(): could not find root node");
+    }
     const element: React.ReactElement =
         <React.StrictMode>
             <App />
         </React.StrictMode>;
-    ReactDOM.render(
-        element,
-        document.querySelector("#root"),
-    );
+    ReactDOMClient.createRoot(root).render(element);
 } catch (error) {
     console.error(error);
 }

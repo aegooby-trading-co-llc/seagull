@@ -6,8 +6,8 @@
         "@snowpack/plugin-dotenv": "^2.1.0",
         "@snowpack/plugin-react-refresh": "^2.5.0",
         "@snowpack/plugin-typescript": "^1.2.1",
-        "@types/react": "^17.0.4",
-        "@types/react-dom": "^17.0.3",
+        "@types/react": "18.0.0",
+        "@types/react-dom": "18.0.0",
         "@types/snowpack-env": "^2.3.3",
         "@typescript-eslint/eslint-plugin": "^5.27.0",
         "@typescript-eslint/parser": "^5.27.0",
@@ -24,7 +24,7 @@
         "build:wrangler": "yarn build:snowpack && wrangler publish --dry-run --outdir=build/wrangler"
     },
     "dependencies": {
-        "react": "^18.1.0",
-        "react-dom": "^18.1.0"
+        "react": "18.0.0",
+        "react-dom": "18.0.0"
     }
 }
