@@ -8,14 +8,23 @@
         "baseUrl": "./",
         /* paths - import rewriting/resolving */
         "paths": {
-            "*": [".snowpack/types/*"]
+            "*": [".snowpack/types/*"],
+            "*.ts": ["*"],
+            "*.tsx": ["*"]
         },
+        "pretty": true,
         /* noEmit - Snowpack builds (emits) files, not tsc. */
         "noEmit": true,
         /* Additional Options */
         "strict": true,
         "skipLibCheck": true,
+        "allowJs": true,
+        "checkJs": true,
+        "sourceMap": true,
+        "experimentalDecorators": true,
+        "noImplicitAny": true,
         "types": ["snowpack-env", "@cloudflare/workers-types"],
+        "plugins": [],
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,

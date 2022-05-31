@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOMServer from 'react-dom/server';
-import { App } from "../app/App.tsx";
+import { App } from "../app/App.js";
 
 /**
  * Welcome to Cloudflare Workers! This is your first worker.
@@ -24,7 +24,6 @@ export interface Env {
 }
 
 export default {
-    // deno-lint-ignore require-await
     async fetch(
         _request: Request,
         _env: Env,
