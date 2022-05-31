@@ -52,4 +52,5 @@
     "typescript.reportStyleChecksAsWarnings": true,
     "typescript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": true,
     "javascript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": true,
+    "typescript.preferences.importModuleSpecifierEnding": "js"
 }
