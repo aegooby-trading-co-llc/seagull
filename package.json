@@ -18,10 +18,10 @@
     },
     "private": true,
     "scripts": {
-        "dev:snowpack": "snowpack --config config/snowpack.config.mjs dev",
-        "dev:wrangler": "yarn build:snowpack && wrangler --config config/wrangler.toml dev",
-        "build:snowpack": "snowpack --config config/snowpack.config.mjs build",
-        "build:wrangler": "yarn build:snowpack && wrangler --config config/wrangler.toml publish --dry-run --outdir=build/wrangler"
+        "dev:snowpack": "snowpack dev",
+        "dev:wrangler": "yarn build:snowpack && wrangler dev",
+        "build:snowpack": "snowpack build",
+        "build:wrangler": "yarn build:snowpack && wrangler publish --dry-run --outdir=build/wrangler"
     },
     "dependencies": {
         "react": "^18.1.0",

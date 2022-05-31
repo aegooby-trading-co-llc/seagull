@@ -13,21 +13,19 @@ import { App } from "../app/App.js";
  */
 
 export interface Env {
-    // Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
-    // MY_KV_NAMESPACE: KVNamespace;
-    //
-    // Example binding to Durable Object. Learn more at https://developers.cloudflare.com/workers/runtime-apis/durable-objects/
-    // MY_DURABLE_OBJECT: DurableObjectNamespace;
-    //
-    // Example binding to R2. Learn more at https://developers.cloudflare.com/workers/runtime-apis/r2/
+    // https://developers.cloudflare.com/workers/runtime-apis/kv/
+    STATIC_CONTENT: KVNamespace;
+
+    // https://developers.cloudflare.com/workers/runtime-apis/r2/
     // MY_BUCKET: R2Bucket;
 }
 
 export default {
+    // eslint-disable-next-line @typescript-eslint/require-await
     async fetch(
-        _request: Request,
-        _env: Env,
-        _ctx: ExecutionContext
+        request: Request,
+        env: Env,
+        ctx: ExecutionContext
     ): Promise<Response> {
         const innerHtml = ReactDOMServer.renderToString(<App />);
         const html = `<!DOCTYPE html><html lang="en"><body>${innerHtml}</body></html>`;

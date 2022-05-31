@@ -1,9 +1,9 @@
 /** @type {import("snowpack").SnowpackUserConfig } */
 export default {
     mount: {
-      "../public": { url: "/", static: true },
-      "../app": { url: "/app" },
-      "../worker": { url: "/worker" },
+      "public": { url: "/", static: true },
+      "app": { url: "/app" },
+      "worker": { url: "/worker" },
     },
     plugins: [
         "@snowpack/plugin-react-refresh", 
@@ -27,7 +27,7 @@ export default {
         port: 3080
     },
     buildOptions: {
-        out: "../build/snowpack/",
+        out: "build/snowpack/",
         sourcemap: true
     },
 };
