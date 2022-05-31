@@ -3,3 +3,6 @@ main = "build/snowpack/worker/index.js"
 compatibility_date = "2022-05-30"
 usage_model = "bundled"
 kv_namespaces = []
+compatibility_flags = [
+    "streams_enable_constructors"
+]
