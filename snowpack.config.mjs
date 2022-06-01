@@ -9,6 +9,7 @@ export default {
         "@snowpack/plugin-react-refresh", 
         "@snowpack/plugin-dotenv",
         "@snowpack/plugin-typescript",
+        "../config/snowpack-plugins/relay.plugin.js",
     ],
     /* Enable an SPA Fallback in development: */
     routes: [{ "match": "routes", "src": ".*", "dest": "/index.html" }],
@@ -17,6 +18,7 @@ export default {
         sourcemap: true,
         splitting: true,
         treeshake: true,
+        // minify: true,
     },
     packageOptions: {
         polyfillNode: true,
@@ -24,7 +26,8 @@ export default {
     devOptions: {
         output: "dashboard",
         hmrErrorOverlay: true,
-        port: 3080
+        port: 3080,
+        open: "none"
     },
     buildOptions: {
         out: "build/snowpack/",

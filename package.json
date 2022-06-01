@@ -6,6 +6,7 @@
         "@snowpack/plugin-dotenv": "^2.1.0",
         "@snowpack/plugin-react-refresh": "^2.5.0",
         "@snowpack/plugin-typescript": "^1.2.1",
+        "@types/mime": "^2.0.3",
         "@types/react": "^18.0.10",
         "@types/react-dom": "^18.0.5",
         "@types/snowpack-env": "^2.3.3",
@@ -19,11 +20,12 @@
     "private": true,
     "scripts": {
         "dev:snowpack": "snowpack dev",
-        "dev:wrangler": "yarn build:snowpack && wrangler dev",
+        "dev:wrangler": "wrangler dev",
         "build:snowpack": "snowpack build",
         "build:wrangler": "yarn build:snowpack && wrangler publish --dry-run --outdir=build/wrangler"
     },
     "dependencies": {
+        "mime": "^3.0.0",
         "react": "^18.1.0",
         "react-dom": "18.1.0"
     }
