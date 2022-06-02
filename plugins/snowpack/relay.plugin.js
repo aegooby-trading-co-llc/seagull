@@ -98,8 +98,11 @@ const relayPlugin = function (_snowpackConfig, _pluginOptions) {
                     },
                 ],
             }
-            const transformAstResult = 
-                await babel.transformFromAstAsync(transformResult.ast, undefined, transformAstOptions);
+            const transformAstResult = await babel.transformFromAstAsync(
+                transformResult.ast, 
+                undefined, 
+                transformAstOptions
+            );
             return transformAstResult.code;
         }
     };
