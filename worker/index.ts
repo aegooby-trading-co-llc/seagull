@@ -15,9 +15,6 @@ import { element } from "./html.jsx";
 export interface Env {
     // https://developers.cloudflare.com/workers/runtime-apis/kv/
     STATIC_CONTENT: KVNamespace;
-
-    // https://developers.cloudflare.com/workers/runtime-apis/r2/
-    // MY_BUCKET: R2Bucket;
 }
 
 async function route(request: Request, env: Env): Promise<Response> {

@@ -1,5 +1,5 @@
 {
-    "include": ["app", "types", "worker"],
+    // "include": ["app", "types", "worker"],
     "compilerOptions": {
         "module": "esnext",
         "target": "esnext",

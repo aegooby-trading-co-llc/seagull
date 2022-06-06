@@ -9,7 +9,7 @@ export default {
         "@snowpack/plugin-react-refresh", 
         "@snowpack/plugin-dotenv",
         "@snowpack/plugin-typescript",
-        "../config/snowpack-plugins/relay.plugin.js",
+        "./plugins/snowpack/relay.plugin.cjs",
     ],
     /* Enable an SPA Fallback in development: */
     routes: [{ "match": "routes", "src": ".*", "dest": "/index.html" }],

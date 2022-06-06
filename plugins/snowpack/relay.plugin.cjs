@@ -6,7 +6,7 @@ const babel = require("@babel/core");
  * @property {string} id
  * @property {string} srcPath
  * @property {string} fileExt
- * @property {string | unknown} contents
+ * @property {string} contents
  * @property {boolean} isDev
  * @property {boolean} isHmrEnabled
  * @property {boolean} isSSR
@@ -98,12 +98,16 @@ const relayPlugin = function (_snowpackConfig, _pluginOptions) {
                     },
                 ],
             }
-            const transformAstResult = await babel.transformFromAstAsync(
-                transformResult.ast, 
-                undefined, 
-                transformAstOptions
-            );
-            return transformAstResult.code;
+            if (transformResult?.ast) {
+                const transformAstResult = await babel.transformFromAstAsync(
+                    transformResult.ast, 
+                    undefined, 
+                    transformAstOptions
+                );
+                if (transformAstResult?.code) {
+                    return parseInt(transformAstResult.code);
+                }
+            }
         }
     };
 }
