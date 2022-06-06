@@ -1,5 +1,5 @@
 {
-    // "include": ["app", "types", "worker"],
+    "exclude": ["snowpack.config.*"],
     "compilerOptions": {
         "module": "esnext",
         "target": "esnext",
@@ -23,7 +23,7 @@
         "sourceMap": true,
         "experimentalDecorators": true,
         "noImplicitAny": true,
-        "types": ["snowpack-env", "@cloudflare/workers-types"],
+        "types": ["snowpack-env", "@cloudflare/workers-types", "node"],
         "plugins": [],
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
