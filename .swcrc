@@ -1,0 +1,53 @@
+{
+    // "test": "*.tsx?$",
+    "sourceMaps": true,
+    "jsc": {
+        "parser": {
+            "syntax": "typescript",
+            "tsx": true,
+            "jsx": true,
+            "dynamicImport": true,
+            "privateMethod": true,
+            "functionBind": true,
+            "exportDefaultFrom": false,
+            "exportNamespaceFrom": false,
+            "decorators": true,
+            "decoratorsBeforeExport": true,
+            "topLevelAwait": true,
+            "importMeta": true
+        },
+        "transform": {
+            "react": {
+                "pragma": "React.createElement",
+                "pragmaFrag": "React.Fragment",
+                "throwIfNamespace": true,
+                "development": true,
+                "useBuiltins": false,
+                "runtime": "automatic",
+                "importSource": "react",
+                "refresh": true
+            },
+            "optimizer": {
+                "simplify": true,
+                "jsonify": {
+                    "minCost": 1024
+                }
+            }
+        },
+        "target": "es5",
+        "loose": false,
+        "externalHelpers": false,
+        // Requires v1.2.50 or upper and requires target to be es2016 or upper.
+        "keepClassNames": false,
+        "baseUrl": ".",
+        "paths": {},
+        "experimental": {
+            "plugins": [
+                [
+                    "@swc/plugin-relay", 
+                    { "rootDir": ".", "language": "typescript" }
+                ]
+            ]
+        }
+    }
+}
