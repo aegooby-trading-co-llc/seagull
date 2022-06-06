@@ -5,9 +5,9 @@
     "deno.suggest.completeFunctionCalls": true,
     "deno.cache": ".cache/",
     "deno.suggest.autoImports": true,
-    // "deno.importMap": "import-map.json",
-    // "deno.config": "config/deno.tsconfig.json",
+    // "deno.config": "esbuild/deno.tsconfig.json",
     "deno.path": "/usr/local/bin/deno",
+    "deno.enablePaths": [],
     "editor.formatOnSave": true,
     "typescript.validate.enable": true,
     "typescript.format.placeOpenBraceOnNewLineForFunctions": false,
@@ -52,5 +52,8 @@
     "typescript.reportStyleChecksAsWarnings": true,
     "typescript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": true,
     "javascript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": true,
-    "typescript.preferences.importModuleSpecifierEnding": "js"
+    "typescript.preferences.importModuleSpecifierEnding": "js",
+    "go.toolsEnvVars": {
+        "GOPROXY": "direct"
+    }
 }

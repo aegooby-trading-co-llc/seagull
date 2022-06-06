@@ -1,5 +1,5 @@
 {
-    "exclude": ["snowpack.config.*"],
+    "exclude": ["snowpack.config.*", "esbuild/", "*.js", "build/**/*"],
     "compilerOptions": {
         "module": "esnext",
         "target": "esnext",
