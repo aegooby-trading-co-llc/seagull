@@ -3,7 +3,7 @@ export default {
     mount: {
       "public": { url: "/", static: true },
       "app": { url: "/app" },
-      "worker": { url: "/worker" },
+      "worker": { url: "/worker" }
     },
     plugins: [
         "@snowpack/plugin-react-refresh", 
