@@ -1,5 +1,5 @@
 name = "lobster"
-main = "build/snowpack/worker/index.js"
+main = "build/esbuild/worker/index.js"
 compatibility_date = "2022-05-30"
 usage_model = "bundled"
 kv_namespaces = [
@@ -10,4 +10,4 @@ compatibility_flags = [
 ]
 
 [build]
-command = "yarn build:snowpack"
+command = "go run esbuild/main.go"

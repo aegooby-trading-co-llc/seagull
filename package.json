@@ -32,10 +32,10 @@
     },
     "private": true,
     "scripts": {
-        "dev:snowpack": "snowpack dev",
+        "compile": "go build -o esbuild/main esbuild/main.go",
         "dev:wrangler": "wrangler dev",
-        "build:snowpack": "snowpack build",
-        "build:wrangler": "yarn build:snowpack && wrangler publish --dry-run --outdir=build/wrangler"
+        "build:esbuild": "esbuild/main",
+        "build:wrangler": "yarn build:esbuild && wrangler publish --dry-run --outdir=build/wrangler"
     },
     "dependencies": {
         "mime": "^3.0.0",

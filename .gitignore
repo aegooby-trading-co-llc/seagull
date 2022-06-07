@@ -108,5 +108,7 @@ build/
 dist/
 
 # Added by cargo
-
 /target
+
+# ESBuild script
+esbuild/main
