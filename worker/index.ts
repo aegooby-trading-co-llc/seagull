@@ -1,6 +1,6 @@
 import * as mime from "mime";
 import * as ReactDOMServer from 'react-dom/server';
-import { element } from "./html.jsx";
+import { element } from "./index.html.jsx";
 
 /**
  * Welcome to Cloudflare Workers! This is your first worker.

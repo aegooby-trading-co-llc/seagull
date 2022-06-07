@@ -38,6 +38,9 @@ func Upload(client *Client) error {
 	err = filepath.WalkDir(BuildRoot, func(
 		path string, dir fs.DirEntry, err error,
 	) error {
+		if err != nil {
+			return err
+		}
 		if !dir.IsDir() {
 			var route = strings.ReplaceAll(path, BuildRoot, "")
 			var matches = regex.FindStringSubmatch(route)
@@ -68,7 +71,9 @@ func Upload(client *Client) error {
 
 			var mdInterface, okLoad = keymap.Load(key)
 			if okLoad {
+				keymap.Delete(key)
 				var metadata, okConvert = mdInterface.(map[string]interface{})
+				fmt.Println(metadata["Hash"])
 				if okConvert {
 					// File has been updated
 					if hash != metadata["Hash"] {

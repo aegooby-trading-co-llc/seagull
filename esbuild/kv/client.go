@@ -9,6 +9,10 @@ import (
 
 const BuildRoot = "build/esbuild"
 
+type Metadata struct {
+	Hash string
+}
+
 type Client struct {
 	api       *cloudflare.API
 	context   context.Context
