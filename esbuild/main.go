@@ -47,10 +47,8 @@ func Relay() api.Plugin {
 				if err != nil {
 					return api.OnLoadResult{}, err
 				}
-				contents := string(text)
-				fmt.Println("Relay plugin")
+				var contents = string(text)
 				if strings.Contains(contents, "graphql`") {
-					fmt.Println("Found GraphQL tag")
 					var imports = make([]string, 0)
 					var regex = regexp.MustCompile("graphql`([\\s\\S]*?)`")
 					contents, err = Replace(regex, contents,
@@ -59,7 +57,7 @@ func Relay() api.Plugin {
 								return "", errors.New("error matching query")
 							}
 							var query = strings[1]
-							astQuery, err := parser.Parse(parser.ParseParams{
+							var astQuery, err = parser.Parse(parser.ParseParams{
 								Source: query,
 							})
 							if err != nil {
@@ -114,18 +112,24 @@ func Relay() api.Plugin {
 							var importFile = name + ".graphql.ts"
 							var importPath = Generated + importFile
 							imports = append(
-								imports, "import "+id+" from "+importPath,
+								imports, "import "+id+" from \""+importPath+"\"",
 							)
 
 							// Dev mode
 							var errorMessage = "The definition of " + name +
 								" appears" + " to have changed. Run relay-" +
 								"compiler to update the generated files."
+							var devModeCheck = "(" + id + ".hash && " + id +
+								".hash !== \"" + hash + "\" && console.error(\"" +
+								errorMessage + "\"), " + id + ")"
 
-							return contents, nil
+							return devModeCheck, nil
 						})
 					if err != nil {
 						return api.OnLoadResult{Loader: api.LoaderTSX}, err
+					}
+					if len(imports) > 0 {
+						contents = strings.Join(imports, "\n") + "\n" + contents
 					}
 					return api.OnLoadResult{Contents: &contents, Loader: api.LoaderTSX}, nil
 				} else {

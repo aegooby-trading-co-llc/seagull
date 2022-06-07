@@ -1,10 +1,5 @@
 import * as React from "react";
-import { graphql } from "relay-runtime";
 import "./App.css";
-
-const _ = graphql`query AppQuery {
-            ...App_query
-        }`;
 
 interface AppProps { }
 
