@@ -4,9 +4,8 @@ account_id = ''
 workers_dev = false
 usage_model = 'bundled'
 routes = []
-route = ''
+r2_buckets = []
 compatibility_date = '2022-05-30'
-compatibility_flags = ['streams_enable_constructors']
 [triggers]
 crons = []
 
@@ -18,11 +17,12 @@ preview_id = 'eb6cec9ba9944589946a2fb13677e672'
 [durable_objects]
 bindings = []
 
-[r2_buckets]
-binding = ''
-bucket_name = ''
-preview_bucket_name = ''
+[env]
+compatibility_date = '2022-05-30'
+compatibility_flags = ['streams_enable_constructors']
 
 [build]
 command = 'go run esbuild/main.go'
+cwd = '.'
+watch_dir = 'build'
 

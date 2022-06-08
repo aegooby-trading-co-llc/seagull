@@ -32,22 +32,27 @@ type WranglerR2Buckets struct {
 	PreviewBucketName string "toml:\"preview_bucket_name\""
 }
 type WranglerBuild struct {
-	Command string "toml:\"command\""
+	Command  string "toml:\"command\""
+	Cwd      string "toml:\"cwd\""
+	WatchDir string "toml:\"watch_dir\""
+}
+type WranglerEnv struct {
+	CompatibilityDate  string   "toml:\"compatibility_date\""
+	CompatibilityFlags []string "toml:\"compatibility_flags\""
 }
 type WranglerConfig struct {
-	Name               string                 "toml:\"name\""
-	Main               string                 "toml:\"main\""
-	AccountId          string                 "toml:\"account_id\""
-	WorkersDev         bool                   "toml:\"workers_dev\""
-	UsageModel         string                 "toml:\"usage_model\""
-	Routes             []string               "toml:\"routes\""
-	Route              string                 "toml:\"route\""
-	Triggers           WranglerTriggers       "toml:\"triggers\""
-	Vars               interface{}            "toml:\"vars\""
-	KvNamespaces       []WranglerKVNamespace  "toml:\"kv_namespaces\""
-	DurableObjects     WranglerDurableObjects "toml:\"durable_objects\""
-	R2Buckets          WranglerR2Buckets      "toml:\"r2_buckets\""
-	CompatibilityDate  string                 "toml:\"compatibility_date\""
-	CompatibilityFlags []string               "toml:\"compatibility_flags\""
-	Build              WranglerBuild          "toml:\"build\""
+	Name              string                 "toml:\"name\""
+	Main              string                 "toml:\"main\""
+	AccountId         string                 "toml:\"account_id\""
+	WorkersDev        bool                   "toml:\"workers_dev\""
+	UsageModel        string                 "toml:\"usage_model\""
+	Routes            []string               "toml:\"routes\""
+	Triggers          WranglerTriggers       "toml:\"triggers\""
+	Vars              interface{}            "toml:\"vars\""
+	KvNamespaces      []WranglerKVNamespace  "toml:\"kv_namespaces\""
+	DurableObjects    WranglerDurableObjects "toml:\"durable_objects\""
+	R2Buckets         []WranglerR2Buckets    "toml:\"r2_buckets\""
+	CompatibilityDate string                 "toml:\"compatibility_date\""
+	Env               WranglerEnv            "toml:\"env\""
+	Build             WranglerBuild          "toml:\"build\""
 }
