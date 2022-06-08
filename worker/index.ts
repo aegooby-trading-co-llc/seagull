@@ -17,9 +17,24 @@ export interface Env {
     STATIC_CONTENT: KVNamespace;
 }
 
+function stripHash(path: string): string {
+    const hashRegex = /(.*)@([A-Z0-9]{8})(\..*)/;
+    if (hashRegex.test(path)) {
+        const match = path.match(hashRegex);
+        if (!match || match.length !== 4) {
+            return path;
+        } else {
+            return match[1] + match[3];
+        }
+    } else {
+        return path;
+    }
+}
+
 async function route(request: Request, env: Env): Promise<Response> {
-    const url = new URL(request.url);
-    const content = await env.STATIC_CONTENT.get(url.pathname);
+    const path = stripHash(new URL(request.url).pathname);
+
+    const content = await env.STATIC_CONTENT.get(path);
 
     if (!content) {
         // Not a file - so render React
@@ -31,9 +46,7 @@ async function route(request: Request, env: Env): Promise<Response> {
     } else {
         // Is a file - serve static content
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
-        const extension = url.pathname.slice(
-            (url.pathname.lastIndexOf(".") - 1 >>> 0) + 2
-        );
+        const extension = path.slice((path.lastIndexOf(".") - 1 >>> 0) + 2);
         const contentType =
             mime.getType(extension) ?? "application/octet-stream";
         return new Response(content, {

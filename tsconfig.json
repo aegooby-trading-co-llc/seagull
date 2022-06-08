@@ -8,7 +8,6 @@
         "baseUrl": "./",
         /* paths - import rewriting/resolving */
         "paths": {
-            "*": [".snowpack/types/*"],
             "*.ts": ["*"],
             "*.tsx": ["*"]
         },
@@ -23,7 +22,7 @@
         "sourceMap": true,
         "experimentalDecorators": true,
         "noImplicitAny": true,
-        "types": ["snowpack-env", "@cloudflare/workers-types", "node"],
+        "types": ["@cloudflare/workers-types", "node"],
         "plugins": [],
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,

@@ -1,13 +1,13 @@
-name = "lobster"
-main = "build/esbuild/worker/index.js"
-compatibility_date = "2022-05-30"
-usage_model = "bundled"
-kv_namespaces = [
-    { binding = "STATIC_CONTENT", id = "36715eb5935948dcaeefd682d9cf8897", preview_id = "eb6cec9ba9944589946a2fb13677e672" }
-]
-compatibility_flags = [
-    "streams_enable_constructors"
-]
+name = 'lobster'
+main = 'build/esbuild/worker/index@5IVCORJT.js'
+compatibility_date = '2022-05-30'
+usage_model = 'bundled'
+compatibility_flags = ['streams_enable_constructors']
+[[kv_namespaces]]
+binding = 'STATIC_CONTENT'
+id = '36715eb5935948dcaeefd682d9cf8897'
+preview_id = 'eb6cec9ba9944589946a2fb13677e672'
 
 [build]
-command = "go run esbuild/main.go"
+command = 'go run esbuild/main.go'
+

@@ -33,7 +33,7 @@
     "private": true,
     "scripts": {
         "compile": "go build -o esbuild/main esbuild/main.go",
-        "dev:wrangler": "wrangler dev",
+        "dev:wrangler": "yarn build:esbuild && wrangler dev",
         "build:esbuild": "esbuild/main",
         "build:wrangler": "yarn build:esbuild && wrangler publish --dry-run --outdir=build/wrangler"
     },

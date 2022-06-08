@@ -38,18 +38,24 @@ func Replace(
 	return result + str[lastIndex:], nil
 }
 
-func Relay() api.Plugin {
+type RelayConfig struct {
+}
+
+func Relay(pluginConfig RelayConfig) api.Plugin {
 	return api.Plugin{Name: "relay", Setup: func(build api.PluginBuild) {
 		build.OnLoad(api.OnLoadOptions{Filter: "\\.tsx$"},
 			func(ola api.OnLoadArgs) (api.OnLoadResult, error) {
-				var text, err = ioutil.ReadFile(ola.Path)
+				text, err := ioutil.ReadFile(ola.Path)
 				if err != nil {
 					return api.OnLoadResult{}, err
 				}
 				var contents = string(text)
 				if strings.Contains(contents, "graphql`") {
 					var imports = make([]string, 0)
-					var regex = regexp.MustCompile("graphql`([\\s\\S]*?)`")
+					regex, err := regexp.Compile("graphql`([\\s\\S]*?)`")
+					if err != nil {
+						return api.OnLoadResult{}, err
+					}
 					contents, err = Replace(regex, contents,
 						func(strings []string) (string, error) {
 							if len(strings) != 2 {

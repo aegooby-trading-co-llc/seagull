@@ -19,6 +19,10 @@ var yellowBold = chalk.Bold.NewStyle().
 	WithBackground(chalk.ResetColor).
 	WithForeground(chalk.Yellow)
 
+func Print(args ...any) {
+	fmt.Print("   ")
+	fmt.Println(args...)
+}
 func Log(args ...any) {
 	fmt.Print(blueBold.Style("[*]"), chalk.Reset, " ")
 	fmt.Println(args...)

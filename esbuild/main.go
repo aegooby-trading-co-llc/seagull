@@ -23,7 +23,7 @@ func main() {
 	godotenv.Load()
 	getopt.ParseV2()
 
-	console.Log("Running ESBuild...")
+	console.Log("Bundling TypeScript")
 
 	glob, err := zglob.Glob("public/**/*")
 	if err != nil {
@@ -49,7 +49,10 @@ func main() {
 		Outdir:      "build/esbuild",
 		JSXMode:     api.JSXModeTransform,
 		TreeShaking: api.TreeShakingTrue,
-		Plugins:     []api.Plugin{plugins.Relay()},
+		Plugins: []api.Plugin{
+			plugins.Relay(plugins.RelayConfig{}),
+			plugins.Hash(plugins.HashConfig{WorkerPath: "/worker/index.js"}),
+		},
 		Loader: map[string]api.Loader{
 			".html": api.LoaderFile,
 			".ico":  api.LoaderFile,
@@ -82,18 +85,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	if !*uploadFlag {
-		os.Exit(0)
+	if *uploadFlag {
+		// CLOUDFLARE
+		// @todo parallelize
+		console.Log("Uploading files to Cloudflare KV")
+		kvClient, err := kv.Create()
+		if err != nil {
+			console.Error(err)
+		}
+		err = kv.Upload(&kvClient)
+		if err != nil {
+			console.Error(err)
+		}
 	}
 
-	// CLOUDFLARE
-	// @todo parallelize
-	kvClient, err := kv.Create()
-	if err != nil {
-		console.Error(err)
-	}
-	err = kv.Upload(&kvClient)
-	if err != nil {
-		console.Error(err)
-	}
+	console.Success("Done")
 }

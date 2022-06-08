@@ -4,14 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"lobster/esbuild/console"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
-	"sync"
 
 	"github.com/cloudflare/cloudflare-go"
+
+	"lobster/esbuild/config"
+	"lobster/esbuild/console"
 )
 
 const pattern = "(.*)@([A-Z0-9]{8})(\\..*)"
@@ -25,24 +26,20 @@ func Upload(client *Client) error {
 	if err != nil {
 		return err
 	}
-	var keymap sync.Map
 	for _, key := range keys.Result {
-		keymap.Store(key.Name, key.Metadata)
+		client.keymap.Store(key.Name, key.Metadata)
 	}
-	keymap.Range(func(key, value any) bool {
-		return true
-	})
 
 	var uploads = make([]*cloudflare.WorkersKVPair, 0)
 
-	err = filepath.WalkDir(BuildRoot, func(
+	err = filepath.WalkDir(config.BuildRoot, func(
 		path string, dir fs.DirEntry, err error,
 	) error {
 		if err != nil {
 			return err
 		}
 		if !dir.IsDir() {
-			var route = strings.ReplaceAll(path, BuildRoot, "")
+			var route = strings.ReplaceAll(path, config.BuildRoot, "")
 			var matches = regex.FindStringSubmatch(route)
 			if len(matches) != 4 {
 				return errors.New(
@@ -69,11 +66,10 @@ func Upload(client *Client) error {
 				return nil
 			}
 
-			var mdInterface, okLoad = keymap.Load(key)
+			var mdInterface, okLoad = client.keymap.Load(key)
 			if okLoad {
-				keymap.Delete(key)
+				client.keymap.Delete(key)
 				var metadata, okConvert = mdInterface.(map[string]interface{})
-				fmt.Println(metadata["Hash"])
 				if okConvert {
 					// File has been updated
 					if hash != metadata["Hash"] {
@@ -84,10 +80,10 @@ func Upload(client *Client) error {
 					}
 				} else {
 					console.Warn("No metadata found for key", key)
-					// err = addUpload()
-					// if err != nil {
-					// 	return err
-					// }
+					err = addUpload()
+					if err != nil {
+						return err
+					}
 				}
 			} else {
 				err = addUpload()
@@ -104,6 +100,12 @@ func Upload(client *Client) error {
 		return err
 	}
 
+	if len(uploads) > 0 {
+		console.Log("New build files:")
+		for _, upload := range uploads {
+			console.Print(upload.Key)
+		}
+	}
 	response, err := client.api.WriteWorkersKVBulk(client.context, client.namespace, uploads)
 	if err != nil {
 		return err

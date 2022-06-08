@@ -3,11 +3,10 @@ package kv
 import (
 	"context"
 	"os"
+	"sync"
 
 	"github.com/cloudflare/cloudflare-go"
 )
-
-const BuildRoot = "build/esbuild"
 
 type Metadata struct {
 	Hash string
@@ -17,6 +16,7 @@ type Client struct {
 	api       *cloudflare.API
 	context   context.Context
 	namespace string
+	keymap    sync.Map
 }
 
 func Create() (Client, error) {
