@@ -10,8 +10,8 @@ import (
 	"github.com/pborman/getopt/v2"
 	"github.com/ttacon/chalk"
 
+	"lobster/esbuild/cf"
 	"lobster/esbuild/console"
-	"lobster/esbuild/kv"
 	"lobster/esbuild/plugins"
 )
 
@@ -89,11 +89,11 @@ func main() {
 		// CLOUDFLARE
 		// @todo parallelize
 		console.Log("Uploading files to Cloudflare KV")
-		kvClient, err := kv.Create()
+		cfClient, err := cf.Create()
 		if err != nil {
 			console.Error(err)
 		}
-		err = kv.Upload(&kvClient)
+		err = cf.Upload(&cfClient)
 		if err != nil {
 			console.Error(err)
 		}

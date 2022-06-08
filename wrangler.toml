@@ -1,12 +1,27 @@
 name = 'lobster'
 main = 'build/esbuild/worker/index@5IVCORJT.js'
-compatibility_date = '2022-05-30'
+account_id = ''
+workers_dev = false
 usage_model = 'bundled'
+routes = []
+route = ''
+compatibility_date = '2022-05-30'
 compatibility_flags = ['streams_enable_constructors']
+[triggers]
+crons = []
+
 [[kv_namespaces]]
 binding = 'STATIC_CONTENT'
 id = '36715eb5935948dcaeefd682d9cf8897'
 preview_id = 'eb6cec9ba9944589946a2fb13677e672'
+
+[durable_objects]
+bindings = []
+
+[r2_buckets]
+binding = ''
+bucket_name = ''
+preview_bucket_name = ''
 
 [build]
 command = 'go run esbuild/main.go'

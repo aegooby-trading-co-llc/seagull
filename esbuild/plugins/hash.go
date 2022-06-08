@@ -9,30 +9,13 @@ import (
 	"github.com/evanw/esbuild/pkg/api"
 	"github.com/pelletier/go-toml/v2"
 
+	"lobster/esbuild/cf"
 	"lobster/esbuild/config"
 	"lobster/esbuild/console"
 )
 
 const pathPattern = "(.*)(\\.js$)"
 const hashPattern = "@[A-Z0-9]{8}"
-
-type WranglerKVNamespace struct {
-	Binding   string "toml:\"binding\""
-	Id        string "toml:\"id\""
-	PreviewId string "toml:\"preview_id\""
-}
-type WranglerBuild struct {
-	Command string "toml:\"command\""
-}
-type WranglerConfig struct {
-	Name               string                "toml:\"name\""
-	Main               string                "toml:\"main\""
-	CompatibilityDate  string                "toml:\"compatibility_date\""
-	UsageModel         string                "toml:\"usage_model\""
-	KvNamespaces       []WranglerKVNamespace "toml:\"kv_namespaces\""
-	CompatibilityFlags []string              "toml:\"compatibility_flags\""
-	Build              WranglerBuild         "toml:\"build\""
-}
 
 type HashConfig struct {
 	WorkerPath string
@@ -80,7 +63,7 @@ func Hash(pluginConfig HashConfig) api.Plugin {
 							console.Error("Could not read wrangler.toml")
 							return
 						}
-						var wranglerConfig WranglerConfig
+						var wranglerConfig cf.WranglerConfig
 						err = toml.Unmarshal(wranglerToml, &wranglerConfig)
 						if err != nil {
 							console.Error("Failed to unmarshal TOML")
