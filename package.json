@@ -21,8 +21,9 @@
     "private": true,
     "scripts": {
         "compile": "go build -o esbuild/main esbuild/main.go",
-        "dev": "yarn build:esbuild && wrangler dev",
-        "build": "wrangler publish --dry-run --outdir=build/wrangler"
+        "dev": "wrangler dev",
+        "build": "esbuild/main",
+        "package": "wrangler publish --dry-run --outdir=build/wrangler"
     },
     "dependencies": {
         "mime": "^3.0.0",
