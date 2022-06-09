@@ -11,6 +11,7 @@ export const element: React.ReactElement =
                 content="width=device-width, initial-scale=1"
             />
             <meta name="description" content="" />
+            <link rel="stylesheet" href="/app/index.css" />
             <title>lobster</title>
         </head>
         <body>
