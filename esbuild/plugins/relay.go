@@ -1,13 +1,14 @@
 package plugins
 
 import (
-	"crypto/md5"
+	"encoding/base32"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"regexp"
 	"strings"
 
+	"github.com/cespare/xxhash/v2"
 	"github.com/evanw/esbuild/pkg/api"
 	"github.com/graphql-go/graphql/language/ast"
 	"github.com/graphql-go/graphql/language/parser"
@@ -43,17 +44,18 @@ type RelayConfig struct {
 
 func Relay(pluginConfig RelayConfig) api.Plugin {
 	return api.Plugin{Name: "relay", Setup: func(build api.PluginBuild) {
+		regex, err := regexp.Compile("graphql`(.*)`")
+
 		build.OnLoad(api.OnLoadOptions{Filter: "\\.tsx$"},
 			func(ola api.OnLoadArgs) (api.OnLoadResult, error) {
-				text, err := ioutil.ReadFile(ola.Path)
 				if err != nil {
 					return api.OnLoadResult{}, err
 				}
-				var contents = string(text)
-				regex, err := regexp.Compile("graphql`(.*)`")
+				file, err := ioutil.ReadFile(ola.Path)
 				if err != nil {
 					return api.OnLoadResult{}, err
 				}
+				var contents = string(file)
 				if regex.MatchString(contents) {
 					var imports = make([]string, 0)
 					contents, err = Replace(regex, contents,
@@ -110,9 +112,11 @@ func Relay(pluginConfig RelayConfig) api.Plugin {
 							var definitionStr = fmt.Sprintf(
 								"%v", printer.Print(definition),
 							)
-							var hash = fmt.Sprintf(
-								"%x", md5.Sum([]byte(definitionStr)),
-							)
+
+							var hasher = xxhash.New()
+							hasher.Write([]byte(definitionStr))
+							var hash = base32.StdEncoding.EncodeToString(hasher.Sum(nil))[:8]
+
 							var id = "graphql__" + hash
 							var importFile = name + ".graphql.ts"
 							var importPath = Generated + importFile

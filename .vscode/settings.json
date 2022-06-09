@@ -1,4 +1,5 @@
 {
+    "deno.enable": false,
     "editor.formatOnSave": true,
     "typescript.validate.enable": true,
     "typescript.format.placeOpenBraceOnNewLineForFunctions": false,

@@ -24,6 +24,7 @@ require (
 	github.com/bep/gowebp v0.1.0 // indirect
 	github.com/bep/overlayfs v0.6.0 // indirect
 	github.com/bep/tmc v0.5.1 // indirect
+	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/clbanning/mxj/v2 v2.5.5 // indirect
 	github.com/cli/safeexec v1.0.0 // indirect
 	github.com/cloudflare/cloudflare-go v0.40.0 // indirect
@@ -34,6 +35,7 @@ require (
 	github.com/gohugoio/locales v0.14.0 // indirect
 	github.com/gohugoio/localescompressed v1.0.1 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/iancoleman/strcase v0.2.0 // indirect
 	github.com/jdkato/prose v1.2.1 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/kyokomi/emoji/v2 v2.2.9 // indirect

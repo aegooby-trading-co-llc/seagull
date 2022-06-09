@@ -11,6 +11,7 @@ import (
 	"github.com/ttacon/chalk"
 
 	"lobster/esbuild/cf"
+	"lobster/esbuild/config"
 	"lobster/esbuild/console"
 	"lobster/esbuild/plugins"
 )
@@ -46,12 +47,13 @@ func main() {
 		Platform:    api.PlatformBrowser,
 		Target:      api.ES2020,
 		Write:       true,
-		Outdir:      "build/esbuild",
+		Outdir:      config.BuildRoot,
 		JSXMode:     api.JSXModeTransform,
 		TreeShaking: api.TreeShakingTrue,
 		Plugins: []api.Plugin{
 			plugins.Relay(plugins.RelayConfig{}),
 			plugins.Hash(plugins.HashConfig{WorkerPath: "/worker/index.js"}),
+			plugins.CSS(plugins.CSSConfig{}),
 		},
 		Loader: map[string]api.Loader{
 			".html": api.LoaderFile,

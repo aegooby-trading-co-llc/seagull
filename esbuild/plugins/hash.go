@@ -10,11 +10,10 @@ import (
 	"github.com/pelletier/go-toml/v2"
 
 	"lobster/esbuild/cf"
-	"lobster/esbuild/config"
 	"lobster/esbuild/console"
 )
 
-const pathPattern = "(.*)(\\.js$)"
+const jsPathPattern = "(.*)(\\.js$)"
 const hashPattern = "@[A-Z0-9]{8}"
 
 type HashConfig struct {
@@ -31,12 +30,24 @@ func Hash(pluginConfig HashConfig) api.Plugin {
 					console.Error("Could not obtain working directory")
 					return
 				}
-				var residual = filepath.Join(cwd, config.BuildRoot)
-				regex, err := regexp.Compile(pathPattern)
+				var residual string
+				rel, err := filepath.Rel(cwd, build.InitialOptions.Outdir)
 				if err != nil {
-					console.Error(
-						"Failed to compile regex",
-					)
+					residual = filepath.Join(cwd, build.InitialOptions.Outdir)
+				} else {
+					if rel == "." {
+						residual = build.InitialOptions.Outdir
+					} else {
+						console.Error(
+							"Could not comprehend outdir:",
+							build.InitialOptions.Outdir,
+						)
+						return
+					}
+				}
+				regex, err := regexp.Compile(jsPathPattern)
+				if err != nil {
+					console.Error("Failed to compile regex")
 					return
 				}
 				var matches = regex.FindStringSubmatch(pluginConfig.WorkerPath)
@@ -69,7 +80,9 @@ func Hash(pluginConfig HashConfig) api.Plugin {
 							console.Error("Failed to unmarshal TOML")
 							return
 						}
-						wranglerConfig.Main = filepath.Join(config.BuildRoot, path)
+						wranglerConfig.Main = filepath.Join(
+							build.InitialOptions.Outdir, path,
+						)
 						wranglerToml, err = toml.Marshal(&wranglerConfig)
 						if err != nil {
 							console.Error("Failed to marshal TOML")
