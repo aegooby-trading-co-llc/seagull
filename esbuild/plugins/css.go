@@ -1,10 +1,13 @@
 package plugins
 
+// @todo: incomplete
+
 import (
 	"encoding/base32"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
+	"lobster/esbuild/console"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -22,6 +25,8 @@ type CSSConfig struct{}
 
 func CSS(pluginConfig CSSConfig) api.Plugin {
 	return api.Plugin{Name: "css", Setup: func(build api.PluginBuild) {
+		console.Error("CSS modules plugin not complete")
+
 		cwd, err := os.Getwd()
 		var parser = peacecss.NewParser()
 

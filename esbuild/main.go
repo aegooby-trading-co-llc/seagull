@@ -53,7 +53,6 @@ func main() {
 		Plugins: []api.Plugin{
 			plugins.Relay(plugins.RelayConfig{}),
 			plugins.Hash(plugins.HashConfig{WorkerPath: "/worker/index.js"}),
-			plugins.CSS(plugins.CSSConfig{}),
 		},
 		Loader: map[string]api.Loader{
 			".html": api.LoaderFile,
