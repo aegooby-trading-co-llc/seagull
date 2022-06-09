@@ -50,12 +50,12 @@ func Relay(pluginConfig RelayConfig) api.Plugin {
 					return api.OnLoadResult{}, err
 				}
 				var contents = string(text)
-				if strings.Contains(contents, "graphql`") {
+				regex, err := regexp.Compile("graphql`(.*)`")
+				if err != nil {
+					return api.OnLoadResult{}, err
+				}
+				if regex.MatchString(contents) {
 					var imports = make([]string, 0)
-					regex, err := regexp.Compile("graphql`([\\s\\S]*?)`")
-					if err != nil {
-						return api.OnLoadResult{}, err
-					}
 					contents, err = Replace(regex, contents,
 						func(strings []string) (string, error) {
 							if len(strings) != 2 {
