@@ -1,5 +1,6 @@
 name = 'lobster'
-main = 'build/esbuild/worker/index@H7SYEXPU.js'
+# @todo: verify that this works without pre-building
+main = 'worker/index.ts'
 account_id = ''
 workers_dev = false
 usage_model = 'bundled'

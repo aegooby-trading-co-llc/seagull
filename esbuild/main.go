@@ -42,7 +42,9 @@ func main() {
 		os.Exit(1)
 	}
 	var entryPoints = make([]string, 0)
-	entryPoints = append(glob, "app/index.tsx", "worker/index.ts")
+	// @todo: verify that this can be removed safely
+	// entryPoints = append(glob, "app/index.tsx", "worker/index.ts")
+	entryPoints = append(glob, "app/index.tsx")
 
 	var buildOptions = api.BuildOptions{
 		EntryPoints: entryPoints,
@@ -85,7 +87,7 @@ func main() {
 			ChunkNames: "[dir]/[name][hash]",
 			EntryNames: "[dir]/[name]",
 			Define: map[string]string{
-				"process.env.NODE_ENV": "development",
+				"process.env.NODE_ENV": "\"development\"",
 			},
 		}
 		mergo.Merge(&buildOptionsDev, buildOptions)
@@ -126,13 +128,14 @@ func main() {
 			Outdir: config.BuildRootProd,
 			Plugins: []api.Plugin{
 				plugins.Relay(plugins.RelayConfig{}),
-				plugins.Hash(plugins.HashConfig{WorkerPath: "/worker/index.js"}),
+				// @todo: verify that this can be disabled safely
+				// plugins.Hash(plugins.HashConfig{WorkerPath: "/worker/index.js"}),
 			},
 			AssetNames: "[dir]/[name]@[hash]",
 			ChunkNames: "[dir]/[name][hash]@[hash]",
 			EntryNames: "[dir]/[name]@[hash]",
 			Define: map[string]string{
-				"process.env.NODE_ENV": "production",
+				"process.env.NODE_ENV": "\"production\"",
 			},
 		}
 		mergo.Merge(&buildOptionsProd, buildOptions)
