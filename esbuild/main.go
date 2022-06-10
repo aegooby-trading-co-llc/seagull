@@ -114,7 +114,7 @@ func main() {
 		server.Stop()
 	case "prod":
 		console.Log("Bundling for production")
-		// Clean build root
+		console.Log("Cleaning build root")
 		err = os.RemoveAll(config.BuildRootProd)
 		if err != nil {
 			console.Error("Could not clean "+config.BuildRootProd+" directory:", err)
@@ -174,7 +174,7 @@ func main() {
 				)
 				os.Exit(1)
 			}
-			// CLOUDFLARE
+
 			// @todo parallelize
 			console.Log("Uploading files to Cloudflare KV")
 			cfClient, err := cf.Create(cf.CreateOptions{Destination: *uploadFlag})
