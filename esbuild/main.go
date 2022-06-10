@@ -17,12 +17,26 @@ import (
 )
 
 var uploadFlag = getopt.BoolLong(
-	"upload", 'u', "upload build files to Cloudflare KV.",
+	"upload", 'u', "upload build files to Cloudflare KV",
+)
+var keepFlag = getopt.BoolLong(
+	"keep", 'k', "keep files from previous build",
 )
 
 func main() {
 	godotenv.Load()
 	getopt.ParseV2()
+
+	if !*keepFlag {
+		err := os.RemoveAll(config.BuildRoot)
+		if err != nil {
+			console.Error("Could not clean build/esbuild directory:", err)
+		}
+		err = os.MkdirAll(config.BuildRoot, 0777)
+		if err != nil {
+			console.Error("Could not create build/esbuild directory:", err)
+		}
+	}
 
 	console.Log("Bundling TypeScript")
 

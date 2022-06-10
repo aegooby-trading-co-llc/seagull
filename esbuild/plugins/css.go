@@ -4,14 +4,10 @@ package plugins
 
 import (
 	"encoding/base32"
-	"encoding/json"
-	"errors"
+	"fmt"
 	"io/ioutil"
 	"lobster/esbuild/console"
 	"os"
-	"path/filepath"
-	"regexp"
-	"strings"
 
 	"github.com/cespare/xxhash/v2"
 	"github.com/evanw/esbuild/pkg/api"
@@ -19,7 +15,7 @@ import (
 	"github.com/yisar/peacecss"
 )
 
-const cssPathPattern = "(.*)(\\.module\\.css$)"
+// const cssPathPattern = "(.*)(\\.module\\.css$)"
 
 type CSSConfig struct{}
 
@@ -27,7 +23,7 @@ func CSS(pluginConfig CSSConfig) api.Plugin {
 	return api.Plugin{Name: "css", Setup: func(build api.PluginBuild) {
 		console.Error("CSS modules plugin not complete")
 
-		cwd, err := os.Getwd()
+		_, err := os.Getwd()
 		var parser = peacecss.NewParser()
 
 		build.OnLoad(api.OnLoadOptions{Filter: "\\.module\\.css$"},
@@ -53,6 +49,7 @@ func CSS(pluginConfig CSSConfig) api.Plugin {
 					}
 
 					var className = node.Selector.Selector
+					fmt.Println(className)
 
 					var hasher = xxhash.New()
 					hasher.Write([]byte(ola.Path + className))
@@ -63,41 +60,42 @@ func CSS(pluginConfig CSSConfig) api.Plugin {
 					node.Selector.Selector = scopedName
 				})
 				var buffer = ast.Minisize()
-				var cssBytes = buffer.Bytes()
+				var contents = buffer.String()
+				// var cssBytes = buffer.Bytes()
 
-				var hasher = xxhash.New()
-				hasher.Write(cssBytes)
-				var hash = base32.StdEncoding.EncodeToString(hasher.Sum(nil))[:8]
+				// var hasher = xxhash.New()
+				// hasher.Write(cssBytes)
+				// var hash = base32.StdEncoding.EncodeToString(hasher.Sum(nil))[:8]
 
-				var path = strings.ReplaceAll(ola.Path, cwd, "")
-				regex, err := regexp.Compile(cssPathPattern)
-				if err != nil {
-					return api.OnLoadResult{}, err
-				}
-				var matches = regex.FindStringSubmatch(path)
-				if len(matches) != 3 {
-					return api.OnLoadResult{}, errors.New(
-						"Could not parse CSS module path " + path,
-					)
-				}
-				var newPath = matches[1] + "@" + hash + matches[2]
-				var fullPath = filepath.Join(
-					cwd, build.InitialOptions.Outdir, newPath,
-				)
+				// var path = strings.ReplaceAll(ola.Path, cwd, "")
+				// regex, err := regexp.Compile(cssPathPattern)
+				// if err != nil {
+				// 	return api.OnLoadResult{}, err
+				// }
+				// var matches = regex.FindStringSubmatch(path)
+				// if len(matches) != 3 {
+				// 	return api.OnLoadResult{}, errors.New(
+				// 		"Could not parse CSS module path " + path,
+				// 	)
+				// }
+				// var newPath = matches[1] + "@" + hash + matches[2]
+				// var fullPath = filepath.Join(
+				// 	cwd, build.InitialOptions.Outdir, newPath,
+				// )
 
-				err = os.WriteFile(fullPath, cssBytes, 0644)
-				if err != nil {
-					return api.OnLoadResult{}, err
-				}
+				// err = os.WriteFile(fullPath, cssBytes, 0644)
+				// if err != nil {
+				// 	return api.OnLoadResult{}, err
+				// }
 
-				export, err := json.MarshalIndent(classMap, "", "    ")
-				if err != nil {
-					return api.OnLoadResult{}, err
-				}
-				var contents = //"import \"./" + filepath.Base(newPath) + "\";\n" +
-				"export default " + string(export) + ";\n"
+				// export, err := json.MarshalIndent(classMap, "", "    ")
+				// if err != nil {
+				// 	return api.OnLoadResult{}, err
+				// }
+				// var contents = "import \"./" + filepath.Base(newPath) + "\";\n" +
+				// 	"export default " + string(export) + ";\n"
 
-				return api.OnLoadResult{Contents: &contents, Loader: api.LoaderTS}, nil
+				return api.OnLoadResult{Contents: &contents, Loader: api.LoaderCSS}, nil
 			},
 		)
 	}}
