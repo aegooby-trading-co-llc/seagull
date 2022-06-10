@@ -36,6 +36,7 @@ require (
 	github.com/gohugoio/localescompressed v1.0.1 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/iancoleman/strcase v0.2.0 // indirect
+	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/jdkato/prose v1.2.1 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/kyokomi/emoji/v2 v2.2.9 // indirect

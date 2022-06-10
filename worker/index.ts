@@ -6,6 +6,7 @@ import { element } from "./index.html.jsx";
 export interface Env {
     // https://developers.cloudflare.com/workers/runtime-apis/kv/
     STATIC_CONTENT: KVNamespace;
+    MODE: string;
 }
 
 /**
@@ -33,7 +34,28 @@ function stripHash(path: string): string {
 async function route(request: Request, env: Env): Promise<Response> {
     const path = stripHash(new URL(request.url).pathname);
 
-    const content = await env.STATIC_CONTENT.get(path);
+    let content = null as string | null;
+    switch (env.MODE) {
+        case "development":
+            {
+                const urlFetch = new URL(path, "http://localhost:3080/");
+                const response = await fetch(urlFetch);
+                const contentType = response.headers.get("content-type");
+                if (!contentType || !contentType.startsWith("text/html")) {
+                    content = base64.fromByteArray(
+                        new Uint8Array(await response.arrayBuffer())
+                    );
+                }
+                break;
+            }
+        case "production":
+            {
+                content = await env.STATIC_CONTENT.get(path);
+                break;
+            }
+        default:
+
+    }
 
     if (!content) {
         // Not a file - so render React

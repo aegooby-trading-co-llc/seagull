@@ -1,3 +1,4 @@
 package config
 
-const BuildRoot = "build/esbuild"
+const BuildRootDev = "build/esbulid-dev"
+const BuildRootProd = "build/esbuild"

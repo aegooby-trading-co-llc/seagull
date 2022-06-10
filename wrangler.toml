@@ -1,5 +1,5 @@
 name = 'lobster'
-main = 'build/esbuild/worker/index@ZJGWO2PC.js'
+main = 'build/esbuild/worker/index@3BRK2LWP.js'
 account_id = ''
 workers_dev = false
 usage_model = 'bundled'
@@ -40,7 +40,7 @@ MODE = 'production'
 
 
 [build]
-command = 'esbuild/main'
+command = ''
 cwd = '.'
 watch_dir = 'build'
 

@@ -2,6 +2,7 @@ package cf
 
 import (
 	"context"
+	"errors"
 	"os"
 	"sync"
 
@@ -19,11 +20,23 @@ type Client struct {
 	keymap    sync.Map
 }
 
-func Create() (Client, error) {
+type CreateOptions struct {
+	Destination string
+}
+
+func Create(options CreateOptions) (Client, error) {
 	var context = context.Background()
-	var apiToken = os.Getenv("CLOUDFLARE_CRINGE_API_TOKEN")
+	var apiToken = os.Getenv("CLOUDFLARE_API_TOKEN")
 	var accountId = os.Getenv("CLOUDFLARE_ACCOUNT_ID")
-	var namespaceId = os.Getenv("CLOUDFLARE_NAMESPACE_ID_PREVIEW")
+	var namespaceId string
+	switch options.Destination {
+	case "preview":
+		namespaceId = os.Getenv("CLOUDFLARE_NAMESPACE_ID_PREVIEW")
+	case "live":
+		namespaceId = os.Getenv("CLOUDFLARE_NAMESPACE_ID")
+	default:
+		return Client{}, errors.New("invalid destination " + options.Destination)
+	}
 	api, err := cloudflare.NewWithAPIToken(apiToken)
 	if err != nil {
 		return Client{}, err

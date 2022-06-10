@@ -37,7 +37,7 @@ func Upload(client *Client, options CfUploadOptions) error {
 
 	var uploads = make([]*cloudflare.WorkersKVPair, 0)
 
-	err = filepath.WalkDir(config.BuildRoot, func(
+	err = filepath.WalkDir(config.BuildRootProd, func(
 		path string, dir fs.DirEntry, err error,
 	) error {
 		if err != nil {
@@ -52,7 +52,7 @@ func Upload(client *Client, options CfUploadOptions) error {
 			excludeRegexes = append(excludeRegexes, regex)
 		}
 		if !dir.IsDir() {
-			var route = strings.ReplaceAll(path, config.BuildRoot, "")
+			var route = strings.ReplaceAll(path, config.BuildRootProd, "")
 			for _, excludeRegex := range excludeRegexes {
 				if excludeRegex.MatchString(route) {
 					return nil

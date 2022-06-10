@@ -26,6 +26,8 @@
         "plugins": [],
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "isolatedModules": true,
         "allowSyntheticDefaultImports": true,
         "importsNotUsedAsValues": "error"
     }
