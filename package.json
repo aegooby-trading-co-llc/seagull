@@ -27,6 +27,7 @@
         "package": "wrangler publish --dry-run --outdir=build/wrangler"
     },
     "dependencies": {
+        "base64-js": "^1.5.1",
         "mime": "^3.0.0",
         "react": "^18.1.0",
         "react-dom": "18.1.0",

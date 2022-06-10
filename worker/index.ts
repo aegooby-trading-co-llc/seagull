@@ -1,5 +1,6 @@
 import * as mime from "mime";
 import * as ReactDOMServer from 'react-dom/server';
+import * as base64 from "base64-js";
 import { element } from "./index.html.jsx";
 
 export interface Env {
@@ -47,7 +48,8 @@ async function route(request: Request, env: Env): Promise<Response> {
         const extension = path.slice((path.lastIndexOf(".") - 1 >>> 0) + 2);
         const contentType =
             mime.getType(extension) ?? "application/octet-stream";
-        return new Response(content, {
+        // Need to base64 decode so we can store all file types in KV
+        return new Response(base64.toByteArray(content), {
             status: 200,
             headers: { "content-type": contentType }
         });

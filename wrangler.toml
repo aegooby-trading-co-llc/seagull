@@ -1,5 +1,5 @@
 name = 'lobster'
-main = 'build/esbuild/worker/index@V7YGRZ2J.js'
+main = 'build/esbuild/worker/index@ZJGWO2PC.js'
 account_id = ''
 workers_dev = false
 usage_model = 'bundled'
@@ -23,7 +23,7 @@ compatibility_date = '2022-05-30'
 compatibility_flags = ['streams_enable_constructors']
 
 [build]
-command = 'go run esbuild/main.go'
+command = 'esbuild/main'
 cwd = '.'
 watch_dir = 'build'
 

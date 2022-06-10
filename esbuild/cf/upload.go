@@ -1,6 +1,7 @@
 package cf
 
 import (
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -57,7 +58,6 @@ func Upload(client *Client, options CfUploadOptions) error {
 					return nil
 				}
 			}
-			fmt.Println(route)
 			var matches = hashedFileRegex.FindStringSubmatch(route)
 			if len(matches) != 4 {
 				return errors.New(
@@ -72,7 +72,7 @@ func Upload(client *Client, options CfUploadOptions) error {
 				if err != nil {
 					return err
 				}
-				var value = string(file)
+				var value = base64.StdEncoding.EncodeToString(file)
 				uploads = append(
 					uploads,
 					&cloudflare.WorkersKVPair{
