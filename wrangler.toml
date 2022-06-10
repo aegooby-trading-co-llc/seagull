@@ -4,23 +4,40 @@ account_id = ''
 workers_dev = false
 usage_model = 'bundled'
 routes = []
-r2_buckets = []
 compatibility_date = '2022-05-30'
 compatibility_flags = ['streams_enable_constructors']
 [triggers]
 crons = []
 
-[[kv_namespaces]]
+[env]
+[env.dev]
+r2_buckets = []
+[[env.dev.kv_namespaces]]
 binding = 'STATIC_CONTENT'
 id = '36715eb5935948dcaeefd682d9cf8897'
 preview_id = 'eb6cec9ba9944589946a2fb13677e672'
 
-[durable_objects]
+[env.dev.durable_objects]
 bindings = []
 
-[env]
-compatibility_date = '2022-05-30'
-compatibility_flags = ['streams_enable_constructors']
+[env.dev.vars]
+MODE = 'development'
+
+
+[env.prod]
+r2_buckets = []
+[[env.prod.kv_namespaces]]
+binding = 'STATIC_CONTENT'
+id = '36715eb5935948dcaeefd682d9cf8897'
+preview_id = 'eb6cec9ba9944589946a2fb13677e672'
+
+[env.prod.durable_objects]
+bindings = []
+
+[env.prod.vars]
+MODE = 'production'
+
+
 
 [build]
 command = 'esbuild/main'

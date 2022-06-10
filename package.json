@@ -22,7 +22,7 @@
     "private": true,
     "scripts": {
         "compile": "go build -o esbuild/main esbuild/main.go",
-        "dev": "wrangler dev",
+        "dev": "wrangler dev --env dev",
         "build": "esbuild/main",
         "package": "wrangler publish --dry-run --outdir=build/wrangler"
     },
