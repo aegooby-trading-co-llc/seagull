@@ -1,5 +1,5 @@
 name = 'lobster'
-main = 'build/esbuild/worker/index@K6UYW6L7.js'
+main = 'build/esbuild/worker/index@V7YGRZ2J.js'
 account_id = ''
 workers_dev = false
 usage_model = 'bundled'

@@ -15,10 +15,14 @@ import (
 	"lobster/esbuild/console"
 )
 
-const pattern = "(.*)@([A-Z0-9]{8})(\\..*)"
+const hashedFilePattern = "(.*)@([A-Z0-9]{8})(\\..*)"
 
-func Upload(client *Client) error {
-	regex, err := regexp.Compile(pattern)
+type CfUploadOptions struct {
+	Exclude []string
+}
+
+func Upload(client *Client, options CfUploadOptions) error {
+	hashedFileRegex, err := regexp.Compile(hashedFilePattern)
 	if err != nil {
 		return err
 	}
@@ -38,9 +42,23 @@ func Upload(client *Client) error {
 		if err != nil {
 			return err
 		}
+		var excludeRegexes = make([]*regexp.Regexp, 0)
+		for _, excludePattern := range options.Exclude {
+			regex, err := regexp.Compile(excludePattern)
+			if err != nil {
+				return err
+			}
+			excludeRegexes = append(excludeRegexes, regex)
+		}
 		if !dir.IsDir() {
 			var route = strings.ReplaceAll(path, config.BuildRoot, "")
-			var matches = regex.FindStringSubmatch(route)
+			for _, excludeRegex := range excludeRegexes {
+				if excludeRegex.MatchString(route) {
+					return nil
+				}
+			}
+			fmt.Println(route)
+			var matches = hashedFileRegex.FindStringSubmatch(route)
 			if len(matches) != 4 {
 				return errors.New(
 					"failed to match filename, check hash pattern",

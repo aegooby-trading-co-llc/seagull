@@ -5,13 +5,18 @@ export const element: React.ReactElement =
     <html lang="en">
         <head>
             <meta charSet="utf-8" />
-            <link rel="icon" href="/favicon.ico" />
             <meta
                 name="viewport"
                 content="width=device-width, initial-scale=1"
             />
+
             <meta name="description" content="" />
+
+            <link rel="icon" href="/public/favicon.ico" />
             <link rel="stylesheet" href="/app/index.css" />
+            <noscript>You need to enable JavaScript to run this app.</noscript>
+            <script type="module" src="/app/index.js"></script>
+
             <title>lobster</title>
         </head>
         <body>
@@ -20,7 +25,5 @@ export const element: React.ReactElement =
                     <App />
                 </React.StrictMode>
             </div>
-            <noscript>You need to enable JavaScript to run this app.</noscript>
-            <script type="module" src="/app/index.js"></script>
         </body>
     </html>;

@@ -108,7 +108,9 @@ func main() {
 		if err != nil {
 			console.Error(err)
 		}
-		err = cf.Upload(&cfClient)
+		err = cf.Upload(&cfClient, cf.CfUploadOptions{
+			Exclude: []string{"^/worker/.*"},
+		})
 		if err != nil {
 			console.Error(err)
 		}
