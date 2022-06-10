@@ -12,17 +12,16 @@ try {
         <React.StrictMode>
             <App />
         </React.StrictMode>;
-    ReactDOMClient.hydrateRoot(root, element);
-    // switch (process.env.NODE_ENV) {
-    //     case "development":
-    //         ReactDOMClient.createRoot(root).render(element);
-    //         break;
-    //     case "production":
-    //         ReactDOMClient.hydrateRoot(root, element);
-    //         break;
-    //     default:
-    //         break;
-    // }
+    switch (process.env.NODE_ENV) {
+        case "development":
+            ReactDOMClient.createRoot(root).render(element);
+            break;
+        case "production":
+            ReactDOMClient.hydrateRoot(root, element);
+            break;
+        default:
+            break;
+    }
 } catch (error) {
     console.error(error);
 }

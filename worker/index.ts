@@ -1,7 +1,8 @@
 import * as mime from "mime";
 import * as ReactDOMServer from 'react-dom/server';
 import * as base64 from "base64-js";
-import { element } from "./index.html.jsx";
+import { csrElement, ssrElement } from "./index.html.jsx";
+import type React from "react";
 
 export interface Env {
     // https://developers.cloudflare.com/workers/runtime-apis/kv/
@@ -35,6 +36,7 @@ async function route(request: Request, env: Env): Promise<Response> {
     const path = stripHash(new URL(request.url).pathname);
 
     let content = null as string | null;
+    let element = null as React.ReactElement | null;
     switch (env.MODE) {
         case "development":
             {
@@ -46,11 +48,13 @@ async function route(request: Request, env: Env): Promise<Response> {
                         new Uint8Array(await response.arrayBuffer())
                     );
                 }
+                element = csrElement;
                 break;
             }
         case "production":
             {
                 content = await env.STATIC_CONTENT.get(path);
+                element = ssrElement;
                 break;
             }
         default:

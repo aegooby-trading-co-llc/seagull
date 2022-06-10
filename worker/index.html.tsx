@@ -33,8 +33,7 @@ function HTMLTemplate(props: Props): React.ReactElement {
     return element;
 }
 
-export const element = <HTMLTemplate element={
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>
-} />;
+export const ssrElement: React.ReactElement =
+    <HTMLTemplate element={<React.StrictMode><App /></React.StrictMode>} />;
+export const csrElement: React.ReactElement =
+    <HTMLTemplate element={null} />;

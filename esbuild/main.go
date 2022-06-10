@@ -69,6 +69,7 @@ func main() {
 		// AssetNames:
 		// ChunkNames:
 		// EntryNames:
+		// Define:
 	}
 
 	switch *modeFlag {
@@ -83,6 +84,9 @@ func main() {
 			AssetNames: "[dir]/[name]",
 			ChunkNames: "[dir]/[name][hash]",
 			EntryNames: "[dir]/[name]",
+			Define: map[string]string{
+				"process.env.NODE_ENV": "development",
+			},
 		}
 		mergo.Merge(&buildOptionsDev, buildOptions)
 
@@ -127,6 +131,9 @@ func main() {
 			AssetNames: "[dir]/[name]@[hash]",
 			ChunkNames: "[dir]/[name][hash]@[hash]",
 			EntryNames: "[dir]/[name]@[hash]",
+			Define: map[string]string{
+				"process.env.NODE_ENV": "production",
+			},
 		}
 		mergo.Merge(&buildOptionsProd, buildOptions)
 		buildResult := api.Build(buildOptionsProd)
