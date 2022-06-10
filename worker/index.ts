@@ -44,7 +44,6 @@ async function route(request: Request, env: Env): Promise<Response> {
         });
     } else {
         // Is a file - serve static content
-        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
         const extension = path.slice((path.lastIndexOf(".") - 1 >>> 0) + 2);
         const contentType =
             mime.getType(extension) ?? "application/octet-stream";
