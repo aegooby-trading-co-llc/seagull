@@ -1,6 +1,7 @@
 import * as mime from "mime";
 import * as ReactDOMServer from 'react-dom/server';
 import * as base64 from "base64-js";
+import * as graphql from "graphql";
 import { csrElement, ssrElement } from "./index.html.jsx";
 import type React from "react";
 
@@ -32,8 +33,82 @@ function stripHash(path: string): string {
     }
 }
 
+const schema = graphql.buildSchema("type Query { penis: String }");
+const rootValue = {
+    penis: function () {
+        return 'penile world';
+    },
+};
+
+interface GraphQLRequest {
+    query: string,
+    operationName: string,
+    variables: Record<string, string>,
+}
+
+async function postHandler(request: Request, env: Env): Promise<Response> {
+    try {
+        // eslint-disable-next-line
+        const body = await request.json() as GraphQLRequest;
+        const source = body.query;
+        const operationName = body.operationName;
+        const variableValues = body.variables;
+        const result = await graphql.graphql({
+            schema, source, rootValue, operationName, variableValues
+        });
+        return new Response(JSON.stringify(result.data), {
+            status: 200,
+        });
+    }
+    catch (error) {
+        return new Response(JSON.stringify(error), {
+            status: 500,
+        });
+    }
+
+}
+
+async function getHandler(request: Request, env: Env): Promise<Response> {
+    const params = new URLSearchParams(new URL(request.url).search);
+    try {
+        const source = params.get("query");
+        if (!source) {
+            return new Response("You idiot there's no query", {
+                status: 403,
+            });
+        }
+        const result = await graphql.graphql({ schema, source, rootValue });
+        return new Response(JSON.stringify(result.data), {
+            status: 200,
+        });
+    }
+    catch (error) {
+        return new Response(JSON.stringify(error), {
+            status: 500,
+        });
+    }
+
+}
+
+
+async function graphqlHandler(request: Request, env: Env): Promise<Response> {
+    if (request.method == "GET") {
+        return await getHandler(request, env);
+    }
+    else if (request.method == "POST") {
+        return await postHandler(request, env);
+    }
+    else {
+        return new Response("???", { status: 405 });
+    }
+}
+
+
 async function route(request: Request, env: Env): Promise<Response> {
     const path = stripHash(new URL(request.url).pathname);
+    if (path.includes("graphql")) {
+        return await graphqlHandler(request, env);
+    }
 
     let content = null as string | null;
     let element = null as React.ReactElement | null;
