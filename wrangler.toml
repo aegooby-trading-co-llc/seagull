@@ -1,6 +1,5 @@
 name = 'lobster'
-# @todo: verify that this works without pre-building
-main = 'worker/index.ts'
+main = 'build/esbuild/worker/index@WQ5C3BUT.js'
 account_id = ''
 workers_dev = false
 usage_model = 'bundled'

@@ -42,9 +42,7 @@ func main() {
 		os.Exit(1)
 	}
 	var entryPoints = make([]string, 0)
-	// @todo: verify that this can be removed safely
-	// entryPoints = append(glob, "app/index.tsx", "worker/index.ts")
-	entryPoints = append(glob, "app/index.tsx")
+	entryPoints = append(glob, "app/index.tsx", "worker/index.ts")
 
 	var buildOptions = api.BuildOptions{
 		EntryPoints: entryPoints,
@@ -67,6 +65,7 @@ func main() {
 			".png":  api.LoaderFile,
 			".jpeg": api.LoaderFile,
 			".jpg":  api.LoaderFile,
+			".svg":  api.LoaderFile,
 		},
 		// AssetNames:
 		// ChunkNames:
@@ -128,8 +127,7 @@ func main() {
 			Outdir: config.BuildRootProd,
 			Plugins: []api.Plugin{
 				plugins.Relay(plugins.RelayConfig{}),
-				// @todo: verify that this can be disabled safely
-				// plugins.Hash(plugins.HashConfig{WorkerPath: "/worker/index.js"}),
+				plugins.Hash(plugins.HashConfig{WorkerPath: "/worker/index.js"}),
 			},
 			AssetNames: "[dir]/[name]@[hash]",
 			ChunkNames: "[dir]/[name][hash]@[hash]",
