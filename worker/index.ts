@@ -42,8 +42,8 @@ const rootValue = {
 
 interface GraphQLRequest {
     query: string,
-    operationName: string,
-    variables: Record<string, string>,
+    operationName?: string | undefined,
+    variables?: Record<string, unknown> | undefined,
 }
 
 async function postHandler(request: Request, env: Env): Promise<Response> {
