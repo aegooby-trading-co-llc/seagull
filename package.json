@@ -24,7 +24,7 @@
         "compile": "go build -o esbuild/main esbuild/main.go",
         "dev": "wrangler dev --local --env dev",
         "build": "esbuild/main",
-        "package": "wrangler publish --dry-run --outdir=build/wrangler"
+        "package": "wrangler publish --env prod --dry-run --outdir=build/wrangler"
     },
     "dependencies": {
         "base64-js": "^1.5.1",
