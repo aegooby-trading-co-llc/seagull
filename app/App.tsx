@@ -1,6 +1,6 @@
 import * as React from "react";
 import "./App.css";
-import logo from "./svg/logo.svg";
+import logo from "./logo.svg";
 
 
 interface AppProps { }
