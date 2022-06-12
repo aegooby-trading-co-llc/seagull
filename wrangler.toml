@@ -26,7 +26,7 @@ MODE = 'development'
 
 
 [env.prod]
-main = 'build/esbuild/worker/entry/index-ssr@HMPALSQF.js'
+main = 'build/esbuild/worker/entry/index-ssr@UW6DEJRO.js'
 r2_buckets = []
 [[env.prod.kv_namespaces]]
 binding = 'STATIC_CONTENT'

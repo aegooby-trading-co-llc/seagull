@@ -17,35 +17,25 @@ import (
 
 const Generated = "./__generated__/"
 
-func Replace(
-	regex *regexp.Regexp,
-	str string,
-	repl func([]string) (string, error),
-) (string, error) {
-	var result = ""
-	var lastIndex = 0
-	for _, v := range regex.FindAllSubmatchIndex([]byte(str), -1) {
-		groups := []string{}
-		for i := 0; i < len(v); i += 2 {
-			groups = append(groups, str[v[i]:v[i+1]])
-		}
-		var replResult, err = repl(groups)
-		if err != nil {
-			return "", err
-		}
-		result += str[lastIndex:v[0]] + replResult
-		lastIndex = v[1]
-	}
-	return result + str[lastIndex:], nil
-}
-
 type RelayConfig struct {
 }
 
 func Relay(pluginConfig RelayConfig) api.Plugin {
 	return api.Plugin{Name: "relay", Setup: func(build api.PluginBuild) {
-		regex, err := regexp.Compile("graphql`(.*)`")
+		gqlTagRegex, err := regexp.Compile("graphql\\s*`([^`]*)`;")
 
+		build.OnResolve(api.OnResolveOptions{Filter: "^[^\\.].*\\.graphql"},
+			func(ora api.OnResolveArgs) (api.OnResolveResult, error) {
+				var result = build.Resolve(
+					"./"+ora.Path,
+					api.ResolveOptions{ResolveDir: ora.ResolveDir},
+				)
+				if len(result.Errors) > 0 {
+					return api.OnResolveResult{Errors: result.Errors}, nil
+				}
+				return api.OnResolveResult{Path: result.Path}, nil
+			},
+		)
 		build.OnLoad(api.OnLoadOptions{Filter: "\\.tsx$"},
 			func(ola api.OnLoadArgs) (api.OnLoadResult, error) {
 				if err != nil {
@@ -56,33 +46,40 @@ func Relay(pluginConfig RelayConfig) api.Plugin {
 					return api.OnLoadResult{}, err
 				}
 				var contents = string(file)
-				if regex.MatchString(contents) {
+				if gqlTagRegex.MatchString(contents) {
 					var imports = make([]string, 0)
-					contents, err = Replace(regex, contents,
-						func(strings []string) (string, error) {
-							if len(strings) != 2 {
-								return "", errors.New("error matching query")
+					var err error
+					contents = gqlTagRegex.ReplaceAllStringFunc(contents,
+						func(str string) string {
+							var submatch = gqlTagRegex.FindStringSubmatch(str)
+							if len(submatch) != 2 {
+								err = errors.New("error matching query")
+								return str
 							}
-							var query = strings[1]
-							var astQuery, err = parser.Parse(parser.ParseParams{
+							var query = submatch[1]
+
+							var astQuery *ast.Document
+							astQuery, err = parser.Parse(parser.ParseParams{
 								Source: query,
 							})
 							if err != nil {
-								return "", err
+								return str
 							}
 							if len(astQuery.Definitions) == 0 {
-								return "", errors.New(
+								err = errors.New(
 									"unexpected empty GraphQL tag",
 								)
+								return str
 							}
 							var definition = astQuery.Definitions[0]
 							var kind = definition.GetKind()
 							if kind != "FragmentDefinition" &&
 								kind != "OperationDefinition" {
-								return "", errors.New(
+								err = errors.New(
 									"expected a fragment, mutation, query, or" +
 										"subscription, got " + kind,
 								)
+								return str
 							}
 
 							var fragment, okFrag = definition.(*ast.FragmentDefinition)
@@ -94,18 +91,20 @@ func Relay(pluginConfig RelayConfig) api.Plugin {
 								name = fragment.GetName().Value
 								if fragment.GetName() == nil ||
 									fragment.GetName().Value == "" {
-									return "", errors.New(
+									err = errors.New(
 										"GraphQL fragments must contain names",
 									)
+									return str
 								}
 							}
 							if okOp {
 								name = operation.GetName().Value
 								if operation.GetName() == nil ||
 									operation.GetName().Value == "" {
-									return "", errors.New(
+									err = errors.New(
 										"GraphQL operations must contain names",
 									)
+									return str
 								}
 							}
 
@@ -132,18 +131,18 @@ func Relay(pluginConfig RelayConfig) api.Plugin {
 								".hash !== \"" + hash + "\" && console.error(\"" +
 								errorMessage + "\"), " + id + ")"
 
-							return devModeCheck, nil
-						})
+							return devModeCheck
+						},
+					)
 					if err != nil {
 						return api.OnLoadResult{Loader: api.LoaderTSX}, err
 					}
 					if len(imports) > 0 {
 						contents = strings.Join(imports, "\n") + "\n" + contents
 					}
-					return api.OnLoadResult{Contents: &contents, Loader: api.LoaderTSX}, nil
-				} else {
-					return api.OnLoadResult{Contents: &contents, Loader: api.LoaderTSX}, nil
+
 				}
+				return api.OnLoadResult{Contents: &contents, Loader: api.LoaderTSX}, nil
 			},
 		)
 	}}
