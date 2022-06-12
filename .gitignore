@@ -112,3 +112,7 @@ dist/
 
 # ESBuild script
 esbuild/main
+
+# Build2
+.bdep/
+.build2/local/
