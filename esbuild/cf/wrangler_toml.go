@@ -37,6 +37,7 @@ type WranglerBuild struct {
 	WatchDir string "toml:\"watch_dir\""
 }
 type WranglerEnvConfig struct {
+	Main           string                 "toml:\"main\""
 	KvNamespaces   []WranglerKVNamespace  "toml:\"kv_namespaces\""
 	DurableObjects WranglerDurableObjects "toml:\"durable_objects\""
 	R2Buckets      []WranglerR2Buckets    "toml:\"r2_buckets\""

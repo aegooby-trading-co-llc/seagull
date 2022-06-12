@@ -80,7 +80,7 @@ func Hash(pluginConfig HashConfig) api.Plugin {
 							console.Error("Failed to unmarshal TOML")
 							return
 						}
-						wranglerConfig.Main = filepath.Join(
+						wranglerConfig.Env.Prod.Main = filepath.Join(
 							build.InitialOptions.Outdir, path,
 						)
 						wranglerToml, err = toml.Marshal(&wranglerConfig)

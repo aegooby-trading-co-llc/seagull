@@ -1,10 +1,9 @@
 import * as React from "react";
-import App from "../app/App.jsx";
 
 interface Props {
     element: React.ReactElement | null;
 }
-function HTMLTemplate(props: Props): React.ReactElement {
+export function HTMLTemplate(props: Props): React.ReactElement {
     const element: React.ReactElement =
         <html lang="en">
             <head>
@@ -32,8 +31,3 @@ function HTMLTemplate(props: Props): React.ReactElement {
         </html>;
     return element;
 }
-
-export const ssrElement: React.ReactElement =
-    <HTMLTemplate element={<React.StrictMode><App /></React.StrictMode>} />;
-export const csrElement: React.ReactElement =
-    <HTMLTemplate element={null} />;

@@ -41,8 +41,9 @@ func main() {
 		)
 		os.Exit(1)
 	}
+
 	var entryPoints = make([]string, 0)
-	entryPoints = append(glob, "app/index.tsx", "worker/index.ts")
+	entryPoints = append(glob, "app/index.tsx", "worker/entry/index-ssr.tsx")
 
 	var buildOptions = api.BuildOptions{
 		EntryPoints: entryPoints,
@@ -76,6 +77,7 @@ func main() {
 	switch *modeFlag {
 	case "dev":
 		console.Log("Starting dev server")
+
 		var buildOptionsDev = api.BuildOptions{
 			Outdir:      config.BuildRootDev,
 			Incremental: true,
@@ -114,6 +116,7 @@ func main() {
 	case "prod":
 		console.Log("Bundling for production")
 		console.Log("Cleaning build root")
+
 		err = os.RemoveAll(config.BuildRootProd)
 		if err != nil {
 			console.Error("Could not clean "+config.BuildRootProd+" directory:", err)
@@ -127,7 +130,9 @@ func main() {
 			Outdir: config.BuildRootProd,
 			Plugins: []api.Plugin{
 				plugins.Relay(plugins.RelayConfig{}),
-				plugins.Hash(plugins.HashConfig{WorkerPath: "/worker/index.js"}),
+				plugins.Hash(plugins.HashConfig{
+					WorkerPath: "/worker/entry/index-ssr.js",
+				}),
 			},
 			AssetNames: "[dir]/[name]@[hash]",
 			ChunkNames: "[dir]/[name][hash]@[hash]",
