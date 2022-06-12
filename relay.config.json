@@ -1,0 +1,11 @@
+{
+    "src": "app",
+    "schema": "graphql/schema.gql",
+    "language": "typescript",
+    "excludes": ["**/node_modules/**", "**/mocks/**", "**/generated/**"],
+    "schemaConfig": {
+        "nodeInterfaceIdField": "id"
+    },
+    "eagerEsModules": true,
+    "jsModuleFormat": "haste"
+}

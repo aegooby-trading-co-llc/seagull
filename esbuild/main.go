@@ -53,7 +53,7 @@ func main() {
 		Format:      api.FormatESModule,
 		Sourcemap:   api.SourceMapExternal,
 		Platform:    api.PlatformBrowser,
-		Target:      api.ES2020,
+		Target:      api.ES2015,
 		Write:       true,
 		// Outdir:
 		JSXMode:     api.JSXModeTransform,
