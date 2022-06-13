@@ -1,5 +1,5 @@
 {
-    "src": "app",
+    "src": "packages/app",
     "schema": "graphql/schema.gql",
     "language": "typescript",
     "excludes": ["**/node_modules/**", "**/mocks/**", "**/generated/**"],

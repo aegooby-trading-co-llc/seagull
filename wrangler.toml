@@ -11,7 +11,7 @@ crons = []
 
 [env]
 [env.dev]
-main = 'worker/entry/csr.tsx'
+main = 'packages/worker/entry/csr.tsx'
 r2_buckets = []
 [[env.dev.kv_namespaces]]
 binding = 'STATIC_CONTENT'
@@ -27,7 +27,7 @@ MODE = 'development'
 
 
 [env.prod]
-main = 'build/esbuild/worker/entry/ssr@ZSALGZFR.js'
+main = 'build/esbuild/packages/worker/entry/ssr@HMKVEFSZ.js'
 r2_buckets = []
 [[env.prod.kv_namespaces]]
 binding = 'STATIC_CONTENT'

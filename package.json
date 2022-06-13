@@ -5,9 +5,7 @@
 
     "private": true,
     "workspaces": [
-        "app",
-        "scripts",
-        "worker"
+        "packages/*"
     ],
 
     "devDependencies": {
