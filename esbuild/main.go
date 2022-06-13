@@ -43,7 +43,7 @@ func main() {
 	}
 
 	var entryPoints = make([]string, 0)
-	entryPoints = append(glob, "app/index.tsx", "worker/entry/index-ssr.tsx")
+	entryPoints = append(glob, "app/bundle.tsx", "worker/entry/ssr.tsx")
 
 	var buildOptions = api.BuildOptions{
 		EntryPoints: entryPoints,
@@ -131,7 +131,7 @@ func main() {
 			Plugins: []api.Plugin{
 				plugins.Relay(plugins.RelayConfig{}),
 				plugins.Hash(plugins.HashConfig{
-					WorkerPath: "/worker/entry/index-ssr.js",
+					WorkerPath: "/worker/entry/ssr.js",
 				}),
 			},
 			AssetNames: "[dir]/[name]@[hash]",
