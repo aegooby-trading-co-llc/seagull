@@ -8,8 +8,7 @@
         "baseUrl": "./",
         /* paths - import rewriting/resolving */
         "paths": {
-            "*.ts": ["*"],
-            "*.tsx": ["*"]
+            "zx/*": ["node_modules/zx/build/*"]
         },
         "pretty": true,
         "noEmit": true,
