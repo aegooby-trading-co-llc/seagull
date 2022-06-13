@@ -1,31 +1,22 @@
 {
-    "name": "lobster",
+    "name": "@lobster/-",
     "version": "0.0.0",
     "type": "module",
+
+    "private": true,
+    "workspaces": [
+        "worker",
+        "app"
+    ],
+
     "devDependencies": {
-        "@cloudflare/workers-types": "^3.11.0",
-        "@types/mime": "^2.0.3",
-        "@types/node": "^17.0.40",
-        "@types/react": "^18.0.10",
-        "@types/react-dom": "^18.0.5",
-        "@types/react-relay": "13.0.2",
-        "@types/relay-runtime": "13.0.2",
         "@typescript-eslint/eslint-plugin": "^5.27.0",
         "@typescript-eslint/parser": "^5.27.0",
         "eslint": "^8.16.0",
         "eslint-plugin-relay": "^1.8.3",
         "typescript": "^4.6.4"
     },
-    "private": true,
-    "scripts": {},
     "dependencies": {
-        "base64-js": "^1.5.1",
-        "graphql": "^16.5.0",
-        "mime": "^3.0.0",
-        "react": "18.1.0",
-        "react-dom": "18.1.0",
-        "react-relay": "13.2.0",
-        "relay-runtime": "13.2.0",
         "zx": "^6.2.4"
     }
 }

@@ -1,12 +1,15 @@
 # lobster
 
-## Education
+## Things you need
+* NPM/Node
+* Go
+* Do this: `sudo npm i -g yarn wrangler relay-compiler zx`
 
-1. NPM and Node: Google that shit you lazy bum.
-2. Yarn: `sudo npm i -g yarn`
-3. Go: This isn't FreeCodeCamp you have a computer search this up. https://go.dev/doc/install
-4. NPM tools: `sudo npm i -g wrangler relay-compiler zx`
-5. This: `git clone https://github.com/aegooby/lobster && cd lobster`
-6. NPM packages: `yarn install`
-7. Compile ESBuild: `scripts/main.mjs compile`
-8. Run: `scripts/main.mjs serve`
+Trust me don't try to be cool and skip steps. You aren't that cool. I'm cool. Listen to me.
+
+## Things you should do
+
+1. This: `git clone https://github.com/aegooby/lobster && cd lobster`
+3. `yarn install`
+4. Compile ESBuild: `lobster compile`
+5. Run: `lobster serve`

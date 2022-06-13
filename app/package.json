@@ -1,0 +1,18 @@
+{
+    "name": "@lobster/app",
+    "version": "0.0.0",
+    "type": "module",
+    "devDependencies": {
+        "@types/node": "^17.0.40",
+        "@types/react": "^18.0.10",
+        "@types/react-dom": "^18.0.5",
+        "@types/react-relay": "13.0.2",
+        "@types/relay-runtime": "13.0.2"
+    },
+    "dependencies": {
+        "react": "18.1.0",
+        "react-dom": "18.1.0",
+        "react-relay": "13.2.0",
+        "relay-runtime": "13.2.0"
+    }
+}
