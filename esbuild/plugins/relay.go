@@ -24,18 +24,19 @@ func Relay(pluginConfig RelayConfig) api.Plugin {
 	return api.Plugin{Name: "relay", Setup: func(build api.PluginBuild) {
 		gqlTagRegex, err := regexp.Compile("graphql\\s*`([^`]*)`;")
 
-		build.OnResolve(api.OnResolveOptions{Filter: "^[^\\.].*\\.graphql"},
-			func(ora api.OnResolveArgs) (api.OnResolveResult, error) {
-				var result = build.Resolve(
-					"./"+ora.Path,
-					api.ResolveOptions{ResolveDir: ora.ResolveDir},
-				)
-				if len(result.Errors) > 0 {
-					return api.OnResolveResult{Errors: result.Errors}, nil
-				}
-				return api.OnResolveResult{Path: result.Path}, nil
-			},
-		)
+		// @todo: might not be needed without "haste" option on Relay config
+		// build.OnResolve(api.OnResolveOptions{Filter: "^[^\\.].*\\.graphql"},
+		// 	func(ora api.OnResolveArgs) (api.OnResolveResult, error) {
+		// 		var result = build.Resolve(
+		// 			"./"+ora.Path,
+		// 			api.ResolveOptions{ResolveDir: ora.ResolveDir},
+		// 		)
+		// 		if len(result.Errors) > 0 {
+		// 			return api.OnResolveResult{Errors: result.Errors}, nil
+		// 		}
+		// 		return api.OnResolveResult{Path: result.Path}, nil
+		// 	},
+		// )
 		build.OnLoad(api.OnLoadOptions{Filter: "\\.tsx$"},
 			func(ola api.OnLoadArgs) (api.OnLoadResult, error) {
 				if err != nil {

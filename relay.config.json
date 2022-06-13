@@ -7,5 +7,5 @@
         "nodeInterfaceIdField": "id"
     },
     "eagerEsModules": true,
-    "jsModuleFormat": "haste"
+    "jsModuleFormat": "commonjs"
 }

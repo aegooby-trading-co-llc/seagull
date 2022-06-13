@@ -1,5 +1,5 @@
 {
-    "exclude": ["snowpack.config.*", "esbuild/", "*.js", "build/**/*"],
+    "include": ["worker/", "app/", "scripts/", "types/"],
     "compilerOptions": {
         "module": "esnext",
         "target": "esnext",
@@ -12,9 +12,7 @@
             "*.tsx": ["*"]
         },
         "pretty": true,
-        /* noEmit - Snowpack builds (emits) files, not tsc. */
         "noEmit": true,
-        /* Additional Options */
         "strict": true,
         "skipLibCheck": true,
         "allowJs": true,
