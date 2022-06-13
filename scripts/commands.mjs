@@ -7,8 +7,8 @@ import { log, $ } from "./zx-extended.mjs";
 /**
  * @typedef Command
  * @type {object}
- * @property {(args: Record<string, string> | undefined) => Promise<void>} exec 
- * @property {Record<string, string>} options
+ * @property {(args: Record<string, string | true> | undefined) => Promise<void>} exec 
+ * @property {Record<string, string | true>} options
  * @property {string} description
  */
 
@@ -47,12 +47,16 @@ import { log, $ } from "./zx-extended.mjs";
         description: "runs local development server",
     },
     "package": {
-        exec: async function () {
+        exec: async function (args) {
             echo`${log} building for production`
             await $`esbuild/main --mode prod`;
-            await $`wrangler publish --env prod --dry-run --outdir=build/wrangler`;
+            if (args && args["cf"]) {
+                await $`wrangler publish --env prod --dry-run --outdir=build/wrangler`;
+            }
         },
-        options: {},
+        options: {
+            "cf": true
+        },
         description: "bundles with ESBuild and Wrangler for production",
     }
 }

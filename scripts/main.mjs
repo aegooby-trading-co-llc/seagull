@@ -9,8 +9,8 @@ export async function main() {
         const command = commands[argv._[1]];
         /** @type {Record<string, string>} */
         for (const key of Object.keys(argv)) {
-            if (key !== "_" && key !== "--" && !command.options[key]) {
-                echo`$ ${chalk.red.bold`error`}: invalid option "--${key}"`
+            if (!["_", "--"].includes(key) && !command.options[key]) {
+                echo`${error} invalid option "${key}"`
                 return;
             }
         }
@@ -20,12 +20,12 @@ export async function main() {
     } else {
         echo`${error} you did that wrong`;
         echo``;
-        echo`Usage:`;
+        echo`usage:`;
             echo`  ${argv._[0]} [command]`;
             echo`  ${argv._[0]} [command] --help`;
             echo`  ${argv._[0]} [command] --version`;
             echo``;
-            echo`Commands:`;
+            echo`commands:`;
             for (const key of Object.keys(commands)) {
                 echo`  * ${key}: ${chalk.dim(commands[key].description)}`;
             }
