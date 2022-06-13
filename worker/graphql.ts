@@ -37,8 +37,7 @@ export async function getHandler(request: Request, env: Env): Promise<Response> 
 
 export async function postHandler(request: Request, env: Env): Promise<Response> {
     try {
-        // eslint-disable-next-line
-        const body = await request.json() as GraphQLRequest;
+        const body: GraphQLRequest = await request.json();
         const source = body.query;
         const operationName = body.operationName;
         const variableValues = body.variables;

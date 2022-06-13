@@ -86,7 +86,7 @@ func main() {
 			},
 			Define: map[string]string{
 				"process.env.NODE_ENV":         "\"development\"",
-				"process.env.GRAPHQL_ENDPOINT": "\"https://localhost:8787/\"",
+				"process.env.GRAPHQL_ENDPOINT": "\"http://localhost:8787/\"",
 			},
 			AssetNames: "[dir]/[name]",
 			ChunkNames: "[dir]/[name][hash]",

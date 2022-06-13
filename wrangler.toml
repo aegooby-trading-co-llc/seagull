@@ -22,11 +22,12 @@ preview_id = 'eb6cec9ba9944589946a2fb13677e672'
 bindings = []
 
 [env.dev.vars]
+GRAPHQL_ENDPOINT = 'http://localhost:8787/'
 MODE = 'development'
 
 
 [env.prod]
-main = 'build/esbuild/worker/entry/ssr@526MXQ3H.js'
+main = 'build/esbuild/worker/entry/ssr@MZMWSCTE.js'
 r2_buckets = []
 [[env.prod.kv_namespaces]]
 binding = 'STATIC_CONTENT'
@@ -37,6 +38,7 @@ preview_id = 'eb6cec9ba9944589946a2fb13677e672'
 bindings = []
 
 [env.prod.vars]
+GRAPHQL_ENDPOINT = 'https://aegooby.workers.dev/'
 MODE = 'production'
 
 
