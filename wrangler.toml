@@ -27,7 +27,7 @@ MODE = 'development'
 
 
 [env.prod]
-main = 'build/esbuild/worker/entry/ssr@KGNMBKKV.js'
+main = 'build/esbuild/worker/entry/ssr@ZSALGZFR.js'
 r2_buckets = []
 [[env.prod.kv_namespaces]]
 binding = 'STATIC_CONTENT'
