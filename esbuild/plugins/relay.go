@@ -17,6 +17,7 @@ import (
 const Generated = "./__generated__/"
 
 type RelayConfig struct {
+	Dev bool
 }
 
 func Relay(pluginConfig RelayConfig) api.Plugin {
@@ -110,15 +111,17 @@ func Relay(pluginConfig RelayConfig) api.Plugin {
 								imports, "import "+id+" from \""+importPath+"\"",
 							)
 
-							// Dev mode
-							var errorMessage = "The definition of " + name +
-								" appears" + " to have changed. Run relay-" +
-								"compiler to update the generated files."
-							var devModeCheck = "(" + id + ".hash && " + id +
-								".hash !== \"" + hash + "\" && console.error(\"" +
-								errorMessage + "\"), " + id + ")"
-
-							return devModeCheck
+							if pluginConfig.Dev {
+								// Dev mode
+								var errorMessage = "The definition of " + name +
+									" appears" + " to have changed. Run relay-" +
+									"compiler to update the generated files."
+								return "(" + id + ".hash && " + id +
+									".hash !== \"" + hash + "\" && console.error(\"" +
+									errorMessage + "\"), " + id + ")"
+							} else {
+								return id
+							}
 						},
 					)
 					if err != nil {

@@ -51,7 +51,7 @@ func main() {
 		Splitting:   true,
 		Color:       api.ColorAlways,
 		Format:      api.FormatESModule,
-		Sourcemap:   api.SourceMapExternal,
+		Sourcemap:   api.SourceMapLinked,
 		Platform:    api.PlatformBrowser,
 		Target:      api.ES2015,
 		Write:       true,
@@ -82,7 +82,7 @@ func main() {
 			Outdir:      config.BuildRootDev,
 			Incremental: true,
 			Plugins: []api.Plugin{
-				plugins.Relay(plugins.RelayConfig{}),
+				plugins.Relay(plugins.RelayConfig{Dev: true}),
 			},
 			Define: map[string]string{
 				"process.env.NODE_ENV":         "\"development\"",
@@ -134,7 +134,7 @@ func main() {
 		var buildOptionsProd = api.BuildOptions{
 			Outdir: config.BuildRootProd,
 			Plugins: []api.Plugin{
-				plugins.Relay(plugins.RelayConfig{}),
+				plugins.Relay(plugins.RelayConfig{Dev: false}),
 				plugins.Hash(plugins.HashConfig{
 					WorkerPath: "/worker/entry/ssr.js",
 				}),
