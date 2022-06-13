@@ -8,5 +8,5 @@
 4. NPM tools: `sudo npm i -g wrangler relay-compiler zx`
 5. This: `git clone https://github.com/aegooby/lobster && cd lobster`
 6. NPM packages: `yarn install`
-7. Compile ESBuild: `yarn compile`
-8. Run: `yarn build --mode dev & yarn dev && kill %1`
+7. Compile ESBuild: `scripts/main.mjs compile`
+8. Run: `scripts/main.mjs serve`
