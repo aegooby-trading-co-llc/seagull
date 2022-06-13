@@ -9,6 +9,7 @@ import { log, $ } from "./zx-extended.mjs";
  * @type {object}
  * @property {(args: Record<string, string> | undefined) => Promise<void>} exec 
  * @property {Record<string, string>} options
+ * @property {string} description
  */
 
 /**
@@ -20,7 +21,8 @@ import { log, $ } from "./zx-extended.mjs";
             echo`${log} compiling Go`
             await $`go build -o esbuild/main esbuild/main.go`;
         },
-        options: {}
+        options: {},
+        description: "compiles ESBuild and plugins",
     },
     "serve": {
         exec: async function () {
@@ -41,7 +43,8 @@ import { log, $ } from "./zx-extended.mjs";
                 await promise.kill("SIGINT");
             }
         },
-        options: {}
+        options: {},
+        description: "runs local development server",
     },
     "package": {
         exec: async function () {
@@ -49,6 +52,7 @@ import { log, $ } from "./zx-extended.mjs";
             await $`esbuild/main --mode prod`;
             await $`wrangler publish --env prod --dry-run --outdir=build/wrangler`;
         },
-        options: {}
+        options: {},
+        description: "bundles with ESBuild and Wrangler for production",
     }
 }

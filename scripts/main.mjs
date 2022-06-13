@@ -1,7 +1,7 @@
 import { argv, chalk } from "zx";
 import { echo } from "zx/experimental";
 import { commands } from "./commands.mjs";
-import { success } from "./zx-extended.mjs";
+import { error, success } from "./zx-extended.mjs";
 
 export async function main() {
     if (Object.keys(commands).includes(argv._[1])) {
@@ -18,6 +18,8 @@ export async function main() {
         const endTime = Date.now();
         echo`${success} ${endTime - startTime}ms`
     } else {
+        echo`${error} you did that wrong`;
+        echo``;
         echo`Usage:`;
             echo`  ${argv._[0]} [command]`;
             echo`  ${argv._[0]} [command] --help`;
@@ -25,7 +27,7 @@ export async function main() {
             echo``;
             echo`Commands:`;
             for (const key of Object.keys(commands)) {
-                echo`  ${key}`;
+                echo`  * ${key}: ${chalk.dim(commands[key].description)}`;
             }
     }
 }
