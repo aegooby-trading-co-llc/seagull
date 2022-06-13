@@ -59,6 +59,7 @@ func main() {
 		JSXMode:     api.JSXModeTransform,
 		TreeShaking: api.TreeShakingTrue,
 		// Plugins:
+		// Define:
 		Loader: map[string]api.Loader{
 			".html": api.LoaderFile,
 			".ico":  api.LoaderFile,
@@ -71,7 +72,6 @@ func main() {
 		// AssetNames:
 		// ChunkNames:
 		// EntryNames:
-		// Define:
 	}
 
 	switch *modeFlag {
@@ -84,12 +84,13 @@ func main() {
 			Plugins: []api.Plugin{
 				plugins.Relay(plugins.RelayConfig{}),
 			},
+			Define: map[string]string{
+				"process.env.NODE_ENV":         "\"development\"",
+				"process.env.GRAPHQL_ENDPOINT": "\"https://localhost:8787/\"",
+			},
 			AssetNames: "[dir]/[name]",
 			ChunkNames: "[dir]/[name][hash]",
 			EntryNames: "[dir]/[name]",
-			Define: map[string]string{
-				"process.env.NODE_ENV": "\"development\"",
-			},
 		}
 		mergo.Merge(&buildOptionsDev, buildOptions)
 
@@ -119,11 +120,15 @@ func main() {
 
 		err = os.RemoveAll(config.BuildRootProd)
 		if err != nil {
-			console.Error("Could not clean "+config.BuildRootProd+" directory:", err)
+			console.Error(
+				"Could not clean "+config.BuildRootProd+" directory:", err,
+			)
 		}
 		err = os.MkdirAll(config.BuildRootProd, 0777)
 		if err != nil {
-			console.Error("Could not create"+config.BuildRootProd+"directory:", err)
+			console.Error(
+				"Could not create"+config.BuildRootProd+"directory:", err,
+			)
 		}
 
 		var buildOptionsProd = api.BuildOptions{
@@ -134,12 +139,13 @@ func main() {
 					WorkerPath: "/worker/entry/ssr.js",
 				}),
 			},
+			Define: map[string]string{
+				"process.env.NODE_ENV":         "\"production\"",
+				"process.env.GRAPHQL_ENDPOINT": "\"https://aegooby.workers.dev/\"",
+			},
 			AssetNames: "[dir]/[name]@[hash]",
 			ChunkNames: "[dir]/[name][hash]@[hash]",
 			EntryNames: "[dir]/[name]@[hash]",
-			Define: map[string]string{
-				"process.env.NODE_ENV": "\"production\"",
-			},
 		}
 		mergo.Merge(&buildOptionsProd, buildOptions)
 		buildResult := api.Build(buildOptionsProd)

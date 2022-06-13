@@ -2,7 +2,7 @@
 import { chalk, sleep, question } from "zx";
 import { echo } from "zx/experimental";
 
-import { log, success, $ } from "./lib.mjs";
+import { log, $ } from "./zx-extended.mjs";
 
 /**
  * @typedef Command
@@ -19,7 +19,6 @@ import { log, success, $ } from "./lib.mjs";
         exec: async function () {
             echo`${log} compiling Go`
             await $`go build -o esbuild/main esbuild/main.go`;
-            echo`${success}`
         },
         options: {}
     },
@@ -41,7 +40,6 @@ import { log, success, $ } from "./lib.mjs";
             for (const promise of promises) {
                 await promise.kill("SIGINT");
             }
-            echo`${success}`
         },
         options: {}
     },
@@ -50,7 +48,6 @@ import { log, success, $ } from "./lib.mjs";
             echo`${log} building for production`
             await $`esbuild/main --mode prod`;
             await $`wrangler publish --env prod --dry-run --outdir=build/wrangler`;
-            echo`${success}`
         },
         options: {}
     }
