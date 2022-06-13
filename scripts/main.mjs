@@ -1,5 +1,3 @@
-#!/usr/bin/env zx
-
 import { argv, chalk } from "zx";
 import { echo } from "zx/experimental";
 import { commands } from "./commands.mjs";
@@ -31,5 +29,3 @@ export async function main() {
             }
     }
 }
-
-await main();

@@ -24,7 +24,7 @@ export async function getHandler(request: Request, env: Env): Promise<Response> 
             });
         }
         const result = await graphql.graphql({ schema, source, rootValue });
-        return new Response(JSON.stringify(result.data), {
+        return new Response(JSON.stringify(result), {
             status: 200,
         });
     }
@@ -44,7 +44,7 @@ export async function postHandler(request: Request, env: Env): Promise<Response>
         const result = await graphql.graphql({
             schema, source, rootValue, operationName, variableValues
         });
-        return new Response(JSON.stringify(result.data), {
+        return new Response(JSON.stringify(result), {
             status: 200,
         });
     }

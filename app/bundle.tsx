@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOMClient from "react-dom/client";
-import * as Relay from "react-relay/hooks";
+import * as Relay from "react-relay";
 
 import { relayEnvironment } from "./relay.js";
 import App from "./App.jsx";

@@ -1,5 +1,5 @@
 {
-    "include": ["worker/", "app/", "scripts/", "types/"],
+    "include": ["worker/", "app/", "scripts/", "types/", "*.mjs"],
     "compilerOptions": {
         "module": "esnext",
         "target": "esnext",

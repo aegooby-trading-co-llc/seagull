@@ -24,7 +24,7 @@ async function fetchRelay(
 }
 
 export const relayEnvironment = new RelayRuntime.Environment({
-    network: RelayRuntime.Network.create(fetchRelay),
+    network: RelayRuntime.Network.create(fetchRelay, undefined),
     store: new RelayRuntime.Store(new RelayRuntime.RecordSource()),
     configName: "Environment",
 });

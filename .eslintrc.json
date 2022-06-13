@@ -17,8 +17,6 @@
     ],
     "ignorePatterns": [
         "**/build/**/*", 
-        "**/node_modules/**/*", 
-        "*.config.*",
-        ".*rc"
+        "**/node_modules/**/*"
     ]
 }

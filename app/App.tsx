@@ -14,10 +14,16 @@ const query = graphql`
     }
 `;
 
-// const preloadedQuery = Relay.loadQuery<AppQuery>(relayEnvironment, query, {});
+const preloadedQuery = Relay.loadQuery<AppQuery>(relayEnvironment, query, {});
+
+function Suspendable() {
+    const data = Relay.usePreloadedQuery(query, preloadedQuery);
+    const element: React.ReactElement =
+        <>GraphQL says: "{data.penis}"</>;
+    return element;
+}
 
 export default function App() {
-    // const data = Relay.usePreloadedQuery(query, preloadedQuery);
     // Create the count state.
     const [count, setCount] = React.useState(0);
     // Create the counter (+1 every second).
@@ -25,17 +31,18 @@ export default function App() {
         const timer = setTimeout(() => setCount(count + 1), 1000);
         return () => clearTimeout(timer);
     }, [count, setCount]);
+
     // Return the App component.
     return (
         <div className="App">
             <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo" />
                 <p>Edit <code>src/App.tsx</code> and save to reload.</p>
-                {/* <p>
+                <p>
                     <React.Suspense fallback={<>loading...</>}>
-                        {data.penis}
+                        <Suspendable />
                     </React.Suspense>
-                </p> */}
+                </p>
                 <p>Page has been open for <code>{count}</code> seconds.</p>
                 <p>
                     <a
