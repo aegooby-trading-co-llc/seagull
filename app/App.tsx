@@ -1,11 +1,23 @@
 import * as React from "react";
+import * as Relay from "react-relay";
+import { graphql } from "relay-runtime";
 
+import { relayEnvironment } from "./relay.js";
 import "./App.css";
 import logo from "./logo.svg";
 
-interface AppProps { }
+import type { AppQuery } from "./__generated__/AppQuery.graphql.js";
 
-export default function App({ }: AppProps) {
+const query = graphql`
+    query AppQuery {
+        penis
+    }
+`;
+
+// const preloadedQuery = Relay.loadQuery<AppQuery>(relayEnvironment, query, {});
+
+export default function App() {
+    // const data = Relay.usePreloadedQuery(query, preloadedQuery);
     // Create the count state.
     const [count, setCount] = React.useState(0);
     // Create the counter (+1 every second).
@@ -19,6 +31,11 @@ export default function App({ }: AppProps) {
             <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo" />
                 <p>Edit <code>src/App.tsx</code> and save to reload.</p>
+                {/* <p>
+                    <React.Suspense fallback={<>loading...</>}>
+                        {data.penis}
+                    </React.Suspense>
+                </p> */}
                 <p>Page has been open for <code>{count}</code> seconds.</p>
                 <p>
                     <a

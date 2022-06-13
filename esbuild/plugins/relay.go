@@ -1,14 +1,13 @@
 package plugins
 
 import (
-	"encoding/base32"
+	"crypto/md5"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"regexp"
 	"strings"
 
-	"github.com/cespare/xxhash/v2"
 	"github.com/evanw/esbuild/pkg/api"
 	"github.com/graphql-go/graphql/language/ast"
 	"github.com/graphql-go/graphql/language/parser"
@@ -24,19 +23,6 @@ func Relay(pluginConfig RelayConfig) api.Plugin {
 	return api.Plugin{Name: "relay", Setup: func(build api.PluginBuild) {
 		gqlTagRegex, err := regexp.Compile("graphql\\s*`([^`]*)`;")
 
-		// @todo: might not be needed without "haste" option on Relay config
-		// build.OnResolve(api.OnResolveOptions{Filter: "^[^\\.].*\\.graphql"},
-		// 	func(ora api.OnResolveArgs) (api.OnResolveResult, error) {
-		// 		var result = build.Resolve(
-		// 			"./"+ora.Path,
-		// 			api.ResolveOptions{ResolveDir: ora.ResolveDir},
-		// 		)
-		// 		if len(result.Errors) > 0 {
-		// 			return api.OnResolveResult{Errors: result.Errors}, nil
-		// 		}
-		// 		return api.OnResolveResult{Path: result.Path}, nil
-		// 	},
-		// )
 		build.OnLoad(api.OnLoadOptions{Filter: "\\.tsx$"},
 			func(ola api.OnLoadArgs) (api.OnLoadResult, error) {
 				if err != nil {
@@ -113,9 +99,9 @@ func Relay(pluginConfig RelayConfig) api.Plugin {
 								"%v", printer.Print(definition),
 							)
 
-							var hasher = xxhash.New()
-							hasher.Write([]byte(definitionStr))
-							var hash = base32.StdEncoding.EncodeToString(hasher.Sum(nil))[:8]
+							var hash = fmt.Sprintf(
+								"%x", md5.Sum([]byte(definitionStr)),
+							)
 
 							var id = "graphql__" + hash
 							var importFile = name + ".graphql.ts"
