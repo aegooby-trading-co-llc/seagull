@@ -1,0 +1,9 @@
+{
+    "name": "@lobster/scripts",
+    "version": "0.0.0",
+    "type": "module",
+    "devDependencies": {},
+    "dependencies": {
+        "zx": "^6.2.4"
+    }
+}
