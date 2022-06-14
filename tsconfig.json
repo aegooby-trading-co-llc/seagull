@@ -1,9 +1,6 @@
 {
     "include": [
-        "packages/worker", 
-        "packages/app", 
-        "packages/scripts", 
-        "types/"
+        "packages/**/*"
     ],
     "compilerOptions": {
         "module": "esnext",
