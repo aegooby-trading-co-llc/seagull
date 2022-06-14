@@ -11,5 +11,6 @@ Trust me don't try to be cool and skip steps. You aren't that cool. I'm cool. Li
 
 1. This: `git clone https://github.com/aegooby/lobster && cd lobster`
 3. `yarn install`
-4. Compile ESBuild: `lobster compile`
-5. Run: `lobster serve`
+4. `brew install watchman`
+5. Compile ESBuild: `lobster compile`
+6. Run: `lobster serve`
