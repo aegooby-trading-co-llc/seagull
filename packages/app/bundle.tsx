@@ -6,8 +6,6 @@ import { relayEnvironment } from "./relay.js";
 import App from "./App.jsx";
 import "./styles.css";
 
-
-
 try {
     const root = document.querySelector("#root");
     if (!root) {

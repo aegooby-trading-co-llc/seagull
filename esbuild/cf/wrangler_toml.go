@@ -58,6 +58,7 @@ type WranglerConfig struct {
 	Vars               interface{}      "toml:\"vars\""
 	CompatibilityDate  string           "toml:\"compatibility_date\""
 	CompatibilityFlags []string         "toml:\"compatibility_flags\""
+	NodeCompat         bool             "toml:\"node_compat\""
 	Env                WranglerEnv      "toml:\"env\""
 	Build              WranglerBuild    "toml:\"build\""
 }
