@@ -57,8 +57,9 @@ func main() {
 		Format:      api.FormatESModule,
 		Sourcemap:   api.SourceMapLinked,
 		Platform:    api.PlatformBrowser,
-		Target:      api.ES2015,
-		Write:       true,
+		// @todo: downgrade
+		Target: api.ESNext,
+		Write:  true,
 		// Outdir:
 		JSXMode:     api.JSXModeTransform,
 		TreeShaking: api.TreeShakingTrue,
