@@ -49,13 +49,15 @@ import { log, $ } from "./zx-extended.mjs";
     "package": {
         exec: async function (args) {
             echo`${log} building for production`
-            await $`esbuild/main --mode prod`;
-            if (args && args["cf"]) {
-                await $`wrangler publish --env prod --dry-run --outdir=build/wrangler`;
+            if (args && args["upload"]) {
+                await $`esbuild/main --mode prod --upload ${args["upload"]}`;
+            } else {
+                await $`esbuild/main --mode prod`;
             }
+            await $`wrangler publish --env prod --dry-run --outdir=build/wrangler`;
         },
         options: {
-            "cf": true
+            "upload": true,
         },
         description: "bundles with ESBuild and Wrangler for production",
     }

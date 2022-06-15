@@ -1,30 +1,28 @@
-import * as React from "react"; 
-import GraphiQL from 'graphiql';
-import 'graphiql/graphiql.min.css';
+import * as React from "react";
 
-interface Props {
-    endpoint: string
+export function GraphiQLTemplate(): React.ReactElement {
+    const element =
+        <html>
+            <head>
+                <meta charSet="utf-8" />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1"
+                />
+
+                <meta name="description" content="" />
+
+                <link rel="stylesheet" href="/packages/app/entry/graphiql.css" />
+                <noscript>You need to enable JavaScript to run this app.</noscript>
+                <script>let global = globalThis;</script>
+                <script type="module" src="/packages/app/entry/graphiql.js"></script>
+
+                <title>GraphiQL</title>
+            </head>
+            <body style={{ margin: 0 }}>
+                <div id="graphiql" style={{ height: "100vh" }}></div>
+            </body>
+        </html>;
+    return element;
 }
-export function Graphiql(props: Props): React.ReactElement {
-    return (<GraphiQL
-      // style={{ height: '100vh' }}
-      headerEditorEnabled
-      fetcher={async (graphQLParams, options) => {
-        const data = await fetch(
-          props.endpoint,
-          {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-              //...options.headers,
-            },
-            body: JSON.stringify(graphQLParams),
-            credentials: 'same-origin',
-          },
-        );
-        return data.json().catch(() => data.text());
-      }}
-    />);
-    }
-  
+

@@ -16,10 +16,10 @@ export function HTMLTemplate(props: Props): React.ReactElement {
                 <meta name="description" content="" />
 
                 <link rel="icon" href="/public/favicon.ico" />
-                <link rel="stylesheet" href="/packages/app/bundle.css" />
+                <link rel="stylesheet" href="/packages/app/entry/bundle.css" />
                 <noscript>You need to enable JavaScript to run this app.</noscript>
                 <script>let global = globalThis;</script>
-                <script type="module" src="/packages/app/bundle.js"></script>
+                <script type="module" src="/packages/app/entry/bundle.js"></script>
 
                 <title>lobster</title>
             </head>

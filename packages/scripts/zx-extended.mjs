@@ -19,7 +19,7 @@ export const success = chalk.bold.green`[$]`;
  */
 export function $(pieces, ...args) {
     // @todo: double check
-    const command = pieces[0];
+    const command = pieces.join("") + args.join("");
     const split = command.split(" ");
     if (split.length > 0) {
         split[0] = chalk.cyan(split[0]);

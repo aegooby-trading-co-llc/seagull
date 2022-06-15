@@ -20,7 +20,7 @@ import (
 )
 
 var uploadFlag = getopt.StringLong(
-	"upload", 'u', "", "upload build files to Cloudflare KV",
+	"upload", 'u', "", "'preview' or 'live'",
 )
 var modeFlag = getopt.StringLong(
 	"mode", 'm', "", "'dev' or 'prod'",
@@ -44,22 +44,25 @@ func main() {
 
 	var entryPoints = append(
 		glob,
-		"packages/app/bundle.tsx",
-		"packages/__esbuild.ts",
+		"packages/app/entry/bundle.tsx",
+		"packages/app/entry/graphiql.tsx",
 		"packages/worker/entry/ssr.tsx",
+		"packages/__esbuild.ts",
 	)
 
 	var buildOptions = api.BuildOptions{
 		EntryPoints: entryPoints,
 		Bundle:      true,
 		Splitting:   true,
-		Color:       api.ColorAlways,
-		Format:      api.FormatESModule,
-		Sourcemap:   api.SourceMapLinked,
-		Platform:    api.PlatformBrowser,
-		// @todo: downgrade
-		Target: api.ESNext,
-		Write:  true,
+		// MinifyWhitespace:
+		// MinifyIdentifiers:
+		// MinifySyntax:
+		Color:     api.ColorAlways,
+		Format:    api.FormatESModule,
+		Sourcemap: api.SourceMapLinked,
+		Platform:  api.PlatformBrowser,
+		Target:    api.ES2018,
+		Write:     true,
 		// Outdir:
 		JSXMode:     api.JSXModeTransform,
 		TreeShaking: api.TreeShakingTrue,
@@ -84,8 +87,11 @@ func main() {
 		console.Log("Starting dev server")
 
 		var buildOptionsDev = api.BuildOptions{
-			Outdir:      config.BuildRootDev,
-			Incremental: true,
+			MinifyWhitespace:  false,
+			MinifyIdentifiers: false,
+			MinifySyntax:      false,
+			Outdir:            config.BuildRootDev,
+			Incremental:       true,
 			Plugins: []api.Plugin{
 				plugins.Relay(plugins.RelayConfig{Dev: true}),
 			},
@@ -137,7 +143,10 @@ func main() {
 		}
 
 		var buildOptionsProd = api.BuildOptions{
-			Outdir: config.BuildRootProd,
+			MinifyWhitespace:  true,
+			MinifyIdentifiers: true,
+			MinifySyntax:      true,
+			Outdir:            config.BuildRootProd,
 			Plugins: []api.Plugin{
 				plugins.Relay(plugins.RelayConfig{Dev: false}),
 				plugins.Hash(plugins.HashConfig{
@@ -153,7 +162,7 @@ func main() {
 			EntryNames: "[dir]/[name]@[hash]",
 		}
 		mergo.Merge(&buildOptionsProd, buildOptions)
-		buildResult := api.Build(buildOptionsProd)
+		var buildResult = api.Build(buildOptionsProd)
 
 		if len(buildResult.Warnings) > 0 {
 			var messages = api.FormatMessages(buildResult.Warnings,

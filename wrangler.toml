@@ -6,8 +6,7 @@ usage_model = 'bundled'
 routes = []
 compatibility_date = '2022-05-30'
 compatibility_flags = ['streams_enable_constructors']
-# @todo: remove
-node_compat = true
+node_compat = false
 [triggers]
 crons = []
 
@@ -29,7 +28,7 @@ MODE = 'development'
 
 
 [env.prod]
-main = 'build/esbuild/packages/worker/entry/ssr@HMKVEFSZ.js'
+main = 'build/esbuild/packages/worker/entry/ssr@Q62UQNWM.js'
 r2_buckets = []
 [[env.prod.kv_namespaces]]
 binding = 'STATIC_CONTENT'

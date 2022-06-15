@@ -1,4 +1,7 @@
+import * as ReactDOMServer from "react-dom/server";
 import * as graphql from "graphql";
+
+import { GraphiQLTemplate } from "./html/graphiql.jsx";
 import type { Env } from "./handlers.js";
 
 interface GraphQLRequest {
@@ -14,25 +17,13 @@ const rootValue = {
     },
 };
 
-export async function getHandler(request: Request, env: Env): Promise<Response> {
-    const params = new URLSearchParams(new URL(request.url).search);
-    try {
-        const source = params.get("query");
-        if (!source) {
-            return new Response("You idiot there's no query", {
-                status: 403,
-            });
-        }
-        const result = await graphql.graphql({ schema, source, rootValue });
-        return new Response(JSON.stringify(result), {
-            status: 200,
-        });
-    }
-    catch (error) {
-        return new Response(JSON.stringify(error), {
-            status: 500,
-        });
-    }
+export async function getHandler(env: Env): Promise<Response> {
+    const element = GraphiQLTemplate();
+    const stream = await ReactDOMServer.renderToReadableStream(element);
+    return new Response(stream, {
+        status: 200,
+        headers: { "content-type": "text/html;charset=UTF-8" }
+    });
 }
 
 export async function postHandler(request: Request, env: Env): Promise<Response> {
