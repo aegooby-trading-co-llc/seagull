@@ -42,9 +42,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	var entryPoints = make([]string, 0)
-	entryPoints = append(
-		glob, "packages/app/bundle.tsx", "packages/worker/entry/ssr.tsx",
+	var entryPoints = append(
+		glob,
+		"packages/app/bundle.tsx",
+		"packages/__esbuild.ts",
+		"packages/worker/entry/ssr.tsx",
 	)
 
 	var buildOptions = api.BuildOptions{
