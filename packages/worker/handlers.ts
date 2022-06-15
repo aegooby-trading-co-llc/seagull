@@ -4,6 +4,8 @@ import * as base64 from "base64-js";
 import type React from "react";
 
 import * as graphql from "./graphql.js";
+import type { StringValueNode } from "graphql";
+import { Graphiql } from "./html/graphiql.jsx";
 
 export interface HandlerConfig {
     reactElement: React.ReactElement;
@@ -13,6 +15,7 @@ export interface Env {
     // https://developers.cloudflare.com/workers/runtime-apis/kv/
     STATIC_CONTENT: KVNamespace;
     MODE: string;
+    GRAPHQL_ENDPOINT:string;
 }
 
 /**
@@ -40,7 +43,8 @@ function stripHash(path: string): string {
 async function graphqlHandler(request: Request, env: Env): Promise<Response> {
     switch (request.method) {
         case "GET":
-            return await graphql.getHandler(request, env);
+            //return await graphql.getHandler(request, env);
+            return await graphiqlHandler({reactElement: Graphiql({endpoint: env.GRAPHQL_ENDPOINT + "graphql"})});
         case "POST":
             return await graphql.postHandler(request, env);
         default:
@@ -59,6 +63,18 @@ async function reactHandler(config: HandlerConfig): Promise<Response> {
         headers: { "content-type": "text/html;charset=UTF-8" }
     });
 }
+
+
+async function graphiqlHandler(config: HandlerConfig): Promise<Response> {
+    const stream = await ReactDOMServer.renderToReadableStream(
+        config.reactElement
+    );
+    return new Response(stream, {
+        status: 200,
+        headers: { "content-type": "text/html;charset=UTF-8" }
+    });
+}
+
 
 async function staticHandler(content: string, path: string): Promise<Response> {
     await Promise.resolve();

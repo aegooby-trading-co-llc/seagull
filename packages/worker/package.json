@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "base64-js": "^1.5.1",
+        "graphiql": "^1.9.8",
         "graphql": "^16.5.0",
         "mime": "^3.0.0",
         "react": "18.1.0",
