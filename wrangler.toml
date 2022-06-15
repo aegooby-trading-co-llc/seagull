@@ -6,6 +6,7 @@ usage_model = 'bundled'
 routes = []
 compatibility_date = '2022-05-30'
 compatibility_flags = ['streams_enable_constructors']
+node_compat = false
 [triggers]
 crons = []
 
