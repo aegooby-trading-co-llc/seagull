@@ -7,7 +7,7 @@ export function GraphiQLTemplate(): React.ReactElement {
                 <meta charSet="utf-8" />
                 <meta
                     name="viewport"
-                    content="width=device-width, initial-scale=1"
+                    content="width=device-width, initial-scale=1, shrink-to-fit=no"
                 />
 
                 <meta name="description" content="" />
@@ -19,7 +19,9 @@ export function GraphiQLTemplate(): React.ReactElement {
 
                 <title>GraphiQL</title>
             </head>
-            <body style={{ margin: 0 }}>
+            <body style={{
+                margin: 0, padding: 0, minHeight: "100vh", overflow: "hidden"
+            }}>
                 <div id="graphiql" style={{ height: "100vh" }}></div>
             </body>
         </html>;

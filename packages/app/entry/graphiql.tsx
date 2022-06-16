@@ -17,7 +17,12 @@ try {
     const element: React.ReactElement =
         <React.StrictMode>
             <React.Suspense>
-                <GraphiQL fetcher={fetcher} />
+                <GraphiQL
+                    defaultSecondaryEditorOpen
+                    docExplorerOpen
+                    headerEditorEnabled
+                    fetcher={fetcher}
+                />
             </React.Suspense>
         </React.StrictMode>;
 
