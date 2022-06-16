@@ -3,7 +3,7 @@ import * as ReactDOMClient from "react-dom/client";
 import * as Relay from "react-relay";
 
 import { relayEnvironment } from "../relay.js";
-import App from "../App.jsx";
+import { default as App } from "../App.jsx";
 import "../styles.css";
 
 try {

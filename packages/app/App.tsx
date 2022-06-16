@@ -3,8 +3,8 @@ import * as Relay from "react-relay";
 import { graphql } from "relay-runtime";
 
 import { relayEnvironment } from "./relay.js";
+import { default as logo } from "./logo.svg";
 import "./App.css";
-import logo from "./logo.svg";
 
 import type { AppQuery } from "./__generated__/AppQuery.graphql.js";
 

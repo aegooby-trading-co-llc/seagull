@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { handlers } from "../handlers.js";
 import { HTMLTemplate } from "../html/react.jsx";
-import App from "../../app/App.jsx";
+import { default as App } from "@lobster/app/App.jsx";
 
 export default handlers({
     reactElement:
