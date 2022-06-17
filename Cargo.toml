@@ -6,4 +6,5 @@ edition = "2021"
 # https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-regex = "0.1.41"
+hyper = { version = "0.14.19", features = ["full"] }
+tokio = { version = "1.19.2", features = ["full"] }
