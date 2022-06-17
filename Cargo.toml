@@ -1,0 +1,9 @@
+[package]
+name = "lobster"
+version = "0.0.0"
+edition = "2021"
+
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+regex = "0.1.41"
