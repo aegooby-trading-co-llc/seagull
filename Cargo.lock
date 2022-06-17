@@ -452,6 +452,7 @@ dependencies = [
  "juniper",
  "juniper_hyper",
  "tokio",
+ "tokio-util",
 ]
 
 [[package]]
