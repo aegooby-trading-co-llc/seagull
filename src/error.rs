@@ -1,3 +1,6 @@
+/**
+    General error type that errors from other libraries will be converted to.
+*/
 #[derive(Clone, Debug)]
 pub enum Error {
     Message(String),

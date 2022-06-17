@@ -21,6 +21,8 @@ async fn service_handler(
     let response = hyper::Response::new(hyper::Body::empty());
     let mut message = message::Message::new(request, response, addr);
 
+    /* Registers a 500 Internal Server Error if we do something wrong and mess up   */
+    /* the message handling somehow.                                                */
     match handler::handle(&mut message, context).await {
         Ok(()) => (),
         Err(error) => {

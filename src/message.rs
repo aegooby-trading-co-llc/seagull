@@ -1,5 +1,11 @@
 use crate::result;
 
+/**
+    Object containing the incoming request and the current response for
+    an individual HTTP connection. This is helpful for when a response
+    needs to be edited in a GraphQL resolver or modified along the way.
+    This should also be updated to include cookies.
+*/
 #[derive(Debug)]
 pub struct Message {
     pub request: hyper::Request<hyper::Body>,
@@ -8,6 +14,9 @@ pub struct Message {
 }
 
 impl Message {
+    /**
+       Makes a copy of the message, requires await.
+    */
     pub async fn clone(&mut self) -> Self {
         async fn clone_hyper(
             message: &mut Message,
