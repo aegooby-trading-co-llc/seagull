@@ -8,3 +8,5 @@ edition = "2021"
 [dependencies]
 hyper = { version = "0.14.19", features = ["full"] }
 tokio = { version = "1.19.2", features = ["full"] }
+juniper = { version = "0.15.9" }
+juniper_hyper = { version = "0.8.0" }
