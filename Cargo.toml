@@ -6,8 +6,34 @@ edition = "2021"
 # https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+chrono = { version = "0.4.19" }
 hyper = { version = "0.14.19", features = ["full"] }
-tokio = { version = "1.19.2", features = ["full"] }
-tokio-util = { version = "0.7.3", features = ["io"] }
 juniper = { version = "0.15.9" }
 juniper_hyper = { version = "0.8.0" }
+mime = { version = "0.3.16" }
+mime_guess = { version = "2.0.4" }
+tokio = { version = "1.19.2", features = ["full"] }
+tokio-util = { version = "0.7.3", features = ["io"] }
+
+[features]
+dev = []
+prod = []
+all = ["dev", "prod"]
+
+[profile.dev]
+opt-level = 1
+debug = true
+debug-assertions = true
+overflow-checks = true
+lto = false
+panic = 'unwind'
+incremental = true
+
+[profile.release]
+opt-level = 3
+debug = false
+debug-assertions = false
+overflow-checks = false
+lto = false
+panic = 'unwind'
+incremental = false

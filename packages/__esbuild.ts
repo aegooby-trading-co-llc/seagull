@@ -7,5 +7,4 @@
  * file imports so that static files load correctly.
  */
 import "./app/entry/bundle.jsx";
-import "./app/entry/graphiql.jsx";
-import "./worker/entry/ssr.jsx";
+// import "./app/entry/graphiql.jsx";

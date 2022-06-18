@@ -60,6 +60,9 @@
     "rust-analyzer.imports.merge.glob": false,
     "rust-analyzer.imports.prefix": "plain",
     "rust-analyzer.cargo.buildScripts.useRustcWrapper": true,
+    "rust-analyzer.cargo.features": [
+        "all"
+    ],
     "editor.semanticTokenColorCustomizations": {
         "[Gruvbox Dark Medium]": {
             "rules": {

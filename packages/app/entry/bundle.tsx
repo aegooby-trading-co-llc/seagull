@@ -18,16 +18,9 @@ try {
                 <App />
             </Relay.RelayEnvironmentProvider>
         </React.StrictMode>;
-    switch (process.env.NODE_ENV) {
-        case "development":
-            ReactDOMClient.createRoot(root).render(element);
-            break;
-        case "production":
-            ReactDOMClient.hydrateRoot(root, element);
-            break;
-        default:
-            break;
-    }
+
+    // @todo: look into SSR
+    ReactDOMClient.createRoot(root).render(element);
 } catch (error) {
     console.error(error);
 }
