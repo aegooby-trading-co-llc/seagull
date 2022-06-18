@@ -7,14 +7,19 @@ mod message;
 mod result;
 mod schema;
 
+/**
+    Listener CTRL-C interrupt to shut down "gracefully".
+*/
 async fn shutdown_signal() -> () {
-    /* Wait for the CTRL+C signal */
     match tokio::signal::ctrl_c().await {
         Ok(()) => println!(),
         Err(error) => eprintln!("Failed to listen for interrupt: {}", error),
     }
 }
 
+/**
+    Creates a `Message` and runs the `handler::handle()` function on it.
+*/
 async fn service_handler(
     context: context::Context,
     addr: std::net::SocketAddr,

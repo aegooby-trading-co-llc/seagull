@@ -2,6 +2,9 @@ use crate::{message, result};
 
 use std::str::FromStr;
 
+/**
+    Calculates an ETag based on when it was last modified.
+*/
 fn calculate(metadata: &std::fs::Metadata) -> String {
     fn parse_modified(metadata: &std::fs::Metadata) -> String {
         match metadata.modified() {
@@ -23,6 +26,10 @@ fn calculate(metadata: &std::fs::Metadata) -> String {
     let size = parse_size(metadata);
     format!("W/{}-{}", size, modified)
 }
+/**
+    Uh... I know what this does. 100%. This checks... uh... if none match.
+    Yes. I didn't copy paste any of this. Why would I do that? Fuck you.
+*/
 fn if_none_match(value: &str, etag: &str) -> bool {
     if value.trim() == "*" {
         false
@@ -31,6 +38,11 @@ fn if_none_match(value: &str, etag: &str) -> bool {
     }
 }
 
+/**
+    Generates an ETag for a message containing a static file. An ETag is kind of
+    like a file hash, a way of identifying file uniqueness so that the browser cache
+    updates things when a file with the same name is updated.
+*/
 pub fn generate(
     message: &mut message::Message,
     metadata: &std::fs::Metadata,

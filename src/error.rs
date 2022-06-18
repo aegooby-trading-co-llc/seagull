@@ -17,7 +17,6 @@ impl std::fmt::Display for Error {
         }
     }
 }
-
 impl<ErrorType: std::error::Error> From<ErrorType> for Error {
     fn from(error: ErrorType) -> Self {
         Self::new(&format!("{:#?}", error))
