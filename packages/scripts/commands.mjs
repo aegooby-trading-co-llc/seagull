@@ -16,20 +16,20 @@ import { log, $ } from "./zx-extended.mjs";
  * @type {Record<string, Command>}
  */
 export const commands = {
-    "compile": {
+    "compile-go": {
         exec: async function () {
             echo`${log} compiling Go`;
             await $`go build -o esbuild/main esbuild/main.go`;
         },
         options: {},
-        description: "compiles ESBuild and plugins",
+        description: "compiles Go code",
     },
     "serve": {
         exec: async function () {
             echo`${log} starting dev server`;
             const promises = [
                 $`relay-compiler --watch`,
-                $`wrangler dev --env dev --local`,
+                $`cargo run --features dev`,
                 $`esbuild/main --mode dev`,
             ];
             promises.map(function (promise) { promise._inheritStdin = false; });
@@ -44,20 +44,14 @@ export const commands = {
             }
         },
         options: {},
-        description: "runs local development server",
+        description: "runs local development servers",
     },
     "package": {
-        exec: async function (args) {
+        exec: async function () {
             echo`${log} building for production`;
-            if (args && args["upload"]) {
-                await $`esbuild/main --mode prod --upload ${args["upload"]}`;
-            } else {
-                await $`esbuild/main --mode prod`;
-            }
+            await $`esbuild/main --mode prod`;
         },
-        options: {
-            "upload": true,
-        },
-        description: "bundles with ESBuild and Wrangler for production",
+        options: {},
+        description: "builds client and server for production",
     }
 };
