@@ -99,6 +99,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "dataloader"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9aa4240e00a8a3341eaffbb37780ac1450040c8dc72c78b7616ec5f12c91faf7"
+dependencies = [
+ "async-trait",
+ "tokio",
+]
+
+[[package]]
 name = "derive_utils"
 version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -448,7 +458,9 @@ checksum = "7fb9b38af92608140b86b693604b9ffcc5824240a484d1ecd4795bacb2fe88f3"
 name = "lobster"
 version = "0.0.0"
 dependencies = [
+ "async-trait",
  "chrono",
+ "dataloader",
  "hyper",
  "juniper",
  "juniper_hyper",

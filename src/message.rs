@@ -69,3 +69,13 @@ impl Message {
         self.response
     }
 }
+
+impl Default for Message {
+    fn default() -> Self {
+        Self {
+            request: Default::default(),
+            response: Default::default(),
+            address: std::net::SocketAddr::from(([127, 0, 0, 1], 8787)),
+        }
+    }
+}

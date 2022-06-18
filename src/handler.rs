@@ -42,7 +42,7 @@ pub async fn handle(
                 let mut response = hyper::Client::new()
                     .get(("http://localhost:3080/".to_string() + pathname).parse()?)
                     .await?;
-                let is_file = match response.headers().get("content-type") {
+                let is_file = match response.headers().get(hyper::header::CONTENT_TYPE) {
                     Some(content_type) => !content_type.to_str()?.starts_with("text/html"),
                     None => true,
                 };
@@ -51,7 +51,7 @@ pub async fn handle(
                         hyper::Body::from(hyper::body::to_bytes(response.body_mut()).await?);
                 } else {
                     /* Render React */
-                    content_type::html(message).await?;
+                    content_type::html(message)?;
                     let file = tokio::fs::File::open(path).await?;
                     let stream = tokio_util::io::ReaderStream::new(file);
                     *message.response.body_mut() = hyper::Body::wrap_stream(stream);
@@ -66,12 +66,12 @@ pub async fn handle(
                         if metadata.is_file() {
                             build_root.join(pathname)
                         } else {
-                            content_type::html(message).await?;
+                            content_type::html(message)?;
                             build_root.join("public/index.html")
                         }
                     }
                     Err(_error) => {
-                        content_type::html(message).await?;
+                        content_type::html(message)?;
                         build_root.join("public/index.html")
                     }
                 };
@@ -93,6 +93,6 @@ pub async fn handle(
     };
 
     /* Make sure some "content-type" is set */
-    content_type::guess(message).await?;
+    content_type::guess(message)?;
     return Ok(());
 }
