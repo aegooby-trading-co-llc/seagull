@@ -88,7 +88,7 @@ pub async fn handle(
             }
         }
         _ => {
-            *message.response.status_mut() = hyper::StatusCode::NOT_FOUND;
+            *message.response.status_mut() = hyper::StatusCode::METHOD_NOT_ALLOWED;
         }
     };
 
