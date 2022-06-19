@@ -3,7 +3,8 @@
 ## Things you need
 * [NPM/Node](https://nodejs.org/en/download/)
 * [Go](https://go.dev/doc/install)
-* Do this: `sudo npm i -g yarn wrangler relay-compiler zx`
+* [Rust](https://www.rust-lang.org/tools/install)
+* Do this: `sudo npm i -g yarn relay-compiler zx`
 * [Watchman](https://facebook.github.io/watchman/)
 
 Trust me don't try to be cool and skip steps. You aren't that cool. I'm cool. Listen to me.
