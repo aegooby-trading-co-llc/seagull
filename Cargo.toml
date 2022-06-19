@@ -5,6 +5,19 @@ edition = "2021"
 
 # https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[[bin]]
+name = "seagull"
+path = "server/main.rs"
+test = true
+doctest = true
+bench = true
+doc = true
+plugin = false
+proc-macro = false
+harness = true
+edition = "2021"
+required-features = []
+
 [dependencies]
 async-trait = { version = "0.1.56" }
 chrono = { version = "0.4.19" }
