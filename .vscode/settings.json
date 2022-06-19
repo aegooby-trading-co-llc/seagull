@@ -47,5 +47,51 @@
     "typescript.preferences.importModuleSpecifierEnding": "js",
     "go.toolsEnvVars": {
         "GOPROXY": "direct"
-    }
+    },
+    "rust-analyzer.debug.engine": "vadimcn.vscode-lldb",
+    "rust-analyzer.lens.enable": false,
+    "rust-analyzer.server.path": null,
+    "rust-analyzer.checkOnSave.enable": true,
+    "[rust]": {
+        "editor.rulers": [
+            100
+        ]
+    },
+    "rust-analyzer.imports.merge.glob": false,
+    "rust-analyzer.imports.prefix": "plain",
+    "rust-analyzer.cargo.buildScripts.useRustcWrapper": true,
+    "rust-analyzer.cargo.features": [
+        "all"
+    ],
+    "editor.semanticTokenColorCustomizations": {
+        "[Gruvbox Dark Medium]": {
+            "rules": {
+                "selfKeyword": {
+                    "bold": true,
+                    "foreground": "#fe8019"
+                },
+                "selfParameter": {
+                    "bold": true,
+                    "foreground": "#fe8019"
+                },
+                "namespace": {
+                    "foreground": "#D3869B"
+                },
+                "enumMember": {
+                    "foreground": "#8EC07C",
+                }
+            }
+        },
+        "rules": {
+            "method": {
+                "bold": true
+            },
+            "enumMember": {
+                "bold": true
+            },
+            "*.mutable": {
+                "underline": false
+            },
+        },
+    },
 }

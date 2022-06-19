@@ -15,24 +15,24 @@ import { log, $ } from "./zx-extended.mjs";
 /**
  * @type {Record<string, Command>}
  */
- export const commands = {
-    "compile": {
+export const commands = {
+    "compile-go": {
         exec: async function () {
-            echo`${log} compiling Go`
+            echo`${log} compiling Go`;
             await $`go build -o esbuild/main esbuild/main.go`;
         },
         options: {},
-        description: "compiles ESBuild and plugins",
+        description: "compiles Go code",
     },
     "serve": {
         exec: async function () {
-            echo`${log} starting dev server`
+            echo`${log} starting dev server`;
             const promises = [
                 $`relay-compiler --watch`,
-                $`wrangler dev --env dev --local`,
+                $`cargo run --features dev`,
                 $`esbuild/main --mode dev`,
             ];
-            promises.map(function (promise) { promise._inheritStdin = false })
+            promises.map(function (promise) { promise._inheritStdin = false; });
             await sleep(100);
             echo`${log} file server: ${chalk.blue`http://localhost:3080/`}`;
             echo`${log} main server: ${chalk.magenta`http://localhost:8787/`}`;
@@ -44,21 +44,14 @@ import { log, $ } from "./zx-extended.mjs";
             }
         },
         options: {},
-        description: "runs local development server",
+        description: "runs local development servers",
     },
     "package": {
-        exec: async function (args) {
-            echo`${log} building for production`
-            if (args && args["upload"]) {
-                await $`esbuild/main --mode prod --upload ${args["upload"]}`;
-            } else {
-                await $`esbuild/main --mode prod`;
-            }
-            await $`wrangler publish --env prod --dry-run --outdir=build/wrangler`;
+        exec: async function () {
+            echo`${log} building for production`;
+            await $`esbuild/main --mode prod`;
         },
-        options: {
-            "upload": true,
-        },
-        description: "bundles with ESBuild and Wrangler for production",
+        options: {},
+        description: "builds client and server for production",
     }
-}
+};

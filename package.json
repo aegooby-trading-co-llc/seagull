@@ -1,5 +1,5 @@
 {
-    "name": "@lobster/-",
+    "name": "@seagull/-",
     "version": "0.0.0",
     "type": "module",
     "private": true,
@@ -14,5 +14,5 @@
         "typescript": "^4.6.4"
     },
     "dependencies": {},
-    "lobster": "packages/scripts/main.mjs"
+    "seagull": "packages/scripts/main.mjs"
 }

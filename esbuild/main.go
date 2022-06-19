@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"seagull/esbuild/cf"
+	"seagull/esbuild/config"
+	"seagull/esbuild/console"
+	"seagull/esbuild/plugins"
 	"syscall"
 
 	"github.com/evanw/esbuild/pkg/api"
@@ -12,11 +16,6 @@ import (
 	"github.com/mattn/go-zglob"
 	"github.com/pborman/getopt/v2"
 	"github.com/ttacon/chalk"
-
-	"lobster/esbuild/cf"
-	"lobster/esbuild/config"
-	"lobster/esbuild/console"
-	"lobster/esbuild/plugins"
 )
 
 var uploadFlag = getopt.StringLong(
@@ -45,8 +44,6 @@ func main() {
 	var entryPoints = append(
 		glob,
 		"packages/app/entry/bundle.tsx",
-		"packages/app/entry/graphiql.tsx",
-		"packages/worker/entry/ssr.tsx",
 		"packages/__esbuild.ts",
 	)
 
@@ -77,9 +74,9 @@ func main() {
 			".jpg":  api.LoaderFile,
 			".svg":  api.LoaderFile,
 		},
-		// AssetNames:
-		// ChunkNames:
-		// EntryNames:
+		AssetNames: "[dir]/[name]",
+		ChunkNames: "[dir]/[name][hash]",
+		EntryNames: "[dir]/[name]",
 	}
 
 	switch *modeFlag {
@@ -99,9 +96,6 @@ func main() {
 				"process.env.NODE_ENV":         "\"development\"",
 				"process.env.GRAPHQL_ENDPOINT": "\"http://localhost:8787/\"",
 			},
-			AssetNames: "[dir]/[name]",
-			ChunkNames: "[dir]/[name][hash]",
-			EntryNames: "[dir]/[name]",
 		}
 		mergo.Merge(&buildOptionsDev, buildOptions)
 
@@ -149,17 +143,16 @@ func main() {
 			Outdir:            config.BuildRootProd,
 			Plugins: []api.Plugin{
 				plugins.Relay(plugins.RelayConfig{Dev: false}),
-				plugins.Hash(plugins.HashConfig{
-					WorkerPath: "/packages/worker/entry/ssr.js",
-				}),
+				// @todo: remove
+				// plugins.Hash(plugins.HashConfig{
+				// 	WorkerPath: "/packages/worker/entry/ssr.js",
+				// }),
 			},
 			Define: map[string]string{
-				"process.env.NODE_ENV":         "\"production\"",
-				"process.env.GRAPHQL_ENDPOINT": "\"https://aegooby.workers.dev/\"",
+				"process.env.NODE_ENV": "\"production\"",
+				// @todo:
+				"process.env.GRAPHQL_ENDPOINT": "\"https://_/\"",
 			},
-			AssetNames: "[dir]/[name]@[hash]",
-			ChunkNames: "[dir]/[name][hash]@[hash]",
-			EntryNames: "[dir]/[name]@[hash]",
 		}
 		mergo.Merge(&buildOptionsProd, buildOptions)
 		var buildResult = api.Build(buildOptionsProd)
@@ -190,6 +183,7 @@ func main() {
 			os.Exit(1)
 		}
 
+		// @todo: remove
 		if *uploadFlag != "" {
 			if *uploadFlag != "preview" && *uploadFlag != "live" {
 				console.Error(

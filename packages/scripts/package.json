@@ -1,5 +1,5 @@
 {
-    "name": "@lobster/scripts",
+    "name": "@seagull/scripts",
     "version": "0.0.0",
     "type": "module",
     "devDependencies": {},
