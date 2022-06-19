@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"seagull/esbuild/cf"
+	"seagull/esbuild/config"
+	"seagull/esbuild/console"
+	"seagull/esbuild/plugins"
 	"syscall"
 
 	"github.com/evanw/esbuild/pkg/api"
@@ -12,11 +16,6 @@ import (
 	"github.com/mattn/go-zglob"
 	"github.com/pborman/getopt/v2"
 	"github.com/ttacon/chalk"
-
-	"seagull/esbuild/cf"
-	"seagull/esbuild/config"
-	"seagull/esbuild/console"
-	"seagull/esbuild/plugins"
 )
 
 var uploadFlag = getopt.StringLong(

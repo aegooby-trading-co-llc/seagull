@@ -8,12 +8,11 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"seagull/esbuild/config"
+	"seagull/esbuild/console"
 	"strings"
 
 	"github.com/cloudflare/cloudflare-go"
-
-	"seagull/esbuild/config"
-	"seagull/esbuild/console"
 )
 
 const hashedFilePattern = "(.*)@([A-Z0-9]{8})(\\..*)"

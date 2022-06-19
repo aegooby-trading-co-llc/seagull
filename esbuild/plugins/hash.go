@@ -4,13 +4,12 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"seagull/esbuild/cf"
+	"seagull/esbuild/console"
 	"strings"
 
 	"github.com/evanw/esbuild/pkg/api"
 	"github.com/pelletier/go-toml/v2"
-
-	"seagull/esbuild/cf"
-	"seagull/esbuild/console"
 )
 
 const jsPathPattern = "(.*)(\\.js$)"
