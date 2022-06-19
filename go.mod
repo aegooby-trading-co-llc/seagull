@@ -1,4 +1,4 @@
-module lobster
+module seagull
 
 go 1.18
 

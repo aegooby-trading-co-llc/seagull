@@ -9,8 +9,8 @@ import (
 	"github.com/evanw/esbuild/pkg/api"
 	"github.com/pelletier/go-toml/v2"
 
-	"lobster/esbuild/cf"
-	"lobster/esbuild/console"
+	"seagull/esbuild/cf"
+	"seagull/esbuild/console"
 )
 
 const jsPathPattern = "(.*)(\\.js$)"

@@ -13,10 +13,10 @@ import (
 	"github.com/pborman/getopt/v2"
 	"github.com/ttacon/chalk"
 
-	"lobster/esbuild/cf"
-	"lobster/esbuild/config"
-	"lobster/esbuild/console"
-	"lobster/esbuild/plugins"
+	"seagull/esbuild/cf"
+	"seagull/esbuild/config"
+	"seagull/esbuild/console"
+	"seagull/esbuild/plugins"
 )
 
 var uploadFlag = getopt.StringLong(

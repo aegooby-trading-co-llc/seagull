@@ -2,4 +2,4 @@
 
 import { $, quiet } from "zx";
 
-await quiet($`rm -rf ~/.local/bin/lobster`);
+await quiet($`rm -rf ~/.local/bin/seagull`);

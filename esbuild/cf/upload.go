@@ -12,8 +12,8 @@ import (
 
 	"github.com/cloudflare/cloudflare-go"
 
-	"lobster/esbuild/config"
-	"lobster/esbuild/console"
+	"seagull/esbuild/config"
+	"seagull/esbuild/console"
 )
 
 const hashedFilePattern = "(.*)@([A-Z0-9]{8})(\\..*)"

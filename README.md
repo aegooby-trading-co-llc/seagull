@@ -1,4 +1,4 @@
-# lobster
+# seagull
 
 ## Things you need
 * [NPM/Node](https://nodejs.org/en/download/)
@@ -11,8 +11,8 @@ Trust me don't try to be cool and skip steps. You aren't that cool. I'm cool. Li
 
 ## Things you should do
 
-1. This: `git clone https://github.com/aegooby/lobster && cd lobster`
+1. This: `git clone https://github.com/aegooby/seagull && cd seagull`
 2. `yarn install`
-3. Install Lobster: `packages/scripts/install.mjs`
-4. Compile ESBuild: `lobster compile`
-5. Run: `lobster serve`
+3. Install Seagull: `packages/scripts/install.mjs`
+4. Compile ESBuild: `seagull compile`
+5. Run: `seagull serve`
