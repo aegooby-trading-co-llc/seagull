@@ -150,8 +150,8 @@ func main() {
 			},
 			Define: map[string]string{
 				"process.env.NODE_ENV": "\"production\"",
-				// @todo:
-				"process.env.GRAPHQL_ENDPOINT": "\"https://_/\"",
+				// @todo: add real url
+				"process.env.GRAPHQL_ENDPOINT": "\"http://localhost:8787/\"",
 			},
 		}
 		mergo.Merge(&buildOptionsProd, buildOptions)

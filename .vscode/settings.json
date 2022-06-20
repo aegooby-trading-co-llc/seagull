@@ -1,6 +1,14 @@
 {
     "deno.enable": false,
+    "deno.unstable": true,
+    "deno.lint": true,
+    "deno.suggest.completeFunctionCalls": true,
+    "deno.cache": ".cache/",
+    "deno.suggest.autoImports": true,
+    "deno.path": "/usr/local/bin/deno",
+
     "editor.formatOnSave": true,
+
     "typescript.validate.enable": true,
     "typescript.format.placeOpenBraceOnNewLineForFunctions": false,
     "javascript.format.placeOpenBraceOnNewLineForFunctions": false,
@@ -45,9 +53,11 @@
     "typescript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": true,
     "javascript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": true,
     "typescript.preferences.importModuleSpecifierEnding": "js",
+
     "go.toolsEnvVars": {
         "GOPROXY": "direct"
     },
+
     "rust-analyzer.debug.engine": "vadimcn.vscode-lldb",
     "rust-analyzer.lens.enable": false,
     "rust-analyzer.server.path": null,
@@ -63,6 +73,7 @@
     "rust-analyzer.cargo.features": [
         "all"
     ],
+
     "editor.semanticTokenColorCustomizations": {
         "[Gruvbox Dark Medium]": {
             "rules": {
