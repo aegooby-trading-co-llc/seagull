@@ -1,9 +1,10 @@
-use diesel::Connection;
+use std::env;
 
-use self::core::result;
-use crate::core;
+use diesel::{pg::PgConnection, Connection};
 
-pub fn connect() -> result::Result<diesel::pg::PgConnection> {
-    let url = std::env::var("DATABASE_URL")?;
-    Ok(diesel::pg::PgConnection::establish(&url)?)
+use crate::core::result::Result;
+
+pub fn connect() -> Result<PgConnection> {
+    let url = env::var("DATABASE_URL")?;
+    Ok(PgConnection::establish(&url)?)
 }

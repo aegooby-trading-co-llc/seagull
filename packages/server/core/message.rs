@@ -1,4 +1,8 @@
-use crate::core::result;
+use std::net::SocketAddr;
+
+use hyper::{body, Body, Request, Response};
+
+use crate::core::result::Result;
 
 /**
     Object containing the incoming request and the current response for
@@ -8,9 +12,9 @@ use crate::core::result;
 */
 #[derive(Debug)]
 pub struct Message {
-    pub request: hyper::Request<hyper::Body>,
-    pub response: hyper::Response<hyper::Body>,
-    pub address: std::net::SocketAddr,
+    pub request: Request<Body>,
+    pub response: Response<Body>,
+    pub address: SocketAddr,
 }
 
 impl Message {
@@ -18,26 +22,24 @@ impl Message {
        Makes a copy of the message, requires await.
     */
     pub async fn clone(&mut self) -> Self {
-        async fn clone_hyper(
-            message: &mut Message,
-        ) -> result::Result<(hyper::Request<hyper::Body>, hyper::Response<hyper::Body>)> {
-            let request_body = hyper::body::to_bytes(message.request.body_mut()).await?;
-            *message.request.body_mut() = hyper::Body::from(request_body.clone());
-            let mut request = hyper::Request::builder()
+        async fn clone_hyper(message: &mut Message) -> Result<(Request<Body>, Response<Body>)> {
+            let request_body = body::to_bytes(message.request.body_mut()).await?;
+            *message.request.body_mut() = Body::from(request_body.clone());
+            let mut request = Request::builder()
                 .version(message.request.version())
                 .method(message.request.method())
                 .uri(message.request.uri())
-                .body(hyper::Body::from(request_body.clone()))?;
+                .body(Body::from(request_body.clone()))?;
             for (key, value) in message.request.headers() {
                 request.headers_mut().append(key, value.clone());
             }
 
-            let response_body = hyper::body::to_bytes(message.response.body_mut()).await?;
-            *message.response.body_mut() = hyper::Body::from(response_body.clone());
-            let mut response = hyper::Response::builder()
+            let response_body = body::to_bytes(message.response.body_mut()).await?;
+            *message.response.body_mut() = Body::from(response_body.clone());
+            let mut response = Response::builder()
                 .version(message.response.version())
                 .status(message.response.status())
-                .body(hyper::Body::from(response_body))?;
+                .body(Body::from(response_body))?;
             for (key, value) in message.response.headers() {
                 response.headers_mut().append(key, value.clone());
             }
@@ -46,7 +48,7 @@ impl Message {
         }
         let (request, response) = match clone_hyper(self).await {
             Ok((request, response)) => (request, response),
-            Err(_error) => (hyper::Request::default(), hyper::Response::default()),
+            Err(_error) => (Request::default(), Response::default()),
         };
         Self {
             request,
@@ -54,18 +56,14 @@ impl Message {
             address: self.address,
         }
     }
-    pub fn new(
-        request: hyper::Request<hyper::Body>,
-        response: hyper::Response<hyper::Body>,
-        address: std::net::SocketAddr,
-    ) -> Self {
+    pub fn new(request: Request<Body>, response: Response<Body>, address: SocketAddr) -> Self {
         Self {
             request,
             response,
             address,
         }
     }
-    pub fn done(self) -> hyper::Response<hyper::Body> {
+    pub fn done(self) -> Response<Body> {
         self.response
     }
 }
@@ -75,7 +73,7 @@ impl Default for Message {
         Self {
             request: Default::default(),
             response: Default::default(),
-            address: std::net::SocketAddr::from(([127, 0, 0, 1], 8787)),
+            address: SocketAddr::from(([127, 0, 0, 1], 8787)),
         }
     }
 }

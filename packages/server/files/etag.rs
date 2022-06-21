@@ -1,16 +1,16 @@
 use self::core::{message, result};
 use crate::core;
 
-use std::str::FromStr;
+use std::{fs::Metadata, str::FromStr, time::UNIX_EPOCH};
 
 /**
     Calculates an ETag based on when it was last modified.
 */
-fn calculate(metadata: &std::fs::Metadata) -> String {
-    fn parse_modified(metadata: &std::fs::Metadata) -> String {
+fn calculate(metadata: &Metadata) -> String {
+    fn parse_modified(metadata: &Metadata) -> String {
         match metadata.modified() {
             Ok(modified) => {
-                if let Ok(duration) = modified.duration_since(std::time::UNIX_EPOCH) {
+                if let Ok(duration) = modified.duration_since(UNIX_EPOCH) {
                     let time = duration.as_secs();
                     format!("{:#x}", time)
                 } else {
@@ -20,7 +20,7 @@ fn calculate(metadata: &std::fs::Metadata) -> String {
             Err(_error) => "0".to_string(),
         }
     }
-    fn parse_size(metadata: &std::fs::Metadata) -> String {
+    fn parse_size(metadata: &Metadata) -> String {
         format!("{:#x}", metadata.len())
     }
     let modified = parse_modified(metadata);

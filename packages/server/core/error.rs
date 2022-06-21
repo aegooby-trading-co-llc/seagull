@@ -1,3 +1,5 @@
+use std::{error, fmt};
+
 /**
     General error type that errors from other libraries will be converted to.
 */
@@ -10,14 +12,14 @@ impl Error {
         Self::Message(message.to_string())
     }
 }
-impl std::fmt::Display for Error {
-    fn fmt(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl fmt::Display for Error {
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Error::Message(message) => write!(formatter, "{}", message),
         }
     }
 }
-impl<ErrorType: std::error::Error> From<ErrorType> for Error {
+impl<ErrorType: error::Error> From<ErrorType> for Error {
     fn from(error: ErrorType) -> Self {
         Self::new(&format!("{:#?}", error))
     }

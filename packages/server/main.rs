@@ -5,7 +5,10 @@ mod graphql;
 mod handler;
 mod renderer;
 
-use self::core::{context, message, result};
+use self::core::{context::Context, message::Message, result::Result};
+use std::convert::Infallible;
+
+use hyper::{Body, Request, Response};
 
 #[macro_use]
 extern crate diesel;
@@ -24,12 +27,12 @@ async fn shutdown_signal() -> () {
     Creates a `Message` and runs the `handler::handle()` function on it.
 */
 async fn service_handler(
-    context: context::Context,
+    context: Context,
     addr: std::net::SocketAddr,
-    request: hyper::Request<hyper::Body>,
-) -> Result<hyper::Response<hyper::Body>, std::convert::Infallible> {
-    let response = hyper::Response::new(hyper::Body::empty());
-    let mut message = message::Message::new(request, response, addr);
+    request: Request<Body>,
+) -> std::result::Result<Response<Body>, Infallible> {
+    let response = Response::new(Body::empty());
+    let mut message = Message::new(request, response, addr);
 
     /* Registers a 500 Internal Server Error if we do something */
     /* wrong and mess up the message handling somehow           */
@@ -43,13 +46,13 @@ async fn service_handler(
     Ok(message.done())
 }
 
-async fn __main() -> result::Result<()> {
+async fn __main() -> Result<()> {
     dotenv::dotenv()?;
 
     /* 127.0.0.1:8787 = localhost:8787 */
     let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 8787));
 
-    let context = context::Context {};
+    let context = Context::new();
     let make_service =
         hyper::service::make_service_fn(move |conn: &hyper::server::conn::AddrStream| {
             /* We have to clone the context to share it with each */

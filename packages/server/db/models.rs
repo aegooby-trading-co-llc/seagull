@@ -1,6 +1,6 @@
 use crate::db::schema;
 
-#[derive(diesel::Queryable)]
+#[derive(Queryable)]
 pub struct Post {
     pub id: i32,
     pub title: String,
@@ -10,7 +10,7 @@ pub struct Post {
 
 use schema::posts;
 
-#[derive(diesel::Insertable)]
+#[derive(Insertable)]
 #[table_name = "posts"]
 pub struct NewPost<'lt> {
     pub title: &'lt str,

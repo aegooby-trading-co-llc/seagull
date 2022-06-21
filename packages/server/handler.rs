@@ -1,28 +1,33 @@
-use self::core::{context, message, result};
-use self::files::{content_type, etag};
-use crate::{core, files, graphql};
+use std::sync::{Arc, RwLock};
+
+use juniper_hyper::{graphiql, graphql};
+
+use crate::{
+    core::{context, message, result},
+    files::{content_type, etag},
+    graphql::juniper_context::JuniperContext,
+};
 
 /**
     General function for handling a `Message` object.
 */
 pub async fn handle(
     message: &mut message::Message,
-    _context: context::Context,
+    context: context::Context,
 ) -> result::Result<()> {
-    let root_node = std::sync::Arc::new(juniper::RootNode::new(
-        graphql::schema::Query,
-        juniper::EmptyMutation::<()>::default(),
-        juniper::EmptySubscription::<()>::default(),
+    let juniper_context = Arc::new(JuniperContext::new(
+        Arc::new(RwLock::new(message.clone().await)),
+        context.clone(),
     ));
 
     match (message.request.method(), message.request.uri().path()) {
         (&hyper::Method::GET, "/graphql") => {
-            message.response = juniper_hyper::graphiql("/graphql", None).await;
+            message.response = graphiql("/graphql", None).await;
         }
         (&hyper::Method::POST, "/graphql") => {
-            message.response = juniper_hyper::graphql(
-                root_node,
-                std::sync::Arc::new(()),
+            message.response = graphql(
+                context.graphql_root_node,
+                juniper_context.clone(),
                 message.clone().await.request,
             )
             .await;
