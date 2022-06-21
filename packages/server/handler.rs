@@ -1,30 +1,36 @@
-use std::sync::{Arc, RwLock};
+use std::{
+    path::Path,
+    sync::{Arc, RwLock},
+};
 
+use hyper::{body, header::CONTENT_TYPE, Body, Client, Method, StatusCode};
 use juniper_hyper::{graphiql, graphql};
+use tokio::fs::{metadata, File};
+use tokio_util::io::ReaderStream;
 
 use crate::{
-    core::{context, message, result},
-    files::{content_type, etag},
+    core::{context::Context, message::Message, result::Result},
+    files::{
+        content_type::{self, html},
+        etag::{self, generate},
+    },
     graphql::juniper_context::JuniperContext,
 };
 
 /**
     General function for handling a `Message` object.
 */
-pub async fn handle(
-    message: &mut message::Message,
-    context: context::Context,
-) -> result::Result<()> {
+pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
     let juniper_context = Arc::new(JuniperContext::new(
         Arc::new(RwLock::new(message.clone().await)),
         context.clone(),
     ));
 
     match (message.request.method(), message.request.uri().path()) {
-        (&hyper::Method::GET, "/graphql") => {
+        (&Method::GET, "/graphql") => {
             message.response = graphiql("/graphql", None).await;
         }
-        (&hyper::Method::POST, "/graphql") => {
+        (&Method::POST, "/graphql") => {
             message.response = graphql(
                 context.graphql_root_node,
                 juniper_context.clone(),
@@ -32,10 +38,10 @@ pub async fn handle(
             )
             .await;
         }
-        (&hyper::Method::POST, "/auth") => {
+        (&Method::POST, "/auth") => {
             // authentication (gay)
         }
-        (&hyper::Method::GET, _) => {
+        (&Method::GET, _) => {
             /* Removes leading "/" character from path (/image.png -> image.png) */
             let uri = message.request.uri().clone();
             let uri_path = uri.path();
@@ -45,57 +51,57 @@ pub async fn handle(
             };
             #[cfg(feature = "dev")]
             {
-                let path = std::path::Path::new(".").join("public/index.html");
-                let mut response = hyper::Client::new()
+                let path = Path::new(".").join("public/index.html");
+                let mut response = Client::new()
                     .get(("http://localhost:3080/".to_string() + pathname).parse()?)
                     .await?;
-                let is_file = match response.headers().get(hyper::header::CONTENT_TYPE) {
+                let is_file = match response.headers().get(CONTENT_TYPE) {
                     Some(content_type) => !content_type.to_str()?.starts_with("text/html"),
                     None => true,
                 };
                 if is_file {
                     *message.response.body_mut() =
-                        hyper::Body::from(hyper::body::to_bytes(response.body_mut()).await?);
+                        Body::from(body::to_bytes(response.body_mut()).await?);
                 } else {
                     /* Render React */
-                    content_type::html(message)?;
-                    let file = tokio::fs::File::open(path).await?;
-                    let stream = tokio_util::io::ReaderStream::new(file);
-                    *message.response.body_mut() = hyper::Body::wrap_stream(stream);
+                    html(message)?;
+                    let file = File::open(path).await?;
+                    let stream = ReaderStream::new(file);
+                    *message.response.body_mut() = Body::wrap_stream(stream);
                 }
             }
             #[cfg(feature = "prod")]
             {
                 /* Points to main directory with all the JS/static files */
-                let build_root = std::path::Path::new(".").join("build/esbuild");
-                let path = match tokio::fs::metadata(build_root.join(pathname)).await {
+                let build_root = Path::new(".").join("build/esbuild");
+                let path = match metadata(build_root.join(pathname)).await {
                     Ok(metadata) => {
                         if metadata.is_file() {
                             build_root.join(pathname)
                         } else {
-                            content_type::html(message)?;
+                            html(message)?;
                             build_root.join("public/index.html")
                         }
                     }
                     Err(_error) => {
-                        content_type::html(message)?;
+                        html(message)?;
                         build_root.join("public/index.html")
                     }
                 };
 
                 /* Open file into stream and set it as the response body */
-                let file = tokio::fs::File::open(path.clone()).await?;
-                let stream = tokio_util::io::ReaderStream::new(file);
-                *message.response.body_mut() = hyper::Body::wrap_stream(stream);
+                let file = File::open(path.clone()).await?;
+                let stream = ReaderStream::new(file);
+                *message.response.body_mut() = Body::wrap_stream(stream);
 
                 /* Do ETag shit */
-                if let Ok(metadata) = tokio::fs::metadata(path).await {
-                    etag::generate(message, &metadata)?;
+                if let Ok(metadata) = metadata(path).await {
+                    generate(message, &metadata)?;
                 }
             }
         }
         _ => {
-            *message.response.status_mut() = hyper::StatusCode::METHOD_NOT_ALLOWED;
+            *message.response.status_mut() = StatusCode::METHOD_NOT_ALLOWED;
         }
     };
 
