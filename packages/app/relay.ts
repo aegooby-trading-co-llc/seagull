@@ -20,7 +20,7 @@ async function fetchRelay(
             variables: variables,
         })
     });
-    return await response.json();
+    return await response.json() as RelayRuntime.GraphQLResponse;
 }
 
 export const relayEnvironment = new RelayRuntime.Environment({

@@ -1,4 +1,4 @@
-use crate::result;
+use crate::core::result;
 
 /**
     Object containing the incoming request and the current response for

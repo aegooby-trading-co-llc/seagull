@@ -1,4 +1,6 @@
-use crate::{content_type, context, etag, message, result, schema};
+use self::core::{context, message, result};
+use self::files::{content_type, etag};
+use crate::{core, files, graphql};
 
 /**
     General function for handling a `Message` object.
@@ -8,7 +10,7 @@ pub async fn handle(
     _context: context::Context,
 ) -> result::Result<()> {
     let root_node = std::sync::Arc::new(juniper::RootNode::new(
-        schema::Query,
+        graphql::schema::Query,
         juniper::EmptyMutation::<()>::default(),
         juniper::EmptySubscription::<()>::default(),
     ));

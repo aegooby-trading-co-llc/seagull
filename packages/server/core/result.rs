@@ -1,4 +1,4 @@
-use crate::error;
+use crate::core::error;
 
 /**
     So you don't have to type in Result<_, error::Error> every

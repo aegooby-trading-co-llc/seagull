@@ -1,4 +1,5 @@
-use crate::{error, message, result};
+use self::core::{error, message, result};
+use crate::core;
 
 /**
     Bruh.

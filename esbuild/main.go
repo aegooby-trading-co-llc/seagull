@@ -44,6 +44,7 @@ func main() {
 	var entryPoints = append(
 		glob,
 		"packages/app/entry/bundle.tsx",
+		"packages/server/render.tsx",
 		"packages/__esbuild.ts",
 	)
 
@@ -137,10 +138,10 @@ func main() {
 		}
 
 		var buildOptionsProd = api.BuildOptions{
-			MinifyWhitespace:  true,
-			MinifyIdentifiers: true,
-			MinifySyntax:      true,
-			Outdir:            config.BuildRootProd,
+			// MinifyWhitespace:  true,
+			// MinifyIdentifiers: true,
+			// MinifySyntax:      true,
+			Outdir: config.BuildRootProd,
 			Plugins: []api.Plugin{
 				plugins.Relay(plugins.RelayConfig{Dev: false}),
 				// @todo: remove

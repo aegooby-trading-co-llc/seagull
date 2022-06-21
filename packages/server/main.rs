@@ -1,11 +1,14 @@
-mod content_type;
-mod context;
-mod error;
-mod etag;
+mod core;
+mod db;
+mod files;
+mod graphql;
 mod handler;
-mod message;
-mod result;
-mod schema;
+mod renderer;
+
+use self::core::{context, message, result};
+
+#[macro_use]
+extern crate diesel;
 
 /**
     Listener CTRL-C interrupt to shut down "gracefully".
@@ -40,8 +43,9 @@ async fn service_handler(
     Ok(message.done())
 }
 
-#[tokio::main]
-async fn main() {
+async fn __main() -> result::Result<()> {
+    dotenv::dotenv()?;
+
     /* 127.0.0.1:8787 = localhost:8787 */
     let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 8787));
 
@@ -63,9 +67,14 @@ async fn main() {
     let server = hyper::Server::bind(&addr).serve(make_service);
 
     /* Allows a controlled exit from the server.    */
-    let graceful = server.with_graceful_shutdown(shutdown_signal());
+    server.with_graceful_shutdown(shutdown_signal()).await?;
+    Ok(())
+}
 
-    if let Err(error) = graceful.await {
-        eprintln!("Fatal server error: {}", error);
+#[tokio::main]
+async fn main() {
+    match __main().await {
+        Ok(()) => (),
+        Err(error) => eprintln!("{}", error),
     }
 }

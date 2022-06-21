@@ -1,4 +1,5 @@
-use crate::{message, result};
+use self::core::{message, result};
+use crate::core;
 
 use std::str::FromStr;
 

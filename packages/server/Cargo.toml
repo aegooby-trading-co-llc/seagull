@@ -23,6 +23,8 @@ async-trait = { version = "0.1.56" }
 chrono = { version = "0.4.19" }
 dataloader = { version = "0.15.0", default-features = false, features = ["runtime-tokio"] }
 deno_core = { version = "0.139.0" }
+diesel = { version = "1.4.8", features = ["postgres"] }
+dotenv = { version = "0.15.0" }
 hyper = { version = "0.14.19", features = ["full"] }
 juniper = { version = "0.15.9" }
 juniper_hyper = { version = "0.8.0" }

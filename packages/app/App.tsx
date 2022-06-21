@@ -2,6 +2,7 @@ import * as React from "react";
 import * as Relay from "react-relay";
 import { graphql } from "relay-runtime";
 
+import { default as Suspense } from "./Core/Suspense.jsx";
 import { relayEnvironment } from "./relay.js";
 import { default as logo } from "./logo.svg";
 import "./App.css";
@@ -39,9 +40,9 @@ export default function App() {
                 <img src={logo} className="App-logo" alt="logo" />
                 <p>Edit <code>src/App.tsx</code> and save to reload.</p>
                 <p>
-                    <React.Suspense fallback={<>loading...</>}>
+                    <Suspense fallback={<>loading...</>}>
                         <Suspendable />
-                    </React.Suspense>
+                    </Suspense>
                 </p>
                 <p>Page has been open for <code>{count}</code> seconds.</p>
                 <p>
