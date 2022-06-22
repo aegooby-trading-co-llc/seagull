@@ -11,8 +11,8 @@ use tokio_util::io::ReaderStream;
 use crate::{
     core::{context::Context, message::Message, result::Result},
     files::{
-        content_type::{self, html},
-        etag::{self, generate},
+        content_type::{guess, html},
+        etag::generate,
     },
     graphql::juniper_context::JuniperContext,
 };
@@ -73,7 +73,7 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
             #[cfg(feature = "prod")]
             {
                 /* Points to main directory with all the JS/static files */
-                let build_root = Path::new(".").join("build/esbuild");
+                let build_root = Path::new(".").join("build");
                 let path = match metadata(build_root.join(pathname)).await {
                     Ok(metadata) => {
                         if metadata.is_file() {
@@ -106,6 +106,6 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
     };
 
     /* Make sure some "content-type" is set */
-    content_type::guess(message)?;
+    guess(message)?;
     return Ok(());
 }

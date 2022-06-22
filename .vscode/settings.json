@@ -6,6 +6,7 @@
     "deno.cache": ".cache/",
     "deno.suggest.autoImports": true,
     "deno.path": "/usr/local/bin/deno",
+    "deno.enablePaths": ["./packages/server/renderer/embedded"],
 
     "editor.formatOnSave": true,
 

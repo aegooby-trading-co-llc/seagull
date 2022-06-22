@@ -44,7 +44,7 @@ func main() {
 	var entryPoints = append(
 		glob,
 		"packages/app/entry/bundle.tsx",
-		"packages/server/render.tsx",
+		"packages/server/renderer/stream.tsx",
 		"packages/__esbuild.ts",
 	)
 

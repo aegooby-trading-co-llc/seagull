@@ -1,7 +1,7 @@
 use hyper::header::HeaderValue;
 use mime::Mime;
 
-use crate::core::{error::Error, message::Message, result::Result};
+use crate::core::{error::err, message::Message, result::Result};
 
 /**
     Bruh.
@@ -15,9 +15,7 @@ fn mime_to_header(mime_type: Mime) -> Result<HeaderValue> {
 pub fn html(message: &mut Message) -> Result<()> {
     let content_type = mime_to_header(mime::TEXT_HTML_UTF_8)?;
     match message.response.headers().get(hyper::header::CONTENT_TYPE) {
-        Some(_) => Err(Error::new(
-            "html(): response already contains content type header",
-        )),
+        Some(_) => Err(err("html(): response already contains content type header")),
         None => {
             message
                 .response
@@ -70,7 +68,7 @@ mod test {
                 assert_eq!(value.to_str()?, "text/html; charset=utf-8");
                 Ok(())
             }
-            None => Err(Error::new("")),
+            None => Err(err("")),
         }
     }
     #[test]
@@ -81,7 +79,7 @@ mod test {
             mime_to_header(mime::APPLICATION_JAVASCRIPT_UTF_8)?,
         );
         match html(&mut message) {
-            Ok(_) => Err(Error::new("")),
+            Ok(_) => Err(err("")),
             Err(_) => Ok(()),
         }
     }
@@ -96,7 +94,7 @@ mod test {
                 assert_eq!(value.to_str()?, "application/javascript");
                 Ok(())
             }
-            None => Err(Error::new("")),
+            None => Err(err("")),
         }
     }
 }
