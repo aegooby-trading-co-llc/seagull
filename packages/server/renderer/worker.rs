@@ -123,7 +123,6 @@ impl JSWorker {
     pub async fn run(&mut self, main_path: &PathBuf) -> Result<()> {
         let module = resolve_path(main_path.to_str().ok_or(err("Failed to join path"))?)?;
         Ok(self.worker.execute_main_module(&module).await?)
-        // Ok(())
     }
     pub fn resources(&mut self) -> HashMap<String, u32> {
         self.worker
@@ -142,13 +141,5 @@ impl JSWorker {
             .borrow_mut()
             .resource_table
             .get::<T>(rid)
-    }
-    pub fn take_resource<T: Resource>(&mut self, rid: u32) -> Result<Rc<T>> {
-        self.worker
-            .js_runtime
-            .op_state()
-            .borrow_mut()
-            .resource_table
-            .take::<T>(rid)
     }
 }

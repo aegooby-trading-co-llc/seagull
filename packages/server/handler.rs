@@ -92,19 +92,16 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
 
                             false
                         } else {
-                            html(message)?;
                             true
                         }
                     }
-                    Err(_error) => {
-                        html(message)?;
-                        true
-                    }
+                    Err(_error) => true,
                 };
                 if react {
                     let buffer = spawn_blocking(|| render_react()).await??;
                     let stream = ReaderStream::new(buffer);
                     *message.response.body_mut() = Body::wrap_stream(stream);
+                    html(message)?;
                 }
             }
         }

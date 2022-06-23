@@ -8,9 +8,9 @@ if (import.meta.main) {
         renderStream(), 
         Deno.core.opAsync("op_create_stream")
     ]);
-
     for await (const chunk of readable) {
         await Deno.core.write(writeable, chunk);
     }
+    await Deno.core.write(writeable, new TextEncoder().encode("\n"));
 }
 

@@ -11,9 +11,6 @@ impl Buffer {
     pub fn new(vector: Vec<u8>) -> Self {
         Self(vector)
     }
-    pub fn extend(&mut self, slice: Vec<u8>) -> () {
-        self.0.extend(slice)
-    }
     pub fn bytes(&self) -> &Vec<u8> {
         return &self.0;
     }
@@ -35,7 +32,6 @@ impl AsyncRead for Buffer {
 #[derive(Debug)]
 pub struct ByteStream {
     inner: AsyncRefCell<BufReader<Buffer>>,
-    // inner: RefCell<BufReader<Buffer>>,
 }
 impl ByteStream {
     pub fn new() -> Self {
@@ -48,14 +44,12 @@ impl ByteStream {
         return "ByteStream".into();
     }
     async fn write(self: Rc<Self>, buffer: ZeroCopyBuf) -> Result<usize> {
-        // let mut inner = self.inner.borrow_mut();
         let mut inner = RcRef::map(self, |stream| &stream.inner).borrow_mut().await;
         inner.get_mut().0.extend_from_slice(&buffer);
         Ok(buffer.len())
     }
     pub async fn consume(self: Rc<Self>) -> Result<Vec<u8>> {
         let inner = RcRef::map(self, |stream| &stream.inner).borrow().await;
-        // let inner = self.inner.borrow();
         Ok(inner.get_ref().bytes().clone())
     }
 }
