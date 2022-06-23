@@ -5,7 +5,10 @@ use std::{
 
 use hyper::{body, header::CONTENT_TYPE, Body, Client, Method, StatusCode};
 use juniper_hyper::{graphiql, graphql};
-use tokio::fs::{metadata, File};
+use tokio::{
+    fs::{metadata, File},
+    task::spawn_blocking,
+};
 use tokio_util::io::ReaderStream;
 
 use crate::{
@@ -99,7 +102,7 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
                     }
                 };
                 if react {
-                    let buffer = render_react().await?;
+                    let buffer = spawn_blocking(|| render_react()).await??;
                     let stream = ReaderStream::new(buffer);
                     *message.response.body_mut() = Body::wrap_stream(stream);
                 }
