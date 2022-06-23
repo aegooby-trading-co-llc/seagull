@@ -1,49 +1,56 @@
+use crate::core::{error::err, result::Result};
+use std::env;
+
+use self::{
+    ops::op_create_stream,
+    resources::{Buffer, ByteStream},
+    worker::JSWorker,
+};
+
 pub mod ops;
 pub mod resources;
-pub mod runtime;
+pub mod worker;
+
+pub async fn render_react() -> Result<Buffer> {
+    let path = env::current_dir()?.join("renderer/embedded/index.mjs");
+    let mut js_worker = JSWorker::new(&path, vec![op_create_stream::decl()])?;
+    js_worker.run(&path).await?;
+
+    match js_worker.resources().get(&ByteStream::name()) {
+        Some(rid) => {
+            let bytes = js_worker
+                .get_resource::<ByteStream>(*rid)?
+                .consume()
+                .await?;
+            Ok(Buffer::new(bytes))
+        }
+        None => Err(err("RID not found for stream")),
+    }
+}
 
 #[cfg(test)]
 mod test {
-    use deno_core::{op, OpState, ResourceId};
-    use tokio::sync::Mutex;
-
-    use super::{ops::op_create_stream, runtime::JSRuntime};
+    use super::{ops::op_create_stream, worker::JSWorker};
     use crate::{
-        core::result::Result,
-        renderer::resources::{Buffer, ByteStream},
+        core::{error::err, result::Result},
+        renderer::resources::ByteStream,
     };
 
-    use std::{cell::RefCell, env, rc::Rc};
-
-    lazy_static::lazy_static! {
-        static ref STREAM: Mutex<Buffer> = Mutex::new(Buffer::new(vec![]));
-    }
+    use std::env;
 
     #[tokio::test]
     async fn js_runtime_stream() -> Result<()> {
-        #[op]
-        pub async fn op_create_stream(state: Rc<RefCell<OpState>>) -> Result<ResourceId> {
-            let stream = ByteStream::new();
-            let rid = state.borrow_mut().resource_table.add(stream);
-            Ok(rid)
-        }
-        #[op]
-        pub async fn op_consume_stream(state: Rc<RefCell<OpState>>, rid: ResourceId) -> Result<()> {
-            let stream = state.borrow().resource_table.get::<ByteStream>(rid)?;
-            let consumed = stream.consume().await?;
-            STREAM.lock().await.extend(consumed);
-            Ok(())
-        }
-
         let path = env::current_dir()?.join("renderer/embedded/index.mjs");
-        let mut js_runtime = JSRuntime::new(
-            &path,
-            vec![op_create_stream::decl(), op_consume_stream::decl()],
-        )?;
-        js_runtime.run(&path).await?;
+        let mut js_worker = JSWorker::new(&path, vec![op_create_stream::decl()])?;
+        js_worker.run(&path).await?;
 
-        assert!(STREAM.lock().await.bytes().len() > 0);
-
-        Ok(())
+        match js_worker.resources().get(&ByteStream::name()) {
+            Some(rid) => {
+                let stream = js_worker.get_resource::<ByteStream>(*rid)?;
+                assert!(stream.consume().await?.len() > 0);
+                Ok(())
+            }
+            None => Err(err("RID not found for stream")),
+        }
     }
 }

@@ -1,6 +1,8 @@
-use std::{path::PathBuf, rc::Rc, sync::Arc, thread::available_parallelism};
+use std::{collections::HashMap, path::PathBuf, rc::Rc, sync::Arc, thread::available_parallelism};
 
-use deno_core::{futures::future::LocalFutureObj, resolve_path, Extension, FsModuleLoader, OpDecl};
+use deno_core::{
+    futures::future::LocalFutureObj, resolve_path, Extension, FsModuleLoader, OpDecl, Resource,
+};
 use deno_runtime::{
     deno_broadcast_channel::InMemoryBroadcastChannel,
     deno_web::BlobStore,
@@ -17,7 +19,7 @@ use deno_runtime::{
 use crate::core::{error::err, result::Result};
 
 fn create_web_worker_preload_module_callback() -> Arc<PreloadModuleCb> {
-    Arc::new(move |mut worker| {
+    Arc::new(move |worker| {
         let fut = async move { Ok(worker) };
         LocalFutureObj::new(Box::new(fut))
     })
@@ -71,10 +73,10 @@ fn create_web_worker_callback(stdio: deno_runtime::ops::io::Stdio) -> Arc<Create
     })
 }
 
-pub struct JSRuntime {
+pub struct JSWorker {
     worker: MainWorker,
 }
-impl JSRuntime {
+impl JSWorker {
     pub fn new(main_path: &PathBuf, ops: Vec<OpDecl>) -> Result<Self> {
         let main_module = resolve_path(main_path.to_str().ok_or(err("Failed to join path"))?)?;
         let create_web_worker_cb = create_web_worker_callback(Stdio::default());
@@ -121,5 +123,32 @@ impl JSRuntime {
     pub async fn run(&mut self, main_path: &PathBuf) -> Result<()> {
         let module = resolve_path(main_path.to_str().ok_or(err("Failed to join path"))?)?;
         Ok(self.worker.execute_main_module(&module).await?)
+        // Ok(())
+    }
+    pub fn resources(&mut self) -> HashMap<String, u32> {
+        self.worker
+            .js_runtime
+            .op_state()
+            .borrow_mut()
+            .resource_table
+            .names()
+            .map(|(rid, name)| (name.to_string(), rid))
+            .collect::<HashMap<String, u32>>()
+    }
+    pub fn get_resource<T: Resource>(&mut self, rid: u32) -> Result<Rc<T>> {
+        self.worker
+            .js_runtime
+            .op_state()
+            .borrow_mut()
+            .resource_table
+            .get::<T>(rid)
+    }
+    pub fn take_resource<T: Resource>(&mut self, rid: u32) -> Result<Rc<T>> {
+        self.worker
+            .js_runtime
+            .op_state()
+            .borrow_mut()
+            .resource_table
+            .take::<T>(rid)
     }
 }

@@ -12,6 +12,5 @@ if (import.meta.main) {
     for await (const chunk of readable) {
         await Deno.core.write(writeable, chunk);
     }
-    await Deno.core.opAsync("op_consume_stream", writeable);
 }
 

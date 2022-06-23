@@ -15,6 +15,7 @@ use crate::{
         etag::generate,
     },
     graphql::juniper_context::JuniperContext,
+    renderer::render_react,
 };
 
 /**
@@ -74,29 +75,33 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
             {
                 /* Points to main directory with all the JS/static files */
                 let build_root = Path::new(".").join("build");
-                let path = match metadata(build_root.join(pathname)).await {
+                let react = match metadata(build_root.join(pathname)).await {
                     Ok(metadata) => {
                         if metadata.is_file() {
-                            build_root.join(pathname)
+                            let path = build_root.join(pathname);
+                            /* Open file into stream and set it as the response body */
+                            let file = File::open(path.clone()).await?;
+                            let stream = ReaderStream::new(file);
+                            *message.response.body_mut() = Body::wrap_stream(stream);
+
+                            /* Do ETag shit */
+                            generate(message, &metadata)?;
+
+                            false
                         } else {
                             html(message)?;
-                            build_root.join("public/index.html")
+                            true
                         }
                     }
                     Err(_error) => {
                         html(message)?;
-                        build_root.join("public/index.html")
+                        true
                     }
                 };
-
-                /* Open file into stream and set it as the response body */
-                let file = File::open(path.clone()).await?;
-                let stream = ReaderStream::new(file);
-                *message.response.body_mut() = Body::wrap_stream(stream);
-
-                /* Do ETag shit */
-                if let Ok(metadata) = metadata(path).await {
-                    generate(message, &metadata)?;
+                if react {
+                    let buffer = render_react().await?;
+                    let stream = ReaderStream::new(buffer);
+                    *message.response.body_mut() = Body::wrap_stream(stream);
                 }
             }
         }

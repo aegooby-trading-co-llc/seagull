@@ -1,7 +1,7 @@
-use std::{rc::Rc, task::Poll};
+use std::{borrow::Cow, rc::Rc, task::Poll};
 
 use deno_core::{AsyncRefCell, RcRef, Resource, ZeroCopyBuf};
-use tokio::io::{AsyncBufReadExt, AsyncRead, BufReader};
+use tokio::io::{AsyncRead, BufReader};
 
 use crate::core::result::Result;
 
@@ -35,6 +35,7 @@ impl AsyncRead for Buffer {
 #[derive(Debug)]
 pub struct ByteStream {
     inner: AsyncRefCell<BufReader<Buffer>>,
+    // inner: RefCell<BufReader<Buffer>>,
 }
 impl ByteStream {
     pub fn new() -> Self {
@@ -43,18 +44,26 @@ impl ByteStream {
             inner: reader.into(),
         }
     }
+    pub fn name() -> String {
+        return "ByteStream".into();
+    }
     async fn write(self: Rc<Self>, buffer: ZeroCopyBuf) -> Result<usize> {
+        // let mut inner = self.inner.borrow_mut();
         let mut inner = RcRef::map(self, |stream| &stream.inner).borrow_mut().await;
         inner.get_mut().0.extend_from_slice(&buffer);
         Ok(buffer.len())
     }
     pub async fn consume(self: Rc<Self>) -> Result<Vec<u8>> {
-        let mut inner = RcRef::map(self, |stream| &stream.inner).borrow_mut().await;
-        Ok(inner.get_mut().bytes().clone())
+        let inner = RcRef::map(self, |stream| &stream.inner).borrow().await;
+        // let inner = self.inner.borrow();
+        Ok(inner.get_ref().bytes().clone())
     }
 }
 impl Resource for ByteStream {
     fn write(self: Rc<Self>, buffer: ZeroCopyBuf) -> deno_core::AsyncResult<usize> {
         Box::pin(self.write(buffer))
+    }
+    fn name(&self) -> Cow<str> {
+        Self::name().into()
     }
 }
