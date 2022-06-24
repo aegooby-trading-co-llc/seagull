@@ -14,6 +14,9 @@ impl Buffer {
     pub fn bytes(&self) -> &Vec<u8> {
         return &self.0;
     }
+    pub fn terminate(&mut self) {
+        self.0.extend_from_slice(&[10]);
+    }
 }
 impl AsyncRead for Buffer {
     fn poll_read(

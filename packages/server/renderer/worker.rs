@@ -125,7 +125,8 @@ impl JSWorker {
     }
     pub async fn run(&mut self, main_path: &PathBuf) -> Result<()> {
         let module = resolve_path(main_path.to_str().ok_or(err("Failed to join path"))?)?;
-        Ok(self.worker.execute_main_module(&module).await?)
+        self.worker.execute_main_module(&module).await?;
+        Ok(())
     }
     pub fn resources(&mut self) -> HashMap<String, u32> {
         self.worker
