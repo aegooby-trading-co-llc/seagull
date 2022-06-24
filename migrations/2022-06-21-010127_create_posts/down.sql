@@ -1,1 +1,1 @@
-DROP TABLE posts
+drop table users

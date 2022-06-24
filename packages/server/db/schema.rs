@@ -1,8 +1,7 @@
-diesel::table! {
-    posts (id) {
-        id -> Integer,
-        title -> Text,
-        body -> Text,
-        published -> Bool,
+table! {
+    users (id) {
+        id -> Uuid,
+        email -> Varchar,
+        username -> Varchar,
     }
 }

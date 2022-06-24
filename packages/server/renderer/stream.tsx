@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as ReactDOMServer from "react-dom/server";
 
-import { default as App } from "@seagull/app/App.jsx";
+import { default as Root } from "@seagull/app/entry/Root.jsx";
 
 const element: React.ReactElement =
     <html lang="en">
@@ -25,12 +25,23 @@ const element: React.ReactElement =
 
         <body>
             <div id="root">
-                <App />
+                <Root />
             </div>
         </body>
 
     </html>;
 
-export async function renderStream() {
-    return await ReactDOMServer.renderToReadableStream(element);
+export async function renderStream(controller: AbortController) {
+    const stream = await ReactDOMServer.renderToReadableStream(element, {
+        signal: controller.signal,
+        onError: function (error) {
+            // eslint-disable-next-line
+            console.error(`renderStream(): ${error}`);
+        }
+    });
+    await stream.allReady;
+    return stream;
+}
+export function renderString() {
+    return ReactDOMServer.renderToString(element);
 }

@@ -52,7 +52,7 @@ async fn __main() -> Result<()> {
     /* 127.0.0.1:8787 = localhost:8787 */
     let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 8787));
 
-    let context = Context::new();
+    let context = Context::new()?;
     let make_service =
         hyper::service::make_service_fn(move |conn: &hyper::server::conn::AddrStream| {
             /* We have to clone the context to share it with each */

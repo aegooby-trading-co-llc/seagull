@@ -25,16 +25,19 @@ fn create_web_worker_preload_module_callback() -> Arc<PreloadModuleCb> {
     })
 }
 
-fn create_web_worker_callback(stdio: deno_runtime::ops::io::Stdio) -> Arc<CreateWebWorkerCb> {
+fn create_web_worker_callback(
+    stdio: deno_runtime::ops::io::Stdio,
+    debug_flag: bool,
+) -> Arc<CreateWebWorkerCb> {
     Arc::new(move |args| {
-        let create_web_worker_cb = create_web_worker_callback(stdio.clone());
+        let create_web_worker_cb = create_web_worker_callback(stdio.clone(), debug_flag);
         let preload_module_cb = create_web_worker_preload_module_callback();
 
         let options = WebWorkerOptions {
             bootstrap: BootstrapOptions {
                 args: vec![],
                 cpu_count: available_parallelism().map(|p| p.get()).unwrap_or(1),
-                debug_flag: false,
+                debug_flag,
                 enable_testing_features: false,
                 location: Some(args.main_module.clone()),
                 no_color: false,
@@ -77,9 +80,9 @@ pub struct JSWorker {
     worker: MainWorker,
 }
 impl JSWorker {
-    pub fn new(main_path: &PathBuf, ops: Vec<OpDecl>) -> Result<Self> {
+    pub fn new(main_path: &PathBuf, ops: Vec<OpDecl>, debug_flag: bool) -> Result<Self> {
         let main_module = resolve_path(main_path.to_str().ok_or(err("Failed to join path"))?)?;
-        let create_web_worker_cb = create_web_worker_callback(Stdio::default());
+        let create_web_worker_cb = create_web_worker_callback(Stdio::default(), debug_flag);
         let web_worker_preload_module_cb = create_web_worker_preload_module_callback();
         let worker = MainWorker::bootstrap_from_options(
             main_module.clone(),
@@ -88,7 +91,7 @@ impl JSWorker {
                 bootstrap: BootstrapOptions {
                     args: vec![],
                     cpu_count: available_parallelism().map(|p| p.get()).unwrap_or(1),
-                    debug_flag: false,
+                    debug_flag,
                     enable_testing_features: false,
                     location: Some(main_module.clone()),
                     no_color: false,

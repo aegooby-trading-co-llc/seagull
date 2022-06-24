@@ -1,18 +1,20 @@
 use crate::db::schema;
 
-#[derive(Queryable)]
-pub struct Post {
-    pub id: i32,
-    pub title: String,
-    pub body: String,
-    pub published: bool,
+use uuid::Uuid;
+
+use schema::users;
+
+#[derive(Queryable, Insertable)]
+#[table_name = "users"]
+pub struct User {
+    pub id: Uuid,
+    pub email: String,
+    pub username: String,
 }
 
-use schema::posts;
-
-#[derive(Insertable)]
-#[table_name = "posts"]
-pub struct NewPost<'lt> {
-    pub title: &'lt str,
-    pub body: &'lt str,
-}
+// #[derive(Insertable)]
+// #[table_name = "users"]
+// pub struct NewUser {
+//     pub email: String,
+//     pub username: String,
+// }

@@ -14,7 +14,7 @@ pub mod worker;
 #[tokio::main]
 pub async fn render_react() -> Result<Buffer> {
     let path = env::current_dir()?.join("packages/server/renderer/embedded/index.mjs");
-    let mut js_worker = JSWorker::new(&path, vec![op_create_stream::decl()])?;
+    let mut js_worker = JSWorker::new(&path, vec![op_create_stream::decl()], true)?;
     js_worker.run(&path).await?;
 
     match js_worker.resources().get(&ByteStream::name()) {
@@ -42,7 +42,7 @@ mod test {
     #[tokio::test]
     async fn js_runtime_stream() -> Result<()> {
         let path = env::current_dir()?.join("renderer/embedded/index.mjs");
-        let mut js_worker = JSWorker::new(&path, vec![op_create_stream::decl()])?;
+        let mut js_worker = JSWorker::new(&path, vec![op_create_stream::decl()], true)?;
         js_worker.run(&path).await?;
 
         match js_worker.resources().get(&ByteStream::name()) {

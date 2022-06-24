@@ -138,10 +138,10 @@ func main() {
 		}
 
 		var buildOptionsProd = api.BuildOptions{
-			// MinifyWhitespace:  true,
-			// MinifyIdentifiers: true,
-			// MinifySyntax:      true,
-			Outdir: config.BuildRootProd,
+			MinifyWhitespace:  true,
+			MinifyIdentifiers: true,
+			MinifySyntax:      true,
+			Outdir:            config.BuildRootProd,
 			Plugins: []api.Plugin{
 				plugins.Relay(plugins.RelayConfig{Dev: false}),
 				// @todo: remove
