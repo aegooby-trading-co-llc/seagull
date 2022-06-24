@@ -16,13 +16,15 @@ import { log, $ } from "./zx-extended.mjs";
  * @type {Record<string, Command>}
  */
 export const commands = {
-    "compile-go": {
+    "compile": {
         exec: async function () {
-            echo`${log} compiling Go`;
+            echo`${log} compiling artifacts`;
             await $`go build -o esbuild/main esbuild/main.go`;
+            await $`cargo build --features dev`;
+            await $`cargo build --features prod`;
         },
         options: {},
-        description: "compiles Go code",
+        description: "compiles things that can be compiled",
     },
     "serve": {
         exec: async function () {
