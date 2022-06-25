@@ -38,6 +38,7 @@ tokio-util = { version = "0.7.3", features = ["io"] }
 uuid = { version = "0.6.0", features = ["serde", "v4"] }
 
 [features]
+default = []
 dev = []
 prod = []
 all = ["dev", "prod"]

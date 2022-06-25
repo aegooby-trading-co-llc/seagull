@@ -1,4 +1,4 @@
-import { argv, chalk, echo } from "zx";
+import { argv, chalk, echo, $ } from "zx";
 import { commands } from "./commands.mjs";
 import { error, success } from "./zx-extended.mjs";
 
@@ -13,9 +13,15 @@ export async function main() {
                 return;
             }
         }
+        $.verbose = command.verbose;
         await command.exec(argv);
         const endTime = Date.now();
-        echo`${success} ${endTime - startTime}ms`
+        const elapsed = endTime - startTime;
+        if (elapsed > 1000) {
+            echo`${success} ${elapsed / 1000.0}s`
+        } else {
+            echo`${success} ${elapsed}ms`
+        }
     } else {
         echo`${error} you did that wrong`;
         echo``;

@@ -1,8 +1,8 @@
-use crate::db::schema;
+use crate::db::pg_schema;
 
 use uuid::Uuid;
 
-use schema::users;
+use pg_schema::users;
 
 #[derive(Queryable, Insertable)]
 #[table_name = "users"]

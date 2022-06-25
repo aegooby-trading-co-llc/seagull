@@ -77,3 +77,25 @@ impl Default for Message {
         }
     }
 }
+
+#[cfg(test)]
+mod bench {
+    extern crate test;
+
+    use std::process::Termination;
+    use test::{black_box, Bencher};
+    use tokio::runtime::Runtime;
+
+    use super::Message;
+
+    #[bench]
+    fn clone(bencher: &mut Bencher) -> impl Termination {
+        match Runtime::new() {
+            Ok(runtime) => {
+                let mut message = Message::default();
+                bencher.iter(|| runtime.block_on(async { black_box(message.clone().await) }))
+            }
+            Err(_error) => (),
+        }
+    }
+}

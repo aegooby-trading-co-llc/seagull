@@ -1,3 +1,5 @@
+#![feature(test)]
+
 #[cfg(all(not(feature = "dev"), not(feature = "prod")))]
 compile_error!("Must enable one of \"dev\" or \"prod\" features");
 

@@ -143,9 +143,6 @@ function formatCmd(cmd) {
 export function log(entry) {
     switch (entry.kind) {
         case "cmd":
-            if (!entry.verbose) {
-                return;
-            }
             process.stdout.write(chalk.dim(formatCmd(entry.cmd)));
             break;
         case "stdout":

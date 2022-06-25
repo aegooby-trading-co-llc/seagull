@@ -9,7 +9,7 @@ use juniper::RootNode;
 use crate::{
     core::result::Result,
     db::pool::create_pool,
-    graphql::schema::{Mutation, Query, Subscription},
+    graphql::gql_schema::{Mutation, Query, Subscription},
 };
 
 /**

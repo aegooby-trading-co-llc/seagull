@@ -11,10 +11,10 @@ func Print(args ...any) {
 	fmt.Println(args...)
 }
 func Log(args ...any) {
-	fmt.Print(chalk.Bold.TextStyle("[esbuild:log]"), chalk.Reset, " ")
+	fmt.Print(chalk.Magenta.Color("[esbuild:log]"), chalk.Reset, " ")
 	fmt.Println(args...)
 }
 func Error(args ...any) {
-	fmt.Print(chalk.Bold.TextStyle("[esbuild:err]"), chalk.Reset, " ")
+	fmt.Print(chalk.Magenta.Color("[esbuild:err]"), chalk.Reset, " ")
 	fmt.Println(args...)
 }

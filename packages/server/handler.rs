@@ -1,16 +1,11 @@
-use std::{
-    path::Path,
-    sync::{Arc, RwLock},
-};
+use std::sync::{Arc, RwLock};
 
-use hyper::{Body, Method, StatusCode};
+use hyper::{Method, StatusCode};
 use juniper_hyper::{graphiql, graphql};
-use tokio::fs::File;
-use tokio_util::io::ReaderStream;
 
 use crate::{
     core::{context::Context, message::Message, result::Result},
-    files::content_type::{guess, html},
+    files::content_type::guess,
     graphql::juniper_context::JuniperContext,
 };
 
@@ -18,25 +13,21 @@ use crate::{
     General function for handling a `Message` object.
 */
 pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
-    let juniper_context = Arc::new(JuniperContext::new(
-        Arc::new(RwLock::new(message.clone().await)),
-        context.clone(),
-    ));
-
     match (message.request.method(), message.request.uri().path()) {
         (&Method::GET, "/graphql") => {
             message.response = graphiql("/graphql", None).await;
         }
         (&Method::POST, "/graphql") => {
+            let juniper_context = Arc::new(JuniperContext::new(
+                Arc::new(RwLock::new(message.clone().await)),
+                context.clone(),
+            ));
             message.response = graphql(
                 context.graphql_root_node,
-                juniper_context.clone(),
+                juniper_context,
                 message.clone().await.request,
             )
             .await;
-        }
-        (&Method::POST, "/auth") => {
-            // authentication (gay)
         }
         (&Method::GET, _) => {
             /* Removes leading "/" character from path (/image.png -> image.png) */
@@ -48,7 +39,12 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
             };
             #[cfg(feature = "dev")]
             {
-                use hyper::{body, header::CONTENT_TYPE, Client};
+                use crate::files::content_type::html;
+                use hyper::{body, header::CONTENT_TYPE, Body, Client};
+                use std::path::Path;
+                use tokio::fs::File;
+                use tokio_util::io::ReaderStream;
+
                 let path = Path::new(".").join("public/index.html");
                 let mut response = Client::new()
                     .get(("http://localhost:3080/".to_string() + pathname).parse()?)
@@ -70,8 +66,15 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
             }
             #[cfg(feature = "prod")]
             {
-                use crate::{files::etag::generate, renderer::render_react};
-                use tokio::{fs::metadata, task::spawn_blocking};
+                use crate::{
+                    files::{content_type::html, etag::generate},
+                    renderer::ReactRenderer,
+                };
+                use hyper::Body;
+                use std::path::Path;
+                use tokio::fs::{metadata, File};
+                use tokio_util::io::ReaderStream;
+
                 /* Points to main directory with all the JS/static files */
                 let build_root = Path::new(".").join("build");
                 let react = match metadata(build_root.join(pathname)).await {
@@ -94,10 +97,8 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
                     Err(_error) => true,
                 };
                 if react {
-                    let mut buffer = spawn_blocking(|| {
-                        render_react("packages/server/renderer/embedded/index.mjs")
-                    })
-                    .await??;
+                    let entry = "packages/server/renderer/embedded/index.mjs";
+                    let mut buffer = ReactRenderer::render(entry).await?;
                     buffer.terminate();
                     let stream = ReaderStream::new(buffer);
                     *message.response.body_mut() = Body::wrap_stream(stream);
@@ -113,4 +114,49 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
     /* Make sure some "content-type" is set */
     guess(message)?;
     return Ok(());
+}
+
+#[cfg(test)]
+mod bench {
+    extern crate test;
+
+    use juniper_hyper::graphql;
+    use std::{
+        process::Termination,
+        sync::{Arc, RwLock},
+    };
+    use test::{black_box, Bencher};
+    use tokio::runtime::Runtime;
+
+    use crate::{
+        core::{context::Context, message::Message},
+        graphql::juniper_context::JuniperContext,
+    };
+
+    #[bench]
+    fn graphql_exec(bencher: &mut Bencher) -> impl Termination {
+        if dotenv::dotenv().is_err() {
+            return ();
+        }
+        let mut message = Message::default();
+        match (Runtime::new(), Context::new()) {
+            (Ok(runtime), Ok(context)) => bencher.iter(|| {
+                runtime.block_on(async {
+                    let juniper_context = Arc::new(JuniperContext::new(
+                        Arc::new(RwLock::new(message.clone().await)),
+                        context.clone(),
+                    ));
+                    black_box(
+                        message.response = graphql(
+                            context.clone().graphql_root_node,
+                            juniper_context,
+                            message.clone().await.request,
+                        )
+                        .await,
+                    );
+                })
+            }),
+            _ => (),
+        }
+    }
 }

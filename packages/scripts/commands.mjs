@@ -1,5 +1,5 @@
 
-import { $, chalk, sleep, question, echo } from "zx";
+import { $, chalk, sleep, echo } from "zx";
 
 import { log } from "./zx-extended.mjs";
 
@@ -9,6 +9,7 @@ import { log } from "./zx-extended.mjs";
  * @property {(args: Record<string, string | true> | undefined) => Promise<void>} exec 
  * @property {Record<string, string | true>} options
  * @property {string} description
+ * @property {boolean} verbose
  */
 
 /**
@@ -24,6 +25,7 @@ export const commands = {
         },
         options: {},
         description: "compiles things that can be compiled",
+        verbose: true,
     },
     "serve": {
         exec: async function () {
@@ -33,12 +35,14 @@ export const commands = {
                 $`cargo run --features dev`,
                 $`esbuild/main --mode dev`,
             ];
+            await sleep(100);
             echo`${log} file server: ${chalk.blue`http://localhost:3080/`}`;
             echo`${log} main server: ${chalk.magenta`http://localhost:8787/`}`;
             await Promise.all(promises);
         },
         options: {},
         description: "runs local development servers",
+        verbose: false,
     },
     "package": {
         exec: async function () {
@@ -47,5 +51,6 @@ export const commands = {
         },
         options: {},
         description: "builds client and server for production",
+        verbose: true,
     }
 };

@@ -3,22 +3,14 @@ use juniper::{EmptyMutation, EmptySubscription, FieldResult};
 use uuid::Uuid;
 
 use crate::{
-    db::{models::User, schema},
+    db::{models::User, pg_schema},
     graphql::juniper_context::JuniperContext,
 };
 
 pub struct Query;
 #[juniper::graphql_object(context = JuniperContext)]
 impl Query {
-    pub fn penis(context: &mut JuniperContext) -> FieldResult<String> {
-        let conn = context.global.connection_pool.clone().get()?;
-        diesel::insert_into(schema::users::table)
-            .values(&User {
-                id: Uuid::new_v4(),
-                email: "shaft, head, scrotum, foreskin (gentile)".into(),
-                username: "penis".into(),
-            })
-            .get_result::<User>(&conn)?;
+    pub fn penis() -> FieldResult<String> {
         Ok("penile world".to_string())
     }
 }
