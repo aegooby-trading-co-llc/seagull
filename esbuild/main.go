@@ -118,7 +118,6 @@ func main() {
 		server.Stop()
 	case "prod":
 		console.Log("Bundling for production")
-		console.Log("Cleaning build root")
 
 		err = os.RemoveAll(config.BuildRootProd)
 		if err != nil {
