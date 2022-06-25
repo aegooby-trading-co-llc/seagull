@@ -11,10 +11,3 @@ pub struct User {
     pub email: String,
     pub username: String,
 }
-
-// #[derive(Insertable)]
-// #[table_name = "users"]
-// pub struct NewUser {
-//     pub email: String,
-//     pub username: String,
-// }
