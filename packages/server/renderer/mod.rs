@@ -13,26 +13,12 @@ pub mod ops;
 pub mod resources;
 pub mod worker;
 
-const ACCEPTABLE_ERROR: &'static str = "Uncaught (in promise) Error: operation canceled";
-
 pub struct ReactRenderer;
 impl ReactRenderer {
     async fn js_worker(entry: &'static str) -> Result<Buffer> {
         let path = env::current_dir()?.join(entry);
         let mut js_worker = JSWorker::new(&path, vec![op_create_stream::decl()], false)?;
-
-        /* Right now, if there's an error in JS execution of SSR,   */
-        /* it seems possible to just ignore the error and get the   */
-        /* right result. Who knows if this will always work though. */
-        match js_worker.run(&path).await {
-            Ok(()) => (),
-            // @todo: see if there's a way to fix JS error
-            Err(error) => {
-                if format!("{}", error) != ACCEPTABLE_ERROR {
-                    return Err(error);
-                }
-            }
-        }
+        js_worker.run(&path).await?;
 
         match js_worker.resources().get(&ByteStream::name()) {
             Some(rid) => {

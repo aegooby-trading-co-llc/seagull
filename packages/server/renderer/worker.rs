@@ -18,6 +18,10 @@ use deno_runtime::{
 
 use crate::core::{error::err, result::Result};
 
+fn cpu_count() -> usize {
+    available_parallelism().map(|p| p.get()).unwrap_or(1)
+}
+
 fn create_web_worker_preload_module_callback() -> Arc<PreloadModuleCb> {
     Arc::new(move |worker| {
         let fut = async move { Ok(worker) };
@@ -36,7 +40,7 @@ fn create_web_worker_callback(
         let options = WebWorkerOptions {
             bootstrap: BootstrapOptions {
                 args: vec![],
-                cpu_count: available_parallelism().map(|p| p.get()).unwrap_or(1),
+                cpu_count: cpu_count(),
                 debug_flag,
                 enable_testing_features: false,
                 location: Some(args.main_module.clone()),
@@ -90,7 +94,7 @@ impl JSWorker {
             WorkerOptions {
                 bootstrap: BootstrapOptions {
                     args: vec![],
-                    cpu_count: available_parallelism().map(|p| p.get()).unwrap_or(1),
+                    cpu_count: cpu_count(),
                     debug_flag,
                     enable_testing_features: false,
                     location: Some(main_module.clone()),

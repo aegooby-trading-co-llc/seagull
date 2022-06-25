@@ -10,16 +10,11 @@ export async function reader(readerFn) {
             readerFn(controller), 
             Deno.core.opAsync("op_create_stream")
         ]);
-        const reader = readable.getReader();
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) {
-                break;
-            } else if (value) {
-                await Deno.core.write(writeable, value);
-            }
+        for await (const chunk of readable) {
+            /* No `await` here for some reason, or you get errors */
+            Deno.core.write(writeable, chunk);
         }
-        await reader.closed;
+        await readable.getReader().closed;
     } catch (error) {
         console.error(`Embedded JS error: ${error}`);
     }
