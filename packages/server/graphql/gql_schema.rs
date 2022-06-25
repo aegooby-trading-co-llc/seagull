@@ -1,11 +1,6 @@
-use diesel::RunQueryDsl;
 use juniper::{EmptyMutation, EmptySubscription, FieldResult};
-use uuid::Uuid;
 
-use crate::{
-    db::{models::User, pg_schema},
-    graphql::juniper_context::JuniperContext,
-};
+use crate::graphql::juniper_context::JuniperContext;
 
 pub struct Query;
 #[juniper::graphql_object(context = JuniperContext)]
