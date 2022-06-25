@@ -1,29 +1,29 @@
-.App {
+.Index {
     text-align: center;
 }
 
-.App code {
+.Index code {
     background: #FFF3;
     padding: 4px 8px;
     border-radius: 4px;
 }
 
-.App p {
+.Index p {
     margin: 0.4rem;
 }
 
-.App-logo {
+.Index-logo {
     height: 40vmin;
     pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
+    .Index-logo {
+        animation: Index-logo-spin infinite 20s linear;
     }
 }
 
-.App-header {
+.Index-header {
     background-color: #282c34;
     min-height: 100vh;
     display: flex;
@@ -34,7 +34,7 @@
     color: white;
 }
 
-.App-button {
+.Index-button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -52,15 +52,15 @@
     cursor: pointer;
 }
 
-.App-button:hover {
+.Index-button:hover {
     background-color: #b7a733;
 }
 
-.App-button:active {
+.Index-button:active {
     background-color: #796f21;
 }
 
-@keyframes App-logo-spin {
+@keyframes Index-logo-spin {
     from {
         transform: rotate(0deg);
     }

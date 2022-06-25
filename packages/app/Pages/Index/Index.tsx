@@ -6,6 +6,7 @@ import { graphql } from "relay-runtime";
 import { default as logo } from "./logo.svg";
 
 import type { IndexFragment$key } from "./__generated__/IndexFragment.graphql.js";
+import "./Index.css";
 
 const fragment = graphql`
     fragment IndexFragment on Query {
@@ -39,19 +40,19 @@ export default function Index(props: IndexProps) {
 
     const { loginWithRedirect } = Auth0.useAuth0();
 
-    // Return the App component.
+    // Return the Index component.
     const element: React.ReactElement =
-        <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>Edit <code>src/App.tsx</code> and save to reload.</p>
+        <div className="Index">
+            <header className="Index-header">
+                <img src={logo} className="Index-logo" alt="logo" />
+                <p>Edit <code>src/Index.tsx</code> and save to reload.</p>
                 <p>
                     <React.Suspense fallback={<>loading...</>}>
                         <Suspendable fragmentRef={props.fragmentRef} />
                     </React.Suspense>
                 </p>
                 <p>Page has been open for <code>{count}</code> seconds.</p>
-                <button className="App-button" onClick={
+                <button className="Index-button" onClick={
                     function () {
                         loginWithRedirect().catch(function (error) {
                             console.error(error);

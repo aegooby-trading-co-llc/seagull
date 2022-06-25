@@ -5,8 +5,7 @@ import * as Auth0 from "@auth0/auth0-react";
 import { graphql } from "relay-runtime";
 
 import { relayEnvironment } from "./entry/relay.js";
-const Index = React.lazy(() => import("./Pages/Index.jsx"));
-import "./App.css";
+const Index = React.lazy(() => import("./Pages/Index/Index.jsx"));
 
 import type { AppQuery } from "./__generated__/AppQuery.graphql.js";
 
