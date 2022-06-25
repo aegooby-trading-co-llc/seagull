@@ -73,12 +73,9 @@ mod test {
 mod bench {
     extern crate test;
 
-    use hyper::Client;
     use std::process::Termination;
     use test::Bencher;
     use tokio::runtime::Runtime;
-
-    use crate::core::message::Message;
 
     use super::ReactRenderer;
 
@@ -88,22 +85,5 @@ mod bench {
             Runtime::new()?
                 .block_on(async { ReactRenderer::js_worker("renderer/embedded/test.mjs").await })
         })
-    }
-
-    #[bench]
-    fn proxy(bencher: &mut Bencher) -> impl Termination {
-        let mut message = Message::default();
-        match Runtime::new() {
-            Ok(runtime) => bencher.iter(|| {
-                runtime.block_on(async {
-                    let response = Client::new()
-                        .get(("http://localhost:3737/".to_string()).parse()?)
-                        .await?;
-                    *message.response.body_mut() = response.into_body();
-                    anyhow::Ok(())
-                })
-            }),
-            Err(_error) => (),
-        }
     }
 }
