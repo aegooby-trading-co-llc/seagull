@@ -34,8 +34,30 @@
     color: white;
 }
 
-.App-link {
-    color: #61dafb;
+.App-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #9b8e2b;
+    color: white;
+    border-radius: 0.35rem;
+    border: 0px;
+    height: 3rem;
+    width: 10rem;
+    padding: 0.5rem;
+    margin: 1rem;
+    font-size: large;
+    text-align: center;
+    line-height: 3rem;
+    cursor: pointer;
+}
+
+.App-button:hover {
+    background-color: #b7a733;
+}
+
+.App-button:active {
+    background-color: #796f21;
 }
 
 @keyframes App-logo-spin {

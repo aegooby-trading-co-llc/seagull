@@ -13,6 +13,8 @@ pub mod ops;
 pub mod resources;
 pub mod worker;
 
+const ACCEPTABLE_ERROR: &'static str = "Uncaught (in promise) Error: operation canceled";
+
 pub struct ReactRenderer;
 impl ReactRenderer {
     async fn js_worker(entry: &'static str) -> Result<Buffer> {
@@ -25,7 +27,11 @@ impl ReactRenderer {
         match js_worker.run(&path).await {
             Ok(()) => (),
             // @todo: see if there's a way to fix JS error
-            Err(_error) => (),
+            Err(error) => {
+                if format!("{}", error) != ACCEPTABLE_ERROR {
+                    return Err(error);
+                }
+            }
         }
 
         match js_worker.resources().get(&ByteStream::name()) {
@@ -67,17 +73,37 @@ mod test {
 mod bench {
     extern crate test;
 
+    use hyper::Client;
     use std::process::Termination;
     use test::Bencher;
     use tokio::runtime::Runtime;
 
+    use crate::core::message::Message;
+
     use super::ReactRenderer;
 
     #[bench]
-    fn render_stream(bencher: &mut Bencher) -> impl Termination {
+    fn embedded(bencher: &mut Bencher) -> impl Termination {
         bencher.iter(|| {
             Runtime::new()?
                 .block_on(async { ReactRenderer::js_worker("renderer/embedded/test.mjs").await })
         })
+    }
+
+    #[bench]
+    fn proxy(bencher: &mut Bencher) -> impl Termination {
+        let mut message = Message::default();
+        match Runtime::new() {
+            Ok(runtime) => bencher.iter(|| {
+                runtime.block_on(async {
+                    let response = Client::new()
+                        .get(("http://localhost:3737/".to_string()).parse()?)
+                        .await?;
+                    *message.response.body_mut() = response.into_body();
+                    anyhow::Ok(())
+                })
+            }),
+            Err(_error) => (),
+        }
     }
 }

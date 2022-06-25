@@ -48,12 +48,11 @@ function __App() {
                     </React.Suspense>
                 </p>
                 <p>Page has been open for <code>{count}</code> seconds.</p>
-                <button onClick={() => loginWithRedirect()}>
+                <button className="App-button" onClick={() => loginWithRedirect()}>
                     Log in to a penis
                 </button>
             </header>
-        </div>
-        ;
+        </div>;
     return element;
 }
 
