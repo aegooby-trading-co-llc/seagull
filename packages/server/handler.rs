@@ -40,28 +40,29 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
             #[cfg(feature = "dev")]
             {
                 use crate::files::content_type::html;
-                use hyper::{body, header::CONTENT_TYPE, Body, Client};
+                use hyper::{header::CONTENT_TYPE, Body, Client};
                 use std::path::Path;
                 use tokio::fs::File;
                 use tokio_util::io::ReaderStream;
 
                 let path = Path::new(".").join("public/index.html");
-                let mut response = Client::new()
-                    .get(("http://localhost:3080/".to_string() + pathname).parse()?)
-                    .await?;
-                let is_file = match response.headers().get(CONTENT_TYPE) {
-                    Some(content_type) => !content_type.to_str()?.starts_with("text/html"),
-                    None => true,
-                };
-                if is_file {
-                    *message.response.body_mut() =
-                        Body::from(body::to_bytes(response.body_mut()).await?);
-                } else {
-                    /* Render React */
-                    html(message)?;
-                    let file = File::open(path).await?;
-                    let stream = ReaderStream::new(file);
-                    *message.response.body_mut() = Body::wrap_stream(stream);
+                *message.response.body_mut() = {
+                    let response = Client::new()
+                        .get(("http://localhost:3080/".to_string() + pathname).parse()?)
+                        .await?;
+                    let is_file = match response.headers().get(CONTENT_TYPE) {
+                        Some(content_type) => !content_type.to_str()?.starts_with("text/html"),
+                        None => true,
+                    };
+                    if is_file {
+                        response.into_body()
+                    } else {
+                        /* Render React */
+                        html(message)?;
+                        let file = File::open(path).await?;
+                        let stream = ReaderStream::new(file);
+                        Body::wrap_stream(stream)
+                    }
                 }
             }
             #[cfg(feature = "prod")]
