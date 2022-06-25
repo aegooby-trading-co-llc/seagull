@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import * as React from "react";
 import * as Relay from "react-relay";
 import { graphql } from "relay-runtime";
+import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 
 import { relayEnvironment } from "./entry/relay.js";
 import { default as logo } from "./logo.svg";
@@ -23,7 +25,7 @@ function Suspendable() {
     return element;
 }
 
-export default function App() {
+function __App() {
     // Create the count state.
     const [count, setCount] = React.useState(0);
     // Create the counter (+1 every second).
@@ -32,8 +34,10 @@ export default function App() {
         return () => clearTimeout(timer);
     }, [count, setCount]);
 
+    const { loginWithRedirect } = useAuth0();
+
     // Return the App component.
-    return (
+    const element: React.ReactElement =
         <div className="App">
             <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo" />
@@ -44,17 +48,23 @@ export default function App() {
                     </React.Suspense>
                 </p>
                 <p>Page has been open for <code>{count}</code> seconds.</p>
-                <p>
-                    <a
-                        className="App-link"
-                        href="https://reactjs.org"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Learn React
-                    </a>
-                </p>
+                <button onClick={() => loginWithRedirect()}>
+                    Log in to a penis
+                </button>
             </header>
         </div>
-    );
+        ;
+    return element;
+}
+
+
+export default function App() {
+    const element: React.ReactElement =
+        <Auth0Provider domain="dev-grg8a828.us.auth0.com"
+            clientId="vWNnYfLE4ZyqlEh6f4iRM91WFUm7iX2J"
+            redirectUri={window.location.origin}
+        >
+            <__App />
+        </Auth0Provider >;
+    return element;
 }

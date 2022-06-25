@@ -11,9 +11,8 @@ pub mod ops;
 pub mod resources;
 pub mod worker;
 
-#[tokio::main]
-pub async fn render_react() -> Result<Buffer> {
-    let path = env::current_dir()?.join("packages/server/renderer/embedded/index.mjs");
+async fn __render_react(entry: &'static str) -> Result<Buffer> {
+    let path = env::current_dir()?.join(entry);
     let mut js_worker = JSWorker::new(&path, vec![op_create_stream::decl()], false)?;
 
     // Right now, if there's an error in JS execution of SSR,
@@ -37,29 +36,20 @@ pub async fn render_react() -> Result<Buffer> {
     }
 }
 
+#[tokio::main]
+pub async fn render_react(entry: &'static str) -> Result<Buffer> {
+    __render_react(entry).await
+}
+
 #[cfg(test)]
 mod test {
-    use super::{ops::op_create_stream, worker::JSWorker};
-    use crate::{
-        core::{error::err, result::Result},
-        renderer::resources::ByteStream,
-    };
-
-    use std::env;
+    use super::__render_react;
+    use crate::core::result::Result;
 
     #[tokio::test]
     async fn js_runtime_stream() -> Result<()> {
-        let path = env::current_dir()?.join("renderer/embedded/index.mjs");
-        let mut js_worker = JSWorker::new(&path, vec![op_create_stream::decl()], true)?;
-        js_worker.run(&path).await?;
-
-        match js_worker.resources().get(&ByteStream::name()) {
-            Some(rid) => {
-                let stream = js_worker.get_resource::<ByteStream>(*rid)?;
-                assert!(stream.consume().await?.len() > 0);
-                Ok(())
-            }
-            None => Err(err("RID not found for stream")),
-        }
+        let buffer = __render_react("renderer/embedded/test.mjs").await?;
+        assert!(buffer.bytes().len() > 0);
+        Ok(())
     }
 }

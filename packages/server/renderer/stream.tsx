@@ -5,7 +5,22 @@ import * as ReactDOMServer from "react-dom/server";
 
 import { default as Root } from "@seagull/app/entry/Root.jsx";
 
-const element: React.ReactElement =
+async function __renderStream(
+    element: React.ReactElement, controller: AbortController
+) {
+    const stream =
+        await ReactDOMServer.renderToReadableStream(element, {
+            signal: controller.signal,
+            onError: function (error) {
+                // eslint-disable-next-line
+                console.error(`renderStream(): ${error}`);
+            }
+        });
+    await stream.allReady;
+    return stream;
+}
+
+const rootElement: React.ReactElement =
     <html lang="en">
 
         <head>
@@ -32,16 +47,19 @@ const element: React.ReactElement =
     </html>;
 
 export async function renderStream(controller: AbortController) {
-    const stream = await ReactDOMServer.renderToReadableStream(element, {
-        signal: controller.signal,
-        onError: function (error) {
-            // eslint-disable-next-line
-            console.error(`renderStream(): ${error}`);
-        }
-    });
-    await stream.allReady;
-    return stream;
+    return await __renderStream(rootElement, controller);
 }
-export function renderString() {
-    return ReactDOMServer.renderToString(element);
+
+const testElement: React.ReactElement =
+    <html>
+        <head></head>
+        <body>
+            <div id="root">
+                <p>Test.</p>
+            </div>
+        </body>
+    </html>;
+
+export async function renderStreamTest(controller: AbortController) {
+    return await __renderStream(testElement, controller);
 }

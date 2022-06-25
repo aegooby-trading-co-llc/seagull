@@ -10,6 +10,7 @@
         "@types/relay-runtime": "13.0.2"
     },
     "dependencies": {
+        "@auth0/auth0-react": "^1.10.2",
         "@graphiql/toolkit": "^0.6.0",
         "graphiql": "^1.9.9",
         "react": "18.1.0",

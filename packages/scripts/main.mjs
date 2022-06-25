@@ -1,5 +1,4 @@
-import { argv, chalk } from "zx";
-import { echo } from "zx/experimental";
+import { argv, chalk, echo } from "zx";
 import { commands } from "./commands.mjs";
 import { error, success } from "./zx-extended.mjs";
 

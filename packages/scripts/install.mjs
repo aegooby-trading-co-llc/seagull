@@ -1,7 +1,9 @@
 #!/usr/bin/env zx
 
-import { $, quiet } from "zx";
+import { $ } from "zx";
 
-await quiet($`mkdir -p ~/.local/bin/`);
-await quiet($`cp "packages/scripts/shell.mjs" ~/.local/bin/seagull`)
-await quiet($`chmod u+x ~/.local/bin/seagull`)
+$.verbose = false;
+
+await $`mkdir -p ~/.local/bin/`;
+await $`cp "packages/scripts/shell.mjs" ~/.local/bin/seagull`;
+await $`chmod u+x ~/.local/bin/seagull`;

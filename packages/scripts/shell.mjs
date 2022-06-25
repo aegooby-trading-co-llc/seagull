@@ -2,11 +2,14 @@
 /* eslint-disable */
 // @ts-nocheck
 
+import { $ } from "./zx-extended.mjs";
+
 try {
     const file = await fs.readFile("package.json");
     const packageJson = JSON.parse(file.toString());
     if (packageJson.seagull) {
-        const pwd = (await quiet($`pwd`)).stdout.trim();
+        $.verbose = false;
+        const pwd = (await $`pwd`).stdout.trim();
         const Main = await import(path.join(pwd, packageJson.seagull));
         await Main.main();
     } else {

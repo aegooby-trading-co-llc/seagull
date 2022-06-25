@@ -1,5 +1,7 @@
 #!/usr/bin/env zx
 
-import { $, quiet } from "zx";
+import { $ } from "zx";
 
-await quiet($`rm -rf ~/.local/bin/seagull`);
+$.verbose = false;
+
+await $`rm -rf ~/.local/bin/seagull`;

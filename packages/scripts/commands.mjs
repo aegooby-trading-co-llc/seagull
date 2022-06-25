@@ -1,8 +1,7 @@
 
-import { chalk, sleep, question } from "zx";
-import { echo } from "zx/experimental";
+import { $, chalk, sleep, question, echo } from "zx";
 
-import { log, $ } from "./zx-extended.mjs";
+import { log } from "./zx-extended.mjs";
 
 /**
  * @typedef Command
@@ -34,16 +33,9 @@ export const commands = {
                 $`cargo run --features dev`,
                 $`esbuild/main --mode dev`,
             ];
-            promises.map(function (promise) { promise._inheritStdin = false; });
-            await sleep(100);
             echo`${log} file server: ${chalk.blue`http://localhost:3080/`}`;
             echo`${log} main server: ${chalk.magenta`http://localhost:8787/`}`;
-            await question(`${log} press ${chalk.bold`enter`} to stop`, {
-                choices: []
-            });
-            for (const promise of promises) {
-                await promise.kill("SIGINT");
-            }
+            await Promise.all(promises);
         },
         options: {},
         description: "runs local development servers",

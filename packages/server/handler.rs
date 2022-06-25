@@ -98,7 +98,10 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
                     Err(_error) => true,
                 };
                 if react {
-                    let mut buffer = spawn_blocking(|| render_react()).await??;
+                    let mut buffer = spawn_blocking(|| {
+                        render_react("packages/server/renderer/embedded/index.mjs")
+                    })
+                    .await??;
                     buffer.terminate();
                     let stream = ReaderStream::new(buffer);
                     *message.response.body_mut() = Body::wrap_stream(stream);
