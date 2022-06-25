@@ -120,42 +120,47 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
 mod bench {
     extern crate test;
 
-    use juniper_hyper::graphql;
-    use std::{
-        process::Termination,
-        sync::{Arc, RwLock},
-    };
-    use test::{black_box, Bencher};
+    use hyper::{Method, Uri};
+    use std::process::Termination;
+    use test::Bencher;
     use tokio::runtime::Runtime;
 
-    use crate::{
-        core::{context::Context, message::Message},
-        graphql::juniper_context::JuniperContext,
-    };
+    use crate::core::{context::Context, message::Message};
+
+    use super::handle;
 
     #[bench]
-    fn graphql_exec(bencher: &mut Bencher) -> impl Termination {
+    fn graphql_post(bencher: &mut Bencher) -> impl Termination {
         if dotenv::dotenv().is_err() {
             return ();
         }
         let mut message = Message::default();
+        *message.request.method_mut() = Method::POST;
+        *message.request.uri_mut() = Uri::builder()
+            .path_and_query("/graphql")
+            .build()
+            .unwrap_or(Uri::default());
         match (Runtime::new(), Context::new()) {
-            (Ok(runtime), Ok(context)) => bencher.iter(|| {
-                runtime.block_on(async {
-                    let juniper_context = Arc::new(JuniperContext::new(
-                        Arc::new(RwLock::new(message.clone().await)),
-                        context.clone(),
-                    ));
-                    black_box(
-                        message.response = graphql(
-                            context.clone().graphql_root_node,
-                            juniper_context,
-                            message.clone().await.request,
-                        )
-                        .await,
-                    );
-                })
-            }),
+            (Ok(runtime), Ok(context)) => bencher
+                .iter(|| runtime.block_on(async { handle(&mut message, context.clone()).await })),
+            _ => (),
+        }
+    }
+
+    #[bench]
+    fn graphql_get(bencher: &mut Bencher) -> impl Termination {
+        if dotenv::dotenv().is_err() {
+            return ();
+        }
+        let mut message = Message::default();
+        *message.request.method_mut() = Method::GET;
+        *message.request.uri_mut() = Uri::builder()
+            .path_and_query("/graphql")
+            .build()
+            .unwrap_or(Uri::default());
+        match (Runtime::new(), Context::new()) {
+            (Ok(runtime), Ok(context)) => bencher
+                .iter(|| runtime.block_on(async { handle(&mut message, context.clone()).await })),
             _ => (),
         }
     }

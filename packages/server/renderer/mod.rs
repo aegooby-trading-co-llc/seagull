@@ -74,19 +74,7 @@ mod bench {
     use super::ReactRenderer;
 
     #[bench]
-    fn one_runtime(bencher: &mut Bencher) -> impl Termination {
-        match Runtime::new() {
-            Ok(runtime) => bencher.iter(|| {
-                runtime.block_on(async {
-                    ReactRenderer::js_worker("renderer/embedded/test.mjs").await
-                })
-            }),
-            Err(_error) => (),
-        }
-    }
-
-    #[bench]
-    fn multi_runtime(bencher: &mut Bencher) -> impl Termination {
+    fn render_stream(bencher: &mut Bencher) -> impl Termination {
         bencher.iter(|| {
             Runtime::new()?
                 .block_on(async { ReactRenderer::js_worker("renderer/embedded/test.mjs").await })
