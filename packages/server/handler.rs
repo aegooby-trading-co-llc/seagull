@@ -3,22 +3,15 @@ use std::{
     sync::{Arc, RwLock},
 };
 
-use hyper::{body, header::CONTENT_TYPE, Body, Client, Method, StatusCode};
+use hyper::{Body, Method, StatusCode};
 use juniper_hyper::{graphiql, graphql};
-use tokio::{
-    fs::{metadata, File},
-    task::spawn_blocking,
-};
+use tokio::fs::File;
 use tokio_util::io::ReaderStream;
 
 use crate::{
     core::{context::Context, message::Message, result::Result},
-    files::{
-        content_type::{guess, html},
-        etag::generate,
-    },
+    files::content_type::{guess, html},
     graphql::juniper_context::JuniperContext,
-    renderer::render_react,
 };
 
 /**
@@ -55,6 +48,7 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
             };
             #[cfg(feature = "dev")]
             {
+                use hyper::{body, header::CONTENT_TYPE, Client};
                 let path = Path::new(".").join("public/index.html");
                 let mut response = Client::new()
                     .get(("http://localhost:3080/".to_string() + pathname).parse()?)
@@ -76,6 +70,8 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
             }
             #[cfg(feature = "prod")]
             {
+                use crate::{files::etag::generate, renderer::render_react};
+                use tokio::{fs::metadata, task::spawn_blocking};
                 /* Points to main directory with all the JS/static files */
                 let build_root = Path::new(".").join("build");
                 let react = match metadata(build_root.join(pathname)).await {

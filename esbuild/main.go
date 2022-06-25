@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"seagull/esbuild/cf"
 	"seagull/esbuild/config"
 	"seagull/esbuild/console"
 	"seagull/esbuild/plugins"
@@ -18,9 +17,6 @@ import (
 	"github.com/ttacon/chalk"
 )
 
-var uploadFlag = getopt.StringLong(
-	"upload", 'u', "", "'preview' or 'live'",
-)
 var modeFlag = getopt.StringLong(
 	"mode", 'm', "", "'dev' or 'prod'",
 )
@@ -144,10 +140,6 @@ func main() {
 			Outdir:            config.BuildRootProd,
 			Plugins: []api.Plugin{
 				plugins.Relay(plugins.RelayConfig{Dev: false}),
-				// @todo: remove
-				// plugins.Hash(plugins.HashConfig{
-				// 	WorkerPath: "/packages/worker/entry/ssr.js",
-				// }),
 			},
 			Define: map[string]string{
 				"process.env.NODE_ENV": "\"production\"",
@@ -183,33 +175,8 @@ func main() {
 			}
 			os.Exit(1)
 		}
-
-		// @todo: remove
-		if *uploadFlag != "" {
-			if *uploadFlag != "preview" && *uploadFlag != "live" {
-				console.Error(
-					"Flag --upload requires argument 'preview' or 'live'",
-				)
-				os.Exit(1)
-			}
-
-			// @todo parallelize
-			console.Log("Uploading files to Cloudflare KV")
-			cfClient, err := cf.Create(cf.CreateOptions{Destination: *uploadFlag})
-			if err != nil {
-				console.Error(err)
-			}
-			err = cf.Upload(&cfClient, cf.CfUploadOptions{
-				Exclude: []string{"^/packages/worker/.*"},
-			})
-			if err != nil {
-				console.Error(err)
-			}
-		}
 	default:
 		console.Error("Flag '--mode' requires argument 'dev' or 'prod'")
 		os.Exit(1)
 	}
-
-	console.Success("")
 }

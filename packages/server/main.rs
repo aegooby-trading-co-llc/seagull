@@ -6,6 +6,7 @@ mod db;
 mod files;
 mod graphql;
 mod handler;
+#[cfg(feature = "prod")]
 mod renderer;
 
 use self::core::{context::Context, message::Message, result::Result};
