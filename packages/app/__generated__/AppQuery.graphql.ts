@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c91e4dc1d5ac0945979b62ef72b7f49e>>
+ * @generated SignedSource<<c8126c18a03f09f7491b5a180eea640e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,32 +9,29 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Query } from 'relay-runtime';
+import { FragmentRefs } from "relay-runtime";
 export type AppQuery$variables = {};
 export type AppQuery$data = {
-  readonly penis: string | null;
+  readonly " $fragmentSpreads": FragmentRefs<"IndexFragment">;
 };
 export type AppQuery = {
   response: AppQuery$data;
   variables: AppQuery$variables;
 };
 
-const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "alias": null,
-    "args": null,
-    "kind": "ScalarField",
-    "name": "penis",
-    "storageKey": null
-  }
-];
-return {
+const node: ConcreteRequest = {
   "fragment": {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
     "name": "AppQuery",
-    "selections": (v0/*: any*/),
+    "selections": [
+      {
+        "args": null,
+        "kind": "FragmentSpread",
+        "name": "IndexFragment"
+      }
+    ],
     "type": "Query",
     "abstractKey": null
   },
@@ -43,19 +40,26 @@ return {
     "argumentDefinitions": [],
     "kind": "Operation",
     "name": "AppQuery",
-    "selections": (v0/*: any*/)
+    "selections": [
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "penis",
+        "storageKey": null
+      }
+    ]
   },
   "params": {
-    "cacheID": "d3d94f6b565810ced185b2c4c7c9b2cc",
+    "cacheID": "14ea9733896c0ca13fccf79e17b01331",
     "id": null,
     "metadata": {},
     "name": "AppQuery",
     "operationKind": "query",
-    "text": "query AppQuery {\n  penis\n}\n"
+    "text": "query AppQuery {\n  ...IndexFragment\n}\n\nfragment IndexFragment on Query {\n  penis\n}\n"
   }
 };
-})();
 
-(node as any).hash = "b7a12eb2add5cd683ad1bc7b6645c2dd";
+(node as any).hash = "83a654e2af1abea486b06e1c2868f667";
 
 export default node;

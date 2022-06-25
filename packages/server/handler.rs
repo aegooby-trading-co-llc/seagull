@@ -50,9 +50,11 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
                     let response = Client::new()
                         .get(("http://localhost:3080/".to_string() + pathname).parse()?)
                         .await?;
-                    let is_file = match response.headers().get(CONTENT_TYPE) {
-                        Some(content_type) => !content_type.to_str()?.starts_with("text/html"),
-                        None => true,
+                    let is_file = match (response.status(), response.headers().get(CONTENT_TYPE)) {
+                        (StatusCode::OK, Some(content_type)) => {
+                            !content_type.to_str()?.starts_with("text/html")
+                        }
+                        _ => false,
                     };
                     if is_file {
                         response.into_body()
