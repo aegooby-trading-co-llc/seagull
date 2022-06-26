@@ -1,13 +1,10 @@
+use bytes::{Bytes, BytesMut};
 use tokio::task::spawn_blocking;
 
 use crate::core::{error::err, result::Result};
 use std::env;
 
-use self::{
-    ops::op_create_stream,
-    resources::{Buffer, ByteStream},
-    worker::JsWorker,
-};
+use self::{ops::op_create_stream, resources::ByteStream, worker::JsWorker};
 
 pub mod ops;
 pub mod resources;
@@ -15,7 +12,7 @@ pub mod worker;
 
 pub struct ReactRenderer;
 impl ReactRenderer {
-    async fn js_worker(entry: &'static str, args: Vec<String>) -> Result<Buffer> {
+    async fn js_worker(entry: &'static str, args: Vec<String>) -> Result<Bytes> {
         let path = env::current_dir()?.join(entry);
         let mut js_worker = JsWorker::new(&path, vec![op_create_stream::decl()], args, false)?;
         js_worker.run(&path).await?;
@@ -26,18 +23,18 @@ impl ReactRenderer {
                     .get_resource::<ByteStream>(*rid)?
                     .consume()
                     .await?;
-                Ok(Buffer::new(bytes))
+                Ok(bytes.into())
             }
             None => Err(err("RID not found for stream")),
         }
     }
 
     #[tokio::main]
-    async fn runtime(entry: &'static str, args: Vec<String>) -> Result<Buffer> {
+    async fn runtime(entry: &'static str, args: Vec<String>) -> Result<Bytes> {
         Self::js_worker(entry, args).await
     }
 
-    pub async fn render(entry: &'static str, args: Vec<String>) -> Result<Buffer> {
+    pub async fn render(entry: &'static str, args: Vec<String>) -> Result<Bytes> {
         spawn_blocking(|| Self::runtime(entry, args)).await?
     }
 }
@@ -50,7 +47,7 @@ mod test {
     #[tokio::test]
     async fn render_stream() -> Result<()> {
         let buffer = ReactRenderer::js_worker("renderer/embedded/test.mjs", vec![]).await?;
-        assert!(buffer.bytes().len() > 0);
+        assert!(buffer.len() > 0);
         Ok(())
     }
 }

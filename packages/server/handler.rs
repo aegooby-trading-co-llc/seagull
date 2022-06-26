@@ -101,14 +101,12 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
                 };
                 if react {
                     let entry = "packages/server/renderer/embedded/index.mjs";
-                    let mut buffer = ReactRenderer::render(
+                    let buffer = ReactRenderer::render(
                         entry,
                         vec![message.request.uri().path().to_string()],
                     )
                     .await?;
-                    buffer.terminate();
-                    let stream = ReaderStream::new(buffer);
-                    *message.response.body_mut() = Body::wrap_stream(stream);
+                    *message.response.body_mut() = Body::from(buffer);
                     html(message)?;
                 }
             }
