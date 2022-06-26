@@ -2753,7 +2753,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "seagull"
+name = "seagull-server"
 version = "0.0.0"
 dependencies = [
  "anyhow",
