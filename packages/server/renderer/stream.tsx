@@ -2,8 +2,11 @@
 
 import * as React from "react";
 import * as ReactDOMServer from "react-dom/server";
+import * as RouterServer from "react-router-dom/server";
 
 import { default as Root } from "@seagull/app/entry/Root.jsx";
+
+declare const Deno: { args: (string)[]; };
 
 async function __renderStream(
     element: React.ReactElement, controller: AbortController
@@ -40,7 +43,9 @@ const rootElement: React.ReactElement =
 
         <body>
             <div id="root">
-                <Root />
+                <RouterServer.StaticRouter location={Deno.args[0]}>
+                    <Root />
+                </RouterServer.StaticRouter>
             </div>
         </body>
 

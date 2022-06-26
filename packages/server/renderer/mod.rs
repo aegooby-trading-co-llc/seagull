@@ -6,7 +6,7 @@ use std::env;
 use self::{
     ops::op_create_stream,
     resources::{Buffer, ByteStream},
-    worker::JSWorker,
+    worker::JsWorker,
 };
 
 pub mod ops;
@@ -15,9 +15,9 @@ pub mod worker;
 
 pub struct ReactRenderer;
 impl ReactRenderer {
-    async fn js_worker(entry: &'static str) -> Result<Buffer> {
+    async fn js_worker(entry: &'static str, args: Vec<String>) -> Result<Buffer> {
         let path = env::current_dir()?.join(entry);
-        let mut js_worker = JSWorker::new(&path, vec![op_create_stream::decl()], false)?;
+        let mut js_worker = JsWorker::new(&path, vec![op_create_stream::decl()], args, false)?;
         js_worker.run(&path).await?;
 
         match js_worker.resources().get(&ByteStream::name()) {
@@ -33,12 +33,12 @@ impl ReactRenderer {
     }
 
     #[tokio::main]
-    async fn runtime(entry: &'static str) -> Result<Buffer> {
-        Self::js_worker(entry).await
+    async fn runtime(entry: &'static str, args: Vec<String>) -> Result<Buffer> {
+        Self::js_worker(entry, args).await
     }
 
-    pub async fn render(entry: &'static str) -> Result<Buffer> {
-        spawn_blocking(|| Self::runtime(entry)).await?
+    pub async fn render(entry: &'static str, args: Vec<String>) -> Result<Buffer> {
+        spawn_blocking(|| Self::runtime(entry, args)).await?
     }
 }
 
@@ -49,7 +49,7 @@ mod test {
 
     #[tokio::test]
     async fn render_stream() -> Result<()> {
-        let buffer = ReactRenderer::js_worker("renderer/embedded/test.mjs").await?;
+        let buffer = ReactRenderer::js_worker("renderer/embedded/test.mjs", vec![]).await?;
         assert!(buffer.bytes().len() > 0);
         Ok(())
     }
@@ -68,8 +68,9 @@ mod bench {
     #[bench]
     fn embedded(bencher: &mut Bencher) -> impl Termination {
         bencher.iter(|| {
-            Runtime::new()?
-                .block_on(async { ReactRenderer::js_worker("renderer/embedded/test.mjs").await })
+            Runtime::new()?.block_on(async {
+                ReactRenderer::js_worker("renderer/embedded/test.mjs", vec![]).await
+            })
         })
     }
 }

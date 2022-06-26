@@ -32,14 +32,16 @@ fn create_web_worker_preload_module_callback() -> Arc<PreloadModuleCb> {
 fn create_web_worker_callback(
     stdio: deno_runtime::ops::io::Stdio,
     debug_flag: bool,
+    cmd_args: Vec<String>,
 ) -> Arc<CreateWebWorkerCb> {
     Arc::new(move |args| {
-        let create_web_worker_cb = create_web_worker_callback(stdio.clone(), debug_flag);
+        let create_web_worker_cb =
+            create_web_worker_callback(stdio.clone(), debug_flag, cmd_args.clone());
         let preload_module_cb = create_web_worker_preload_module_callback();
 
         let options = WebWorkerOptions {
             bootstrap: BootstrapOptions {
-                args: vec![],
+                args: cmd_args.clone(),
                 cpu_count: cpu_count(),
                 debug_flag,
                 enable_testing_features: false,
@@ -80,20 +82,26 @@ fn create_web_worker_callback(
     })
 }
 
-pub struct JSWorker {
+pub struct JsWorker {
     worker: MainWorker,
 }
-impl JSWorker {
-    pub fn new(main_path: &PathBuf, ops: Vec<OpDecl>, debug_flag: bool) -> Result<Self> {
+impl JsWorker {
+    pub fn new(
+        main_path: &PathBuf,
+        ops: Vec<OpDecl>,
+        args: Vec<String>,
+        debug_flag: bool,
+    ) -> Result<Self> {
         let main_module = resolve_path(main_path.to_str().ok_or(err("Failed to join path"))?)?;
-        let create_web_worker_cb = create_web_worker_callback(Stdio::default(), debug_flag);
+        let create_web_worker_cb =
+            create_web_worker_callback(Stdio::default(), debug_flag, args.clone());
         let web_worker_preload_module_cb = create_web_worker_preload_module_callback();
         let worker = MainWorker::bootstrap_from_options(
             main_module.clone(),
             Permissions::allow_all(),
             WorkerOptions {
                 bootstrap: BootstrapOptions {
-                    args: vec![],
+                    args,
                     cpu_count: cpu_count(),
                     debug_flag,
                     enable_testing_features: false,

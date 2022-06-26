@@ -14,5 +14,6 @@ Trust me don't try to be cool and skip steps. You aren't that cool. I'm cool. Li
 1. This: `git clone https://github.com/aegooby/seagull && cd seagull`
 2. `yarn install`
 3. Install Seagull: `packages/scripts/install.mjs`
-4. Compile ESBuild: `seagull compile`
-5. Run: `seagull serve`
+4. Set Rust toolchain: `rustup default nightly-2022-06-20`
+5. Compile bundler and server: `seagull compile`
+6. Run: `seagull serve`
