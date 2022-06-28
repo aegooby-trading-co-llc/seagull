@@ -1,14 +1,14 @@
-use std::sync::{Arc, RwLock};
+use std::sync::Arc;
 
-use crate::core::{context::Context, message::Message};
+use crate::core::context::Context;
 
 pub struct JuniperContext {
-    pub message: Arc<RwLock<Message>>,
-    pub global: Context,
+    // pub message: Arc<RwLock<Message>>,
+    pub global: Arc<Context>,
 }
 impl JuniperContext {
-    pub fn new(message: Arc<RwLock<Message>>, global: Context) -> Self {
-        Self { message, global }
+    pub fn new(global: Arc<Context>) -> Self {
+        Self { global }
     }
 }
 impl juniper::Context for JuniperContext {}

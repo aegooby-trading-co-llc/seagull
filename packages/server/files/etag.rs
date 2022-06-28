@@ -1,4 +1,6 @@
-use self::core::{message, Result};
+use axum::{body::Body, http::Response};
+
+use self::core::Result;
 use crate::core;
 
 use std::{fs::Metadata, str::FromStr, time::UNIX_EPOCH};
@@ -44,9 +46,9 @@ fn if_none_match(value: &str, etag: &str) -> bool {
     like a file hash, a way of identifying file uniqueness so that the browser cache
     updates things when a file with the same name is updated.
 */
-pub fn generate(message: &mut message::Message, metadata: &std::fs::Metadata) -> Result<()> {
+pub fn generate(response: &mut Response<Body>, metadata: &std::fs::Metadata) -> Result<()> {
     let mut mtime = None as Option<u64>;
-    if let Some(header) = message.response.headers().get(hyper::header::LAST_MODIFIED) {
+    if let Some(header) = response.headers().get(hyper::header::LAST_MODIFIED) {
         if let Ok(header_str) = header.to_str() {
             if let Ok(last_modified) = header_str.parse() {
                 mtime = Some(last_modified)
@@ -56,48 +58,38 @@ pub fn generate(message: &mut message::Message, metadata: &std::fs::Metadata) ->
         let last_modified = modified.duration_since(std::time::UNIX_EPOCH)?.as_secs();
         mtime = Some(last_modified);
         let value = hyper::header::HeaderValue::from_str(last_modified.to_string().as_str())?;
-        message
-            .response
+        response
             .headers_mut()
             .insert(hyper::header::LAST_MODIFIED, value);
     }
 
-    if !message
-        .response
+    if !response
         .headers()
         .contains_key(hyper::header::CACHE_CONTROL)
     {
         let value = hyper::header::HeaderValue::from_static("max-age=0");
-        message
-            .response
+        response
             .headers_mut()
             .append(hyper::header::CACHE_CONTROL, value);
     }
-    if let Some(value) = message.response.headers().get(hyper::header::IF_NONE_MATCH) {
+    if let Some(value) = response.headers().get(hyper::header::IF_NONE_MATCH) {
         if mtime.is_some() {
             if let Ok(value) = value.to_str() {
                 let etag = calculate(&metadata);
                 if !if_none_match(&value.to_string(), &etag) {
                     let value = hyper::header::HeaderValue::from_str(etag.as_str())?;
-                    message
-                        .response
-                        .headers_mut()
-                        .append(hyper::header::ETAG, value);
-                    *message.response.status_mut() = hyper::StatusCode::NOT_MODIFIED;
+                    response.headers_mut().append(hyper::header::ETAG, value);
+                    *response.status_mut() = hyper::StatusCode::NOT_MODIFIED;
                 }
             }
         }
     }
-    if let Some(value) = message
-        .response
-        .headers()
-        .get(hyper::header::IF_MODIFIED_SINCE)
-    {
+    if let Some(value) = response.headers().get(hyper::header::IF_MODIFIED_SINCE) {
         if let Some(mtime) = mtime {
             if let Ok(value) = value.to_str() {
                 let date = chrono::DateTime::<chrono::Utc>::from_str(value)?;
                 if date.timestamp() as u64 > mtime {
-                    *message.response.status_mut() = hyper::StatusCode::NOT_MODIFIED;
+                    *response.status_mut() = hyper::StatusCode::NOT_MODIFIED;
                 }
             }
         }

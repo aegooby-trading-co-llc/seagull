@@ -10,10 +10,12 @@ mod files;
 mod graphql;
 mod handler;
 
-use self::core::{context::Context, message::Message, Result};
-use std::convert::Infallible;
+use self::core::{context::Context, Result};
+use std::sync::Arc;
 
-use hyper::{Body, Request, Response};
+use axum::{body::Body, routing::get, Extension, Router, Server};
+use tower::ServiceBuilder;
+use tower_http::{compression::CompressionLayer, trace::TraceLayer};
 
 #[macro_use]
 extern crate diesel;
@@ -28,54 +30,30 @@ async fn shutdown_signal() -> () {
     }
 }
 
-/**
-    Creates a `Message` and runs the `handler::handle()` function on it.
-*/
-async fn service_handler(
-    context: Context,
-    addr: std::net::SocketAddr,
-    request: Request<Body>,
-) -> std::result::Result<Response<Body>, Infallible> {
-    let response = Response::new(Body::empty());
-    let mut message = Message::new(request, response, addr);
-
-    /* Registers a 500 Internal Server Error if we do something */
-    /* wrong and mess up the message handling somehow           */
-    match handler::handle(&mut message, context).await {
-        Ok(()) => (),
-        Err(error) => {
-            *message.response.status_mut() = hyper::StatusCode::INTERNAL_SERVER_ERROR;
-            *message.response.body_mut() = hyper::Body::from(format!("{}", error));
-        }
-    };
-    Ok(message.done())
-}
-
 async fn seagull() -> Result<()> {
     dotenv::dotenv()?;
 
-    /* 127.0.0.1:8787 = localhost:8787 */
+    /* http://127.0.0.1:8787 = http://localhost:8787 */
     let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 8787));
 
     let context = Context::new()?;
-    let make_service =
-        hyper::service::make_service_fn(move |conn: &hyper::server::conn::AddrStream| {
-            /* We have to clone the context to share it with each */
-            /* invocation of `make_service`                       */
-            let context = context.clone();
-            let addr = conn.remote_addr();
+    let router = Router::<Body>::new()
+        .route(
+            "/graphql",
+            get(handler::graphql_get).post(handler::graphql_post),
+        )
+        .fallback(get(handler::fallback_get))
+        .layer(
+            ServiceBuilder::new()
+                .layer(CompressionLayer::new())
+                .layer(TraceLayer::new_for_http())
+                .layer(Extension(Arc::new(context))),
+        );
 
-            let service = hyper::service::service_fn(move |request| {
-                service_handler(context.clone(), addr, request)
-            });
-
-            async move { Ok::<_, std::convert::Infallible>(service) }
-        });
-
-    let server = hyper::Server::bind(&addr).serve(make_service);
-
-    /* Allows a controlled exit from the server.    */
-    server.with_graceful_shutdown(shutdown_signal()).await?;
+    Server::bind(&addr)
+        .serve(router.into_make_service())
+        .with_graceful_shutdown(shutdown_signal())
+        .await?;
     Ok(())
 }
 

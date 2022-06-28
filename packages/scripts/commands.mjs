@@ -69,7 +69,7 @@ export const commands = {
                     await sleep(500);
                 }
                 const deno = 
-                    $`deno run --unstable --allow-all packages/server/embedded/index.mjs`;
+                    $`deno run --unstable --allow-all packages/server/embedded/index.deno.ts`;
                 await sleep(100);
                 echo`${log} ssr server: ${chalk.blue`http://localhost:3737/`}`;
                 echo`${log} main server: ${chalk.magenta`http://localhost:8787/`}`;
