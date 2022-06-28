@@ -2,6 +2,7 @@
 import * as React from "react";
 import * as ReactDOMClient from "react-dom/client";
 import * as Router from "react-router-dom";
+import * as Helmet from "react-helmet-async";
 
 import { default as Root } from "./Root.jsx";
 import "../styles.css";
@@ -14,7 +15,9 @@ try {
 
     const element: React.ReactElement =
         <Router.BrowserRouter>
-            <Root />
+            <Helmet.HelmetProvider>
+                <Root />
+            </Helmet.HelmetProvider>
         </Router.BrowserRouter>;
 
     switch (process.env.NODE_ENV) {

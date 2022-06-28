@@ -1,7 +1,5 @@
 {
-    "include": [
-        "packages/**/*"
-    ],
+    "include": ["packages/**/*", "__esbuild.ts"],
     "compilerOptions": {
         "module": "esnext",
         "target": "esnext",

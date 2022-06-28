@@ -12,7 +12,7 @@ use juniper_hyper::{graphiql, graphql};
 
 use crate::{
     core::{context::Context, Result},
-    files::content_type::guess,
+    files::{content_type::guess, load::file_to_body},
     graphql::juniper_context::JuniperContext,
 };
 
@@ -42,8 +42,6 @@ async fn __fallback_get(OriginalUri(uri): OriginalUri) -> Result<Response<Body>>
         use hyper::header::CONTENT_TYPE;
         use hyper::Client;
         use std::path::Path;
-        use tokio::fs::File;
-        use tokio_util::io::ReaderStream;
 
         let path = Path::new(".").join("public/index.html");
         *response.body_mut() = {
@@ -64,9 +62,7 @@ async fn __fallback_get(OriginalUri(uri): OriginalUri) -> Result<Response<Body>>
             } else {
                 /* Render React */
                 html(&mut response)?;
-                let file = File::open(path).await?;
-                let stream = ReaderStream::new(file);
-                Body::wrap_stream(stream)
+                file_to_body(&path).await?
             }
         }
     }
@@ -78,8 +74,7 @@ async fn __fallback_get(OriginalUri(uri): OriginalUri) -> Result<Response<Body>>
         };
         use hyper::Client;
         use std::path::Path;
-        use tokio::fs::{metadata, File};
-        use tokio_util::io::ReaderStream;
+        use tokio::fs::metadata;
 
         /* Points to main directory with all the JS/static files */
         let build_root = Path::new(".").join("build");
@@ -88,9 +83,7 @@ async fn __fallback_get(OriginalUri(uri): OriginalUri) -> Result<Response<Body>>
                 if metadata.is_file() {
                     let path = build_root.join(pathname);
                     /* Open file into stream and set it as the response body */
-                    let file = File::open(path.clone()).await?;
-                    let stream = ReaderStream::new(file);
-                    *response.body_mut() = Body::wrap_stream(stream);
+                    *response.body_mut() = file_to_body(&path).await?;
 
                     /* Do ETag shit */
                     generate(&mut response, &metadata)?;
@@ -103,6 +96,7 @@ async fn __fallback_get(OriginalUri(uri): OriginalUri) -> Result<Response<Body>>
             Err(_error) => true,
         };
         if react {
+            /* Guaranteed to work because leading '/' is stripped */
             let deno_response = Client::new()
                 .get(("http://localhost:3737/".to_string() + pathname).parse()?)
                 .await?;
@@ -129,7 +123,7 @@ pub async fn graphql_get() -> AxumResult<Response<Body>> {
     }
 }
 
-pub async fn __graphql_get() -> Result<Response<Body>> {
+async fn __graphql_get() -> Result<Response<Body>> {
     let response = graphiql("/graphql", None).await;
     Ok(response)
 }
@@ -149,7 +143,7 @@ pub async fn graphql_post(
     }
 }
 
-pub async fn __graphql_post(
+async fn __graphql_post(
     Extension(context): Extension<Arc<Context>>,
     request: Request<Body>,
 ) -> Result<Response<Body>> {

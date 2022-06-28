@@ -12,7 +12,6 @@ import (
 	"github.com/evanw/esbuild/pkg/api"
 	"github.com/imdario/mergo"
 	"github.com/joho/godotenv"
-	"github.com/mattn/go-zglob"
 	"github.com/pborman/getopt/v2"
 	"github.com/ttacon/chalk"
 )
@@ -27,21 +26,11 @@ func main() {
 
 	var err error
 
-	glob, err := zglob.Glob("public/**/*")
-	if err != nil {
-		fmt.Println(
-			chalk.Red.Color("✘"),
-			chalk.White.NewStyle().WithBackground(chalk.Red).Style("[ERROR]"),
-			chalk.Reset.WithTextStyle(chalk.Bold).Style("Failed to glob"), chalk.Reset,
-		)
-		os.Exit(1)
-	}
-
 	var entryPoints = append(
-		glob,
+		[]string{},
 		"packages/app/entry/bundle.tsx",
 		"packages/server/stream.tsx",
-		"packages/__esbuild.ts",
+		"__esbuild.ts",
 	)
 
 	var buildOptions = api.BuildOptions{

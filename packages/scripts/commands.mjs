@@ -48,7 +48,7 @@ export const commands = {
             if (args.prod) {
                 echo`${log} starting prod server`;
                 const cargo = $`cargo run --features prod`;
-                while (true) {
+                for (;;) {
                     try { 
                         const response = await fetch(
                             "http://localhost:8787/graphql", {
@@ -83,10 +83,11 @@ export const commands = {
         description: "runs local development servers",
         verbose: false,
     },
-    "package": {
+    "bundle": {
         exec: async function () {
             echo`${log} building for production`;
             await $`esbuild/main --mode prod`;
+            await $`cp public/** build`;
         },
         options: {},
         description: "builds client and server for production",

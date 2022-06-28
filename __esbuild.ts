@@ -6,5 +6,5 @@
  * When they get pulled out as chunks, it preserves the URLs on
  * file imports so that static files load correctly.
  */
-import "./app/entry/bundle.jsx";
-// import "./app/entry/graphiql.jsx";
+import "./packages/app/entry/bundle.jsx";
+import "./packages/server/stream.jsx";
