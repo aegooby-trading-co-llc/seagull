@@ -43,6 +43,7 @@ const rootElement: React.ReactElement =
 
         <body>
             <div id="root">
+                // @todo: add argument during fetch
                 <RouterServer.StaticRouter location={"/"}>
                     <Root />
                 </RouterServer.StaticRouter>
