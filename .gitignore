@@ -111,7 +111,7 @@ dist/
 /target
 
 # ESBuild script
-esbuild/main
+esbuild/esbundler
 
 # Build2
 .bdep/

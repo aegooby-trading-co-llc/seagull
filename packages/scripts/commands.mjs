@@ -19,7 +19,7 @@ export const commands = {
     "compile": {
         exec: async function () {
             echo`${log} compiling artifacts`;
-            await $`go build -o esbuild/main esbuild/main.go`;
+            await $`go build -o esbuild/esbundler esbuild/main.go`;
             await $`cargo build --features dev`;
             await $`cargo build --features prod`;
         },
@@ -38,7 +38,7 @@ export const commands = {
                 const promises = [
                     $`relay-compiler --watch`,
                     $`cargo run --features dev`,
-                    $`esbuild/main --mode dev`,
+                    $`esbuild/esbundler --mode dev`,
                 ];
                 await sleep(100);
                 echo`${log} file server: ${chalk.blue`http://localhost:3080/`}`;
@@ -86,7 +86,7 @@ export const commands = {
     "bundle": {
         exec: async function () {
             echo`${log} building for production`;
-            await $`esbuild/main --mode prod`;
+            await $`esbuild/esbundler --mode prod`;
             await $`cp public/** build`;
         },
         options: {},
