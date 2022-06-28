@@ -1,7 +1,7 @@
 
-import { $, chalk, sleep, echo } from "zx";
+import { $, chalk, sleep, echo, fetch } from "zx";
 
-import { log } from "./zx-extended.mjs";
+import { error, log } from "./zx-extended.mjs";
 
 /**
  * @typedef Command
@@ -28,19 +28,58 @@ export const commands = {
         verbose: true,
     },
     "serve": {
-        exec: async function () {
-            echo`${log} starting dev server`;
-            const promises = [
-                $`relay-compiler --watch`,
-                $`cargo run --features dev`,
-                $`esbuild/main --mode dev`,
-            ];
-            await sleep(100);
-            echo`${log} file server: ${chalk.blue`http://localhost:3080/`}`;
-            echo`${log} main server: ${chalk.magenta`http://localhost:8787/`}`;
-            await Promise.all(promises);
+        exec: async function (args) {
+            if (!args || !(args.dev || args.prod)) {
+                echo`${error} requires argument '--dev' or '--prod'`
+                return;
+            }
+            if (args.dev) {
+                echo`${log} starting dev server`;
+                const promises = [
+                    $`relay-compiler --watch`,
+                    $`cargo run --features dev`,
+                    $`esbuild/main --mode dev`,
+                ];
+                await sleep(100);
+                echo`${log} file server: ${chalk.blue`http://localhost:3080/`}`;
+                echo`${log} main server: ${chalk.magenta`http://localhost:8787/`}`;
+                await Promise.all(promises);
+            }
+            if (args.prod) {
+                echo`${log} starting prod server`;
+                const cargo = $`cargo run --features prod`;
+                while (true) {
+                    try { 
+                        const response = await fetch(
+                            "http://localhost:8787/graphql", {
+                                method: "POST",
+                                headers: {
+                                    "content-type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    query: "query{__schema{__typename}}",
+                                    variables: null
+                                })
+                            }
+                        );
+                        if (response.status == 200) {
+                            break;
+                        }
+                    } catch { undefined; }
+                    await sleep(500);
+                }
+                const deno = 
+                    $`deno run --unstable --allow-all packages/server/embedded/index.mjs`;
+                await sleep(100);
+                echo`${log} ssr server: ${chalk.blue`http://localhost:3737/`}`;
+                echo`${log} main server: ${chalk.magenta`http://localhost:8787/`}`;
+                await Promise.all([deno, cargo]);
+            }
         },
-        options: {},
+        options: {
+            dev: true,
+            prod: true,
+        },
         description: "runs local development servers",
         verbose: false,
     },

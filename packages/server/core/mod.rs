@@ -1,4 +1,7 @@
 pub mod context;
-pub mod error;
+mod error;
 pub mod message;
-pub mod result;
+mod result;
+
+pub use error::err;
+pub use result::Result;

@@ -1,7 +1,7 @@
 use hyper::header::HeaderValue;
 use mime::Mime;
 
-use crate::core::{error::err, message::Message, result::Result};
+use crate::core::{err, message::Message, Result};
 
 /**
     Bruh.

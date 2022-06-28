@@ -4,7 +4,7 @@ use hyper::{Method, StatusCode};
 use juniper_hyper::{graphiql, graphql};
 
 use crate::{
-    core::{context::Context, message::Message, result::Result},
+    core::{context::Context, err, message::Message, Result},
     files::content_type::guess,
     graphql::juniper_context::JuniperContext,
 };
@@ -69,11 +69,8 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
             }
             #[cfg(feature = "prod")]
             {
-                use crate::{
-                    files::{content_type::html, etag::generate},
-                    renderer::ReactRenderer,
-                };
-                use hyper::Body;
+                use crate::files::{content_type::html, etag::generate};
+                use hyper::{Body, Client};
                 use std::path::Path;
                 use tokio::fs::{metadata, File};
                 use tokio_util::io::ReaderStream;
@@ -100,13 +97,13 @@ pub async fn handle(message: &mut Message, context: Context) -> Result<()> {
                     Err(_error) => true,
                 };
                 if react {
-                    let entry = "packages/server/renderer/embedded/index.mjs";
-                    let buffer = ReactRenderer::render(
-                        entry,
-                        vec![message.request.uri().path().to_string()],
-                    )
-                    .await?;
-                    *message.response.body_mut() = Body::from(buffer);
+                    let response = Client::new()
+                        .get(("http://localhost:3737/".to_string() + pathname).parse()?)
+                        .await?;
+                    if response.status() != StatusCode::OK {
+                        return Err(err("Failed to fetch React SSR"));
+                    }
+                    *message.response.body_mut() = response.into_body();
                     html(message)?;
                 }
             }

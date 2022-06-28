@@ -4,6 +4,7 @@
 * [NPM/Node](https://nodejs.org/en/download/)
 * [Go](https://go.dev/doc/install)
 * [Rust](https://www.rust-lang.org/tools/install)
+* [Deno](https://deno.land/#installation)
 * Do this: `sudo npm i -g yarn relay-compiler zx`
 * [Watchman](https://facebook.github.io/watchman/)
 

@@ -1,4 +1,4 @@
-use self::core::{message, result};
+use self::core::{message, Result};
 use crate::core;
 
 use std::{fs::Metadata, str::FromStr, time::UNIX_EPOCH};
@@ -44,10 +44,7 @@ fn if_none_match(value: &str, etag: &str) -> bool {
     like a file hash, a way of identifying file uniqueness so that the browser cache
     updates things when a file with the same name is updated.
 */
-pub fn generate(
-    message: &mut message::Message,
-    metadata: &std::fs::Metadata,
-) -> result::Result<()> {
+pub fn generate(message: &mut message::Message, metadata: &std::fs::Metadata) -> Result<()> {
     let mut mtime = None as Option<u64>;
     if let Some(header) = message.response.headers().get(hyper::header::LAST_MODIFIED) {
         if let Ok(header_str) = header.to_str() {

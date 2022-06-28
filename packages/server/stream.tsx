@@ -43,7 +43,7 @@ const rootElement: React.ReactElement =
 
         <body>
             <div id="root">
-                <RouterServer.StaticRouter location={Deno.args[0]}>
+                <RouterServer.StaticRouter location={"/"}>
                     <Root />
                 </RouterServer.StaticRouter>
             </div>

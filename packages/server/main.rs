@@ -8,10 +8,8 @@ mod db;
 mod files;
 mod graphql;
 mod handler;
-#[cfg(feature = "prod")]
-mod renderer;
 
-use self::core::{context::Context, message::Message, result::Result};
+use self::core::{context::Context, message::Message, Result};
 use std::convert::Infallible;
 
 use hyper::{Body, Request, Response};
@@ -52,7 +50,7 @@ async fn service_handler(
     Ok(message.done())
 }
 
-async fn __main() -> Result<()> {
+async fn seagull() -> Result<()> {
     dotenv::dotenv()?;
 
     /* 127.0.0.1:8787 = localhost:8787 */
@@ -80,9 +78,9 @@ async fn __main() -> Result<()> {
     Ok(())
 }
 
-#[tokio::main]
+#[tokio::main(flavor = "multi_thread")]
 async fn main() {
-    match __main().await {
+    match seagull().await {
         Ok(()) => (),
         Err(error) => eprintln!("{}", error),
     }

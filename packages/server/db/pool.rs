@@ -5,7 +5,7 @@ use diesel::{
     r2d2::{ConnectionManager, Pool},
 };
 
-use crate::core::result::Result;
+use crate::core::Result;
 
 pub fn create_pool() -> Result<Pool<ConnectionManager<PgConnection>>> {
     let url = env::var("DATABASE_URL")?;

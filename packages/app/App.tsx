@@ -30,7 +30,7 @@ export default function App() {
     const element: React.ReactElement =
         <Auth0.Auth0Provider domain="dev-grg8a828.us.auth0.com"
             clientId="vWNnYfLE4ZyqlEh6f4iRM91WFUm7iX2J"
-            redirectUri={window.location.origin}
+        // redirectUri={window.location.origin}
         >
             <React.Suspense fallback={<></>}>
                 <Router.Routes>
