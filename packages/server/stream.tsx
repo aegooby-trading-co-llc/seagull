@@ -13,8 +13,6 @@ async function __renderStream(
         await ReactDOMServer.renderToReadableStream(element, {
             signal: controller.signal,
             onError: function (error) {
-                // eslint-disable-next-line
-                // console.error(`renderStream(): ${error}`);
                 err = error;
             }
         });
