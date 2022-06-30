@@ -2,29 +2,33 @@ import * as React from "react";
 import * as ReactDOMServer from "react-dom/server";
 import * as RouterServer from "react-router-dom/server";
 import * as Helmet from "react-helmet-async";
-import type { HelmetServerState } from "react-helmet-async";
 
 import { default as Root } from "@seagull/app/entry/Root.jsx";
 
 async function __renderStream(
     element: React.ReactElement, controller: AbortController, allReady: boolean
 ) {
+    let err = null as null | unknown;
     const stream =
         await ReactDOMServer.renderToReadableStream(element, {
             signal: controller.signal,
             onError: function (error) {
                 // eslint-disable-next-line
-                console.error(`renderStream(): ${error}`);
+                // console.error(`renderStream(): ${error}`);
+                err = error;
             }
         });
     if (allReady) {
         await stream.allReady;
     }
+    if (err) {
+        throw err;
+    }
     return stream;
 }
 interface Props {
     location: string | Partial<Location>,
-    helmetState: HelmetServerState,
+    helmetState: Helmet.HelmetServerState,
 }
 function WrappedRoot(props: Props) {
     const element: React.ReactElement =
@@ -68,33 +72,27 @@ function Page(props: Props) {
     return element;
 }
 
+/**
+ * Server-side renders a React page into a readable stream.
+ * @param controller AbortController
+ * @param location URL that the user is currently on
+ * @returns Rendered stream of React page.
+ */
 export async function renderStream(
     controller: AbortController, location: string | Partial<Location>
 ) {
     const helmetState = {} as unknown;
     ReactDOMServer.renderToString(<WrappedRoot
         location={location}
-        helmetState={helmetState as HelmetServerState}
+        helmetState={helmetState as Helmet.HelmetServerState}
     />);
-    const renderedHelmetState = (helmetState as { helmet: HelmetServerState; }).helmet;
+    const renderedHelmetState = (
+        helmetState as { helmet: Helmet.HelmetServerState; }
+    ).helmet;
     const stream = await __renderStream(
         <Page location={location} helmetState={renderedHelmetState} />,
         controller,
         true
     );
     return stream;
-}
-
-const testElement: React.ReactElement =
-    <html>
-        <head></head>
-        <body>
-            <div id="root">
-                <p>Test.</p>
-            </div>
-        </body>
-    </html>;
-
-export async function renderStreamTest(controller: AbortController) {
-    return await __renderStream(testElement, controller, true);
 }
