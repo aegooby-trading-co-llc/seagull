@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c224a73c30e8be5e1a7df82a31d39d4f>>
+ * @generated SignedSource<<81c323e14f1188eb264c826d4512453b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type IndexFragment$data = {
-  readonly penis: string | null;
+  readonly penis: string;
   readonly " $fragmentType": "IndexFragment";
 };
 export type IndexFragment$key = {

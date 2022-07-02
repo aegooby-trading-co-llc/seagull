@@ -37,6 +37,7 @@ async fn seagull() -> Result<()> {
     let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 8787));
 
     let context = Context::new()?;
+    context.write_files().await?;
     let router = Router::<Body>::new()
         .route(
             "/graphql",

@@ -1,15 +1,7 @@
-interface Node {
-    id: ID!
-}
-
 type Query {
-    penis: String
+  penis: String!
 }
-# type Mutation {
-    
-# }
 
 schema {
-    query: Query
-    # mutation: Mutation
+  query: Query
 }

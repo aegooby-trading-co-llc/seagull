@@ -5,6 +5,7 @@ use diesel::{
     PgConnection,
 };
 use juniper::RootNode;
+use tokio::{fs::File, io::AsyncWriteExt};
 
 use crate::{
     core::result::Result,
@@ -30,5 +31,11 @@ impl Context {
             )),
             connection_pool: create_pool()?,
         })
+    }
+    pub async fn write_files(&self) -> Result<()> {
+        let mut file = File::create("graphql/schema.gql").await?;
+        file.write(self.graphql_root_node.as_schema_language().as_bytes())
+            .await?;
+        Ok(())
     }
 }
