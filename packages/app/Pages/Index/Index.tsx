@@ -25,6 +25,41 @@ function Suspendable(props: SuspendableProps) {
     return element;
 }
 
+function TokenInfo() {
+    const {
+        getAccessTokenSilently, isLoading
+    } = Auth0.useAuth0();
+
+    const [token, setToken] = React.useState(null as string | null);
+    React.useEffect(function () {
+        (async () => {
+            const accessToken = await getAccessTokenSilently({});
+            setToken(accessToken);
+        })().catch(function (error) { console.error(error); });
+    });
+
+    return isLoading ? <>loading again</> : <>{token}</>;
+}
+
+function LoginButton() {
+    const {
+        loginWithRedirect, isLoading, isAuthenticated
+    } = Auth0.useAuth0();
+
+    const element: React.ReactElement =
+        <button className="Index-button" onClick={
+            function () {
+                loginWithRedirect().catch(function (error) {
+                    console.error(error);
+                });
+            }
+        }>
+            Log in to a penis
+        </button>;
+
+    return isLoading ? <>loading</> : (isAuthenticated ? <TokenInfo /> : element);
+}
+
 interface IndexProps {
     fragmentRef: IndexFragment$key,
 }
@@ -38,8 +73,6 @@ export default function Index(props: IndexProps) {
         return () => clearTimeout(timer);
     }, [count, setCount]);
 
-    const { loginWithRedirect } = Auth0.useAuth0();
-
     // Return the Index component.
     const element: React.ReactElement =
         <div className="Index">
@@ -52,15 +85,7 @@ export default function Index(props: IndexProps) {
                     </React.Suspense>
                 </p>
                 <p>Page has been open for <code>{count}</code> seconds.</p>
-                <button className="Index-button" onClick={
-                    function () {
-                        loginWithRedirect().catch(function (error) {
-                            console.error(error);
-                        });
-                    }
-                }>
-                    Log in to a penis
-                </button>
+                <LoginButton />
             </header>
         </div>;
     return element;
