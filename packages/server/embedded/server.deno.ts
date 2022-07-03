@@ -27,7 +27,7 @@ export async function serve({ port, handler }: ServeOptions) {
                 try {
                     response = await handler(requestEvent.request);
                 } catch (error) {
-                    response = new Response(JSON.stringify(error), {
+                    response = new Response(error.toString(), {
                         status: 500
                     });
                 }

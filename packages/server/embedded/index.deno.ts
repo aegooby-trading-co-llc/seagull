@@ -7,10 +7,8 @@ await serve({
     handler: async function (request: Request) {
         const controller = new AbortController();
         const url = new URL(request.url);
-        return new Response(
-            await renderStream(controller, url.pathname), {
+        return new Response(await renderStream(controller, url.pathname), {
             status: 200
-        }
-        );
+        });
     }
 });
