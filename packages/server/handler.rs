@@ -68,11 +68,7 @@ async fn __fallback_get(OriginalUri(uri): OriginalUri) -> Result<Response<Body>>
     }
     #[cfg(feature = "prod")]
     {
-        use crate::{
-            core::err,
-            files::{content_type::html, etag::generate},
-        };
-        use hyper::Client;
+        use crate::files::{content_type::html, etag::generate};
         use std::path::Path;
         use tokio::fs::metadata;
 
@@ -96,15 +92,9 @@ async fn __fallback_get(OriginalUri(uri): OriginalUri) -> Result<Response<Body>>
             Err(_error) => true,
         };
         if react {
-            /* Guaranteed to work because leading '/' is stripped */
-            let deno_response = Client::new()
-                .get(("http://localhost:3737/".to_string() + pathname).parse()?)
-                .await?;
-            if deno_response.status() != StatusCode::OK {
-                return Err(err("Failed to fetch React SSR"));
-            }
-            *response.body_mut() = deno_response.into_body();
+            let path = Path::new(".").join("public/index.html");
             html(&mut response)?;
+            *response.body_mut() = file_to_body(&path).await?;
         }
     }
     guess(&uri, &mut response)?;

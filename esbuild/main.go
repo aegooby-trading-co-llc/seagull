@@ -29,7 +29,6 @@ func main() {
 	var entryPoints = append(
 		[]string{},
 		"packages/app/entry/bundle.tsx",
-		"packages/server/stream.tsx",
 		"__esbuild.ts",
 	)
 

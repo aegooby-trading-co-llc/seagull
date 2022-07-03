@@ -1,5 +1,5 @@
 
-import { $, chalk, sleep, echo, fetch } from "zx";
+import { $, chalk, sleep, echo } from "zx";
 
 import { error, log } from "./zx-extended.mjs";
 
@@ -47,33 +47,10 @@ export const commands = {
             }
             if (args.prod) {
                 echo`${log} starting prod server`;
-                const cargo = $`cargo run --features prod`;
-                for (;;) {
-                    try { 
-                        const response = await fetch(
-                            "http://localhost:8787/graphql", {
-                                method: "POST",
-                                headers: {
-                                    "content-type": "application/json"
-                                },
-                                body: JSON.stringify({
-                                    query: "query{__schema{__typename}}",
-                                    variables: null
-                                })
-                            }
-                        );
-                        if (response.status == 200) {
-                            break;
-                        }
-                    } catch { undefined; }
-                    await sleep(500);
-                }
-                const deno = 
-                    $`deno run --unstable --allow-all packages/server/embedded/index.deno.ts`;
+                const promise = $`cargo run --features prod`;
                 await sleep(100);
-                echo`${log} ssr server: ${chalk.blue`http://localhost:3737/`}`;
-                echo`${log} main server: ${chalk.magenta`http://localhost:8787/`}`;
-                await Promise.all([deno, cargo]);
+                echo`${log} ${chalk.magenta`http://localhost:8787/`}`;
+                await promise;
             }
         },
         options: {

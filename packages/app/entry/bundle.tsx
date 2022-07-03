@@ -20,16 +20,18 @@ try {
             </Helmet.HelmetProvider>
         </Router.BrowserRouter>;
 
-    switch (process.env.NODE_ENV) {
-        case "development":
-            ReactDOMClient.createRoot(root).render(element);
-            break;
-        case "production":
-            ReactDOMClient.hydrateRoot(root, element);
-            break;
-        default:
-            break;
-    }
+    ReactDOMClient.createRoot(root).render(element);
+
+    // switch (process.env.NODE_ENV) {
+    //     case "development":
+    //         ReactDOMClient.createRoot(root).render(element);
+    //         break;
+    //     case "production":
+    //         ReactDOMClient.hydrateRoot(root, element);
+    //         break;
+    //     default:
+    //         break;
+    // }
 } catch (error) {
     console.error(error);
 }

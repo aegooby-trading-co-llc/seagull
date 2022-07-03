@@ -7,4 +7,3 @@
  * file imports so that static files load correctly.
  */
 import "./packages/app/entry/bundle.jsx";
-import "./packages/server/stream.jsx";
