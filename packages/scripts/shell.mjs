@@ -2,8 +2,6 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { $ } from "./zx-extended.mjs";
-
 try {
     const file = await fs.readFile("package.json");
     const packageJson = JSON.parse(file.toString());
