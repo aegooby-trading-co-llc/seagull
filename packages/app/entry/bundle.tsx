@@ -22,6 +22,7 @@ try {
 
     ReactDOMClient.createRoot(root).render(element);
 
+    // @todo: SSR?
     // switch (process.env.NODE_ENV) {
     //     case "development":
     //         ReactDOMClient.createRoot(root).render(element);
